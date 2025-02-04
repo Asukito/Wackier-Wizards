@@ -121,6 +121,6 @@ const FVector APlayerCharacter::GetSpellOwnerForward() noexcept
 }
 const FVector APlayerCharacter::GetCastStartLocation() noexcept
 {
-	return GetActorLocation() + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+	return GetActorLocation() + (GetActorForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
 #pragma endregion

@@ -7,9 +7,9 @@
 #include "SpellType.h"
 #include "SpellData.generated.h"
 
-/**
- * 
- */
+class UNiagaraSystem;
+class AProjectile;
+
 UCLASS()
 class WACKIER_WIZARDS_API USpellData : public UDataAsset
 {
@@ -29,8 +29,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SpellType type = SpellType::HITSCAN;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> spellNiagara;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
 	float range = 0.0f;;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::LOCAL_AOE", EditConditionHides))
 	float aoeRange = 0.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE", EditConditionHides))
+	float speed;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE", EditConditionHides))
+	bool useGravity;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE", EditConditionHides))
+	TSubclassOf<AProjectile> projectileDefault;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
+	TObjectPtr<UNiagaraSystem> collisionNiagara;
 };

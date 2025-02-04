@@ -30,6 +30,9 @@ protected:
 	void HandleSpellOne();
 	void HandleSpellTwo();
 	void HandleSpellThree();
+	void HandleSpellFour();
+	void HandleSpellFive();
+	void HandleSpellSix();
 
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
@@ -64,6 +67,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Character Actions")
 	TObjectPtr<UInputAction> actionSpellThree;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Character Actions")
+	TObjectPtr<UInputAction> actionSpellFour;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Character Actions")
+	TObjectPtr<UInputAction> actionSpellFive;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Character Actions")
+	TObjectPtr<UInputAction> actionSpellSix;
 private:
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputComponent> _enhancedInputComponent;

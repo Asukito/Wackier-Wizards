@@ -57,6 +57,18 @@ void AWWPlayerController::HandleSpellThree()
 {
 	_playerCharacter->ChangeSpell(3);
 }
+void AWWPlayerController::HandleSpellFour()
+{
+	_playerCharacter->ChangeSpell(4);
+}
+void AWWPlayerController::HandleSpellFive()
+{
+	_playerCharacter->ChangeSpell(5);
+}
+void AWWPlayerController::HandleSpellSix()
+{
+	_playerCharacter->ChangeSpell(6);
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)
@@ -114,4 +126,13 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(actionSpellThree, TEXT("Missing 'SpellThree' Action"));
 	inputComponent->BindAction(actionSpellThree, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellThree);
+
+	checkf(actionSpellFour, TEXT("Missing 'SpellFour' Action"));
+	inputComponent->BindAction(actionSpellFour, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellFour);
+
+	checkf(actionSpellFive, TEXT("Missing 'SpellFive' Action"));
+	inputComponent->BindAction(actionSpellFive, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellFive);
+
+	checkf(actionSpellSix, TEXT("Missing 'SpellSix' Action"));
+	inputComponent->BindAction(actionSpellSix, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellSix);
 }
