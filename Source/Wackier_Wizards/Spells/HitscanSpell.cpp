@@ -4,6 +4,8 @@
 #include "SpellData.h"
 #include "../Interfaces/SpellCaster.h"
 #include "../Interfaces/Damageable.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UHitscanSpell::CastSpell()
 {
@@ -30,6 +32,8 @@ void UHitscanSpell::CastSpell()
 		{
 			target->TakeDamage(spellData->potency, spellData->name);
 		}
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->collisionNiagara, hit.Location, FRotator::ZeroRotator);
 	}
 
 	//cooldown timer = cooldown

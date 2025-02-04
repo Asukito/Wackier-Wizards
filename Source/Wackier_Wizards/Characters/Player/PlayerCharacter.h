@@ -52,7 +52,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Test")
 	TArray<TObjectPtr<USpellData>> spellData;
-	TWeakObjectPtr<USpellBase> spell;
+	UPROPERTY()
+	TObjectPtr<USpellBase> spell;
 	SpellType spellType;
 
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
