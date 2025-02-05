@@ -46,6 +46,11 @@ void UAOEHitscanSpell::CastSpell()
 				{
 					damage->TakeDamage(spellData->potency, spellData->name);
 				}
+
+				if (IEffectable* effectable = Cast<IEffectable>(actor))
+				{
+					HandleEffects(effectable);
+				}
 			}
 		}
 

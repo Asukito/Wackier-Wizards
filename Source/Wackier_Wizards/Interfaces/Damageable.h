@@ -13,9 +13,6 @@ class UDamageable : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class WACKIER_WIZARDS_API IDamageable
 {
 	GENERATED_BODY()

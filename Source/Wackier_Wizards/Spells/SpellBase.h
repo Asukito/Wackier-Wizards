@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "../Interfaces/Effectable.h"
 #include "SpellBase.generated.h"
 
 class USpellData;
@@ -18,7 +19,8 @@ public:
 	void Init(USpellData* data, ISpellCaster* owner);
 	virtual void CastSpell();
 
-	void Empty();
+protected:
+	void HandleEffects(IEffectable* target);
 
 protected:
 	TWeakObjectPtr<USpellData> spellData;

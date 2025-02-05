@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../../Interfaces/Effectable.h"
 #include "../../Interfaces/Damageable.h"
 #include "../../Interfaces/SpellCaster.h"
 #include "../../Interfaces/Health.h"
@@ -16,9 +17,10 @@ class UStaticMeshComponent;
 class UHealthComponent;
 class USpellData;
 class USpellBase;
+class UEffectsComponent;
 
 UCLASS()
-class WACKIER_WIZARDS_API APlayerCharacter : public ACharacter, public IDamageable, public ISpellCaster, public IHealth
+class WACKIER_WIZARDS_API APlayerCharacter : public ACharacter, public IEffectable, public IDamageable, public ISpellCaster, public IHealth
 {
 	GENERATED_BODY()
 
@@ -31,6 +33,7 @@ public:
 	void Heal(int amount) override;
 	void Kill() override;
 	void Respawn() override;
+	void AddEffect(Effect effect) override;
 	void CastSpell();
 	void ChangeSpell(int slot);
 
@@ -38,6 +41,8 @@ public:
 	UCameraComponent* GetCamera() const noexcept;
 	float GetHorizontalSensitivity() const noexcept;
 	float GetVerticalSensitivity() const noexcept;
+	IDamageable* GetDamageableAccess() override;
+	IHealth* GetHealthAccess() override;
 	AActor* GetSpellOwner() noexcept override;
 	const FVector GetSpellOwnerLocation() noexcept override;
 	const FVector GetSpellOwnerForward() noexcept override;
@@ -70,6 +75,7 @@ private:
 	TObjectPtr<UStaticMeshComponent> _staticMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UHealthComponent> _healthComponent;
+	TObjectPtr<UEffectsComponent> _effectComponent;
 
 	TWeakObjectPtr<AWWPlayerController> _playerController;
 

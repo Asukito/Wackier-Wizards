@@ -33,6 +33,11 @@ void UHitscanSpell::CastSpell()
 			target->TakeDamage(spellData->potency, spellData->name);
 		}
 
+		if (IEffectable* effectable = Cast<IEffectable>(hit.GetActor()))
+		{
+			HandleEffects(effectable);
+		}
+
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->collisionNiagara, hit.Location, FRotator::ZeroRotator);
 	}
 

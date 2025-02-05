@@ -24,20 +24,7 @@ void ATimedObjectManager::Init()
 {
 	_index = 0;
 
-	TArray<TObjectPtr<ATimedPillar>> pillars;
-	_pillars.GenerateKeyArray(pillars);
-
-	for (TObjectPtr<ATimedPillar> pillar : pillars)
-	{
-		if (_pillars[pillar] != _index)
-		{
-			pillar->SetIsActive(false);
-		}
-		else
-		{
-			pillar->SetIsActive(true);
-		}
-	}
+	UpdatePillars();
 
 	_hasInit = true;
 }
@@ -53,6 +40,11 @@ void ATimedObjectManager::NextGroup()
 		_index += 1;
 	}
 
+	UpdatePillars();
+}
+
+void ATimedObjectManager::UpdatePillars()
+{
 	TArray<TObjectPtr<ATimedPillar>> pillars;
 	_pillars.GenerateKeyArray(pillars);
 

@@ -11,6 +11,7 @@
 #include "../../Spells/SpellBase.h"
 #include "../../Spells/SpellData.h"
 #include "../../Spells/SpellFactory.h"
+#include "../../Components/EffectsComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -33,6 +34,10 @@ APlayerCharacter::APlayerCharacter()
 
 	_healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 	checkf(_healthComponent, TEXT("Player HealthComponent failed to initialise"));
+
+	_effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
+	checkf(_effectComponent, TEXT("Player EffectsComponent failed to initialise"));
+
 }
 
 void APlayerCharacter::SetController(AWWPlayerController* controller)
@@ -60,6 +65,11 @@ void APlayerCharacter::Kill()
 void APlayerCharacter::Respawn()
 {
 	SetActorLocation(_lastValidPosition);
+}
+
+void APlayerCharacter::AddEffect(Effect effect)
+{
+	_effectComponent->CreateAndAddEffect(effect);
 }
 
 const int APlayerCharacter::GetHealth(bool getPercent) noexcept
@@ -140,6 +150,14 @@ float APlayerCharacter::GetHorizontalSensitivity() const noexcept
 float APlayerCharacter::GetVerticalSensitivity() const noexcept
 {
 	return _verticalSensitivity;
+}
+IDamageable* APlayerCharacter::GetDamageableAccess()
+{
+	return Cast<IDamageable>(this);
+}
+IHealth* APlayerCharacter::GetHealthAccess()
+{
+	return Cast<IHealth>(this);
 }
 AActor* APlayerCharacter::GetSpellOwner() noexcept
 {

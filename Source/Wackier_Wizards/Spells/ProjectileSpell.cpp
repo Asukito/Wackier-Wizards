@@ -37,4 +37,9 @@ void UProjectileSpell::ProcessHit(AActor* hit, FVector projectileLocation)
 	{
 		target->TakeDamage(spellData->potency, spellData->name);
 	}
+
+	if (IEffectable* effectable = Cast<IEffectable>(hit))
+	{
+		HandleEffects(effectable);
+	}
 }

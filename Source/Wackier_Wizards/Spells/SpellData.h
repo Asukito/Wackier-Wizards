@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SpellType.h"
+#include "../Effects/Effect.h"
 #include "SpellData.generated.h"
 
 class UNiagaraSystem;
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SpellType type = SpellType::HITSCAN;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<Effect> effects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> spellNiagara;

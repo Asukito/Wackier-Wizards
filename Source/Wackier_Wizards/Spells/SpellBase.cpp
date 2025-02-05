@@ -3,6 +3,8 @@
 
 #include "SpellBase.h"
 #include "SpellData.h"
+#include "../Effects/Effect.h"
+#include "../Interfaces/Damageable.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {
@@ -15,7 +17,10 @@ void USpellBase::CastSpell()
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("Casting: %s"), *spellData->name));
 }
 
-void USpellBase::Empty()
+void USpellBase::HandleEffects(IEffectable* target)
 {
-	//spellOwner = nullptr;
+	for (Effect effect : spellData->effects)
+	{
+		target->AddEffect(effect);
+	}
 }

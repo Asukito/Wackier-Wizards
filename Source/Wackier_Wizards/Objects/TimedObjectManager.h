@@ -26,7 +26,7 @@ protected:
 private:
 	void Init();
 	void NextGroup();
-
+	void UpdatePillars();
 private:
 	UPROPERTY(EditAnywhere)
 	TMap<TObjectPtr<ATimedPillar>, int> _pillars;

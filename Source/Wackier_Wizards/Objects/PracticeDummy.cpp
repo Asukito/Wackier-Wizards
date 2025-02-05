@@ -4,6 +4,7 @@
 #include "PracticeDummy.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "../Components/EffectsComponent.h"
 
 // Sets default values
 APracticeDummy::APracticeDummy()
@@ -20,11 +21,29 @@ APracticeDummy::APracticeDummy()
 	checkf(_staticMesh, TEXT("Practice Dummy StaticMesh failed to initialise"));
 	_staticMesh->SetCollisionProfileName(FName("NoCollision"));
 	_staticMesh->SetupAttachment(_collider);
+
+	_effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
+	checkf(_effectComponent, TEXT("Practice Dummy EffectsComponent failed to initialise"));
 }
 
 void APracticeDummy::TakeDamage(int amount, FString source)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
+}
+
+void APracticeDummy::AddEffect(Effect effect)
+{
+	_effectComponent->CreateAndAddEffect(effect);
+}
+
+IDamageable* APracticeDummy::GetDamageableAccess()
+{
+	return Cast<IDamageable>(this);
+}
+
+IHealth* APracticeDummy::GetHealthAccess()
+{
+	return nullptr;
 }
 
 // Called when the game starts or when spawned

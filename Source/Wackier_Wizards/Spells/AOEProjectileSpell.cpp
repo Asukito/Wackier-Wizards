@@ -22,11 +22,16 @@ void UAOEProjectileSpell::ProcessHit(AActor* actor, FVector projectileLocation)
 	DrawDebugSphere(owner->GetWorld(), projectileLocation, spellData->aoeRange, 12, FColor::Red, false, 1.0f);
 	if (UKismetSystemLibrary::SphereOverlapActors(owner->GetWorld(), projectileLocation, spellData->aoeRange, types, NULL, ignore, targets))
 	{
-		for (AActor* actor : targets)
+		for (AActor* a : targets)
 		{
-			if (IDamageable* hit = Cast<IDamageable>(actor))
+			if (IDamageable* hit = Cast<IDamageable>(a))
 			{
 				hit->TakeDamage(spellData->potency, spellData->name);
+			}
+
+			if (IEffectable* effectable = Cast<IEffectable>(a))
+			{
+				HandleEffects(effectable);
 			}
 		}
 	}

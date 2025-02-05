@@ -31,6 +31,11 @@ void ULocalAOESpell::CastSpell()
 			{
 				hit->TakeDamage(spellData->potency, spellData->name);
 			}
+
+			if (IEffectable* effectable = Cast<IEffectable>(actor))
+			{
+				HandleEffects(effectable);
+			}
 		}
 	}
 
