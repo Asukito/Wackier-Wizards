@@ -29,6 +29,8 @@ public:
 	void SetController(AWWPlayerController* controller);
 	void TakeDamage(int amount, FString source) override;
 	void Heal(int amount) override;
+	void Kill() override;
+	void Respawn() override;
 	void CastSpell();
 	void ChangeSpell(int slot);
 
@@ -40,6 +42,7 @@ public:
 	const FVector GetSpellOwnerLocation() noexcept override;
 	const FVector GetSpellOwnerForward() noexcept override;
 	const FVector GetCastStartLocation() noexcept override;
+	const int GetHealth(bool getPercent) noexcept override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -69,4 +72,7 @@ private:
 	TObjectPtr<UHealthComponent> _healthComponent;
 
 	TWeakObjectPtr<AWWPlayerController> _playerController;
+
+	FVector _lastValidPosition;
+	float _validUpdateTimer;
 };

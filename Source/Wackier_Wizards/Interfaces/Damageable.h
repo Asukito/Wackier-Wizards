@@ -22,4 +22,5 @@ class WACKIER_WIZARDS_API IDamageable
 
 public:
 	virtual void TakeDamage(int amount, FString source) {};
+	virtual void Kill() {};
 };

@@ -31,7 +31,6 @@ void ATimedPillar::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	_isActive = true;
 	_startZ = _staticMesh->GetRelativeScale3D().Z;
 }
 

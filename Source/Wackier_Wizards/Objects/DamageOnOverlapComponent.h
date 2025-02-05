@@ -4,34 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "HealthComponent.generated.h"
+#include "DamageOnOverlapComponent.generated.h"
 
+class UBoxComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class WACKIER_WIZARDS_API UHealthComponent : public UActorComponent
+class WACKIER_WIZARDS_API UDamageOnOverlapComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UHealthComponent();
+	UDamageOnOverlapComponent();
 
-	void AdjustHealth(float amount);
-	void AdjustHealthPercentage(float percentage);
-	void SetHealth(float amount);
-	int GetHealth() const;
-	int GetHealthPercent() const;
+	void Init();
 
-public:
+	UFUNCTION()
+	void BeginInteractOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:
+private:	
 	UPROPERTY(EditDefaultsOnly)
-	float _baseHealth;
-	float _maxHealth;
-	float _health;
+	TObjectPtr<UBoxComponent> _collider;
+	UPROPERTY(EditDefaultsOnly)
+	float _damagePercent;
 };

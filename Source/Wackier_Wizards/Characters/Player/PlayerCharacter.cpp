@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "../../Components/HealthComponent.h"
 #include "WWPlayerController.h"
 #include "../../Spells/SpellBase.h"
@@ -51,6 +52,26 @@ void APlayerCharacter::Heal(int amount)
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("%s: Healed %i health"), *GetName(), amount));
 }
 
+void APlayerCharacter::Kill()
+{
+	_healthComponent->SetHealth(0.0f);
+}
+
+void APlayerCharacter::Respawn()
+{
+	SetActorLocation(_lastValidPosition);
+}
+
+const int APlayerCharacter::GetHealth(bool getPercent) noexcept
+{
+	if (getPercent == true)
+	{ 
+		return _healthComponent->GetHealthPercent();
+	}
+
+	return _healthComponent->GetHealth();
+}
+
 void APlayerCharacter::CastSpell()
 {
 	if (spell == nullptr)
@@ -77,12 +98,25 @@ void APlayerCharacter::ChangeSpell(int slot)
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_lastValidPosition = GetActorLocation();
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	_validUpdateTimer += DeltaTime;
+
+	if (_validUpdateTimer >= 3.0f)
+	{
+		if (GetCharacterMovement()->IsFalling() == false)
+		{
+			_lastValidPosition = GetActorLocation();
+			_validUpdateTimer = 0.0f;
+		}
+	}
 }
 
 // Called to bind functionality to input

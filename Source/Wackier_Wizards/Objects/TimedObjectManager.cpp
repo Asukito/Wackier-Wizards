@@ -38,11 +38,13 @@ void ATimedObjectManager::Init()
 			pillar->SetIsActive(true);
 		}
 	}
+
+	_hasInit = true;
 }
 
 void ATimedObjectManager::NextGroup()
 {
-	if (_index == _pillars.Num() - 1)
+	if (_index == _maxGroup)
 	{
 		_index = 0;
 	}
