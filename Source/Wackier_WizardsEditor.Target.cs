@@ -8,7 +8,7 @@ public class Wackier_WizardsEditorTarget : TargetRules
     public Wackier_WizardsEditorTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Editor;
-        DefaultBuildSettings = BuildSettingsVersion.V5;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
 
         ExtraModuleNames.AddRange(new string[] { "Wackier_Wizards" });
     }
