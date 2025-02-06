@@ -2,6 +2,7 @@
 
 #include "SelfSpell.h"
 #include "SpellData.h"
+#include "../Interfaces/Effectable.h"
 #include "../Interfaces/Health.h"
 #include "../Interfaces/SpellCaster.h"
 #include "NiagaraFunctionLibrary.h"
@@ -10,11 +11,11 @@ void USelfSpell::CastSpell()
 {
 	USpellBase::CastSpell();
 
-	AActor* owner = spellOwner->GetSpellOwner();
+	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
-	if (IEffectable* effectable = Cast<IEffectable>(owner))
+	if (TScriptInterface<IEffectable> effectable = Cast<IEffectable>(owner)->_getUObject())
 	{
-		HandleEffects(effectable);
+		HandleEffects(effectable.GetInterface());
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->spellNiagara, owner->GetActorLocation(), FRotator::ZeroRotator);

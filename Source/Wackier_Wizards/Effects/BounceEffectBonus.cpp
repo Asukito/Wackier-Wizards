@@ -13,7 +13,7 @@ void UBounceEffectBonus::DoBonus()
 	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
-	TArray<AActor*> ignore;
+	TArray<TObjectPtr<AActor>> ignore;
 	ignore.Add(effectOwner.Get());
 
 	TArray<AActor*> targets;
@@ -22,7 +22,7 @@ void UBounceEffectBonus::DoBonus()
 
 	if (UKismetSystemLibrary::SphereOverlapActors(effectOwner->GetWorld(), effectOwner->GetActorLocation(), dataCopy->bounceRange, types, NULL, ignore, targets))
 	{
-		for (AActor* actor : targets)
+		for (TObjectPtr<AActor> actor : targets)
 		{
 			if (IEffectable* effectable = Cast<IEffectable>(actor))
 			{

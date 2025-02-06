@@ -30,7 +30,8 @@ protected:
 	void ProcessEffectRemoval();
 
 protected:
-	IEffectable* owner;
+	UPROPERTY()
+	TScriptInterface<IEffectable> owner;
 	UPROPERTY()
 	TObjectPtr<UEffectData> effectData;
 
@@ -39,5 +40,4 @@ protected:
 	bool hasEnded = false;
 private:
 	FOnClear _clearDelegate;
-
 };

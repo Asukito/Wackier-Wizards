@@ -80,7 +80,8 @@ private:
 	TObjectPtr<UHealthComponent> _healthComponent;
 	TObjectPtr<UEffectsComponent> _effectComponent;
 
-	TWeakObjectPtr<AWWPlayerController> _playerController;
+	UPROPERTY()
+	TObjectPtr<AWWPlayerController> _playerController;
 
 	FVector _lastValidPosition;
 	float _validUpdateTimer;

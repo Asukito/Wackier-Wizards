@@ -2,8 +2,6 @@
 
 
 #include "InstantEffect.h"
-#include "../Interfaces/Effectable.h"
-#include "../Interfaces/Damageable.h"
 #include "EffectData.h"
 
 void UInstantEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list)

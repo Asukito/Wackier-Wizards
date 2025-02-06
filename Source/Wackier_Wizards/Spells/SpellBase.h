@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "../Interfaces/Effectable.h"
 #include "SpellBase.generated.h"
 
 class USpellData;
 class ISpellCaster;
+class IEffectable;
 
 UCLASS()
 class WACKIER_WIZARDS_API USpellBase : public UObject
@@ -21,8 +21,11 @@ public:
 
 protected:
 	void HandleEffects(IEffectable* target);
+	void HandleInterfaceFunctions(AActor* actor);
 
 protected:
+	UPROPERTY()
 	TWeakObjectPtr<USpellData> spellData;
-	ISpellCaster* spellOwner;
+	UPROPERTY()
+	TScriptInterface<ISpellCaster> spellOwner;
 };

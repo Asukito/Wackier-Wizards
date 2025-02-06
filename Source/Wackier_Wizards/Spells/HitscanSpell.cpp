@@ -3,7 +3,6 @@
 #include "HitscanSpell.h"
 #include "SpellData.h"
 #include "../Interfaces/SpellCaster.h"
-#include "../Interfaces/Damageable.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -11,7 +10,7 @@ void UHitscanSpell::CastSpell()
 {
 	USpellBase::CastSpell();
 
-	const AActor* owner = spellOwner->GetSpellOwner();
+	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	FVector start = spellOwner->GetCastStartLocation();
 	FVector end = ((spellOwner->GetSpellOwnerForward() * spellData->range) + start);
 
@@ -28,18 +27,8 @@ void UHitscanSpell::CastSpell()
 			return;
 		}
 
-		if (IDamageable* target = Cast<IDamageable>(hit.GetActor()))
-		{
-			target->TakeDamage(spellData->potency, spellData->name);
-		}
-
-		if (IEffectable* effectable = Cast<IEffectable>(hit.GetActor()))
-		{
-			HandleEffects(effectable);
-		}
+		HandleInterfaceFunctions(hit.GetActor());
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->collisionNiagara, hit.Location, FRotator::ZeroRotator);
 	}
-
-	//cooldown timer = cooldown
 }

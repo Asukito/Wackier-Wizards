@@ -2,8 +2,6 @@
 
 
 #include "OverTimeEffect.h"
-#include "../Interfaces/Effectable.h"
-#include "../Interfaces/Damageable.h"
 #include "EffectData.h"
 
 void UOverTimeEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list)

@@ -4,7 +4,6 @@
 #include "AOEHitscanSpell.h"
 #include "SpellData.h"
 #include "../Interfaces/SpellCaster.h"
-#include "../Interfaces/Damageable.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -12,7 +11,7 @@ void UAOEHitscanSpell::CastSpell()
 {
 	USpellBase::CastSpell();
 
-	AActor* owner = spellOwner->GetSpellOwner();
+	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	FVector start = spellOwner->GetCastStartLocation();
 	FVector end = ((spellOwner->GetSpellOwnerForward() * spellData->range) + start);
 
@@ -34,28 +33,18 @@ void UAOEHitscanSpell::CastSpell()
 		types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 		types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
-		TArray<AActor*> ignore;
+		TArray<TObjectPtr<AActor>> ignore;
 		TArray<AActor*> targets;
 
 		DrawDebugSphere(owner->GetWorld(), hit.Location, spellData->aoeRange, 12, FColor::Red, false, 1.0f);
 		if (UKismetSystemLibrary::SphereOverlapActors(owner->GetWorld(), hit.Location, spellData->aoeRange, types, NULL, ignore, targets))
 		{
-			for (AActor* actor : targets)
+			for (TObjectPtr<AActor> actor : targets)
 			{
-				if (IDamageable* damage = Cast<IDamageable>(actor))
-				{
-					damage->TakeDamage(spellData->potency, spellData->name);
-				}
-
-				if (IEffectable* effectable = Cast<IEffectable>(actor))
-				{
-					HandleEffects(effectable);
-				}
+				HandleInterfaceFunctions(actor);
 			}
 		}
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->collisionNiagara, hit.Location, FRotator::ZeroRotator);
 	}
-
-	//cooldown timer = cooldown
 }

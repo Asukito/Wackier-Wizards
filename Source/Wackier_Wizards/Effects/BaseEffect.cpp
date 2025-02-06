@@ -16,7 +16,7 @@ void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponen
 
 	if (IEffectable* Owner = Cast<IEffectable>(actor))
 	{
-		owner = Owner;
+		owner = Owner->_getUObject();
 	}
 	else
 	{

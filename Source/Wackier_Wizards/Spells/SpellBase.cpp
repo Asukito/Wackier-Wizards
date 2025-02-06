@@ -4,12 +4,13 @@
 #include "SpellBase.h"
 #include "SpellData.h"
 #include "../Effects/EffectData.h"
-#include "../Interfaces/Damageable.h"
+#include "../Interfaces/Effectable.h"
+#include "../Interfaces/SpellCaster.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {
 	spellData = data;
-	spellOwner = owner;	
+	spellOwner = owner->_getUObject();
 }
 
 void USpellBase::CastSpell()
@@ -27,7 +28,7 @@ void USpellBase::HandleEffects(IEffectable* target)
 	TArray<TObjectPtr<UEffectData>> effects;
 	spellData->effects.GenerateKeyArray(effects);
 
-	for (UEffectData* effect : effects)
+	for (TObjectPtr<UEffectData> effect : effects)
 	{
 		int rand = FMath::RandRange(0, 100);
 
@@ -35,5 +36,20 @@ void USpellBase::HandleEffects(IEffectable* target)
 		{
 			target->AddEffect(effect);
 		}
+	}
+
+	effects.Empty();
+}
+
+void USpellBase::HandleInterfaceFunctions(AActor* actor)
+{
+	if (IDamageable* target = Cast<IDamageable>(actor))
+	{
+		target->TakeDamage(spellData->potency, spellData->name);
+	}
+
+	if (IEffectable* effectable = Cast<IEffectable>(actor))
+	{
+		HandleEffects(effectable);
 	}
 }
