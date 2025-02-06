@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "../Effects/Effect.h"
 #include "EffectsComponent.generated.h"
 
 class UBaseEffect;
+class UEffectData;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UEffectsComponent : public UActorComponent
@@ -18,10 +18,10 @@ public:
 	// Sets default values for this component's properties
 	UEffectsComponent();
 
-	void CreateAndAddEffect(Effect effect);
-	void AddEffect(UBaseEffect* effect);
+	void CreateAndAddEffect(UEffectData* effectData);
 	void QueueRemoval(UBaseEffect* effect);
 
+	bool Contains(FString name);
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
@@ -30,6 +30,8 @@ protected:
 
 private:
 	void RemoveEffects();
+	UBaseEffect* ReturnContains(FString name);
+
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<UBaseEffect>> _effects;

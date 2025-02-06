@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "../Effects/Effect.h"
+#include "../Effects/EffectData.h"
 #include "../Interfaces/Damageable.h"
 #include "../Interfaces/Health.h"
 #include "Effectable.generated.h"
@@ -16,16 +16,14 @@ class UEffectable : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
 class WACKIER_WIZARDS_API IEffectable
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void AddEffect(Effect effect) {};
+	virtual void AddEffect(UEffectData* effect) {};
 	virtual IDamageable* GetDamageableAccess() { return nullptr; };
 	virtual IHealth* GetHealthAccess() { return nullptr; };
+	virtual bool HasEffect(FString effectName) { return false; };
 };

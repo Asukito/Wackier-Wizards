@@ -12,9 +12,9 @@ void USelfSpell::CastSpell()
 
 	AActor* owner = spellOwner->GetSpellOwner();
 
-	if (IHealth* healable = Cast<IHealth>(owner))
+	if (IEffectable* effectable = Cast<IEffectable>(owner))
 	{
-		healable->Heal(spellData->potency);
+		HandleEffects(effectable);
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->spellNiagara, owner->GetActorLocation(), FRotator::ZeroRotator);

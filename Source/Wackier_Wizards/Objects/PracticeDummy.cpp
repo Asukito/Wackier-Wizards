@@ -31,7 +31,7 @@ void APracticeDummy::TakeDamage(int amount, FString source)
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
 }
 
-void APracticeDummy::AddEffect(Effect effect)
+void APracticeDummy::AddEffect(UEffectData* effect)
 {
 	_effectComponent->CreateAndAddEffect(effect);
 }
@@ -44,6 +44,11 @@ IDamageable* APracticeDummy::GetDamageableAccess()
 IHealth* APracticeDummy::GetHealthAccess()
 {
 	return nullptr;
+}
+
+bool APracticeDummy::HasEffect(FString effectName)
+{
+	return _effectComponent->Contains(effectName);
 }
 
 // Called when the game starts or when spawned

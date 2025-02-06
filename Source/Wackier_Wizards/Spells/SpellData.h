@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SpellType.h"
-#include "../Effects/Effect.h"
 #include "SpellData.generated.h"
 
 class UNiagaraSystem;
 class AProjectile;
+class UEffectData;
 
 UCLASS()
 class WACKIER_WIZARDS_API USpellData : public UDataAsset
@@ -24,14 +24,14 @@ public:
 	float cooldown = 0.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float duration = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
 	int potency = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SpellType type = SpellType::HITSCAN;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TArray<Effect> effects;
+	TMap<TObjectPtr<UEffectData>, float> effects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> spellNiagara;

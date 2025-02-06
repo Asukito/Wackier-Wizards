@@ -22,11 +22,12 @@ public:
 	APracticeDummy();
 
 	void TakeDamage(int amount, FString source) override;
-	void AddEffect(Effect effect) override;
+	void AddEffect(UEffectData* effect) override;
 
 	IDamageable* GetDamageableAccess() override;
 	IHealth* GetHealthAccess() override;
 
+	bool HasEffect(FString effectName) override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 protected:

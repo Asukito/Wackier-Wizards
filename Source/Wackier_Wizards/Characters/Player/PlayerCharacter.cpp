@@ -57,6 +57,11 @@ void APlayerCharacter::Heal(int amount)
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("%s: Healed %i health"), *GetName(), amount));
 }
 
+void APlayerCharacter::AdjustMaxHealth(int amount)
+{
+	_healthComponent->AdjustMaxHealth(amount);
+}
+
 void APlayerCharacter::Kill()
 {
 	_healthComponent->SetHealth(0.0f);
@@ -67,7 +72,7 @@ void APlayerCharacter::Respawn()
 	SetActorLocation(_lastValidPosition);
 }
 
-void APlayerCharacter::AddEffect(Effect effect)
+void APlayerCharacter::AddEffect(UEffectData* effect)
 {
 	_effectComponent->CreateAndAddEffect(effect);
 }
@@ -80,6 +85,15 @@ const int APlayerCharacter::GetHealth(bool getPercent) noexcept
 	}
 
 	return _healthComponent->GetHealth();
+}
+const int APlayerCharacter::GetMaxHealth() noexcept
+{
+	return _healthComponent->GetMaxHealth();
+}
+
+bool APlayerCharacter::HasEffect(FString effectName)
+{
+	return _effectComponent->Contains(effectName);
 }
 
 void APlayerCharacter::CastSpell()

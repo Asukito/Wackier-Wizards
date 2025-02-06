@@ -31,9 +31,10 @@ public:
 	void SetController(AWWPlayerController* controller);
 	void TakeDamage(int amount, FString source) override;
 	void Heal(int amount) override;
+	void AdjustMaxHealth(int amount) override;
 	void Kill() override;
 	void Respawn() override;
-	void AddEffect(Effect effect) override;
+	void AddEffect(UEffectData* effect) override;
 	void CastSpell();
 	void ChangeSpell(int slot);
 
@@ -48,6 +49,8 @@ public:
 	const FVector GetSpellOwnerForward() noexcept override;
 	const FVector GetCastStartLocation() noexcept override;
 	const int GetHealth(bool getPercent) noexcept override;
+	const int GetMaxHealth() noexcept override;
+	bool HasEffect(FString effectName) override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

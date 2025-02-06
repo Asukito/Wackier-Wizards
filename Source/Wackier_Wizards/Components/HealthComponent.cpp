@@ -41,6 +41,11 @@ void UHealthComponent::SetHealth(float amount)
 	_health = amount;
 }
 
+void UHealthComponent::AdjustMaxHealth(int amount)
+{
+	_maxHealth += amount;
+}
+
 int UHealthComponent::GetHealth() const
 {
 	return _health;
@@ -49,6 +54,11 @@ int UHealthComponent::GetHealth() const
 int UHealthComponent::GetHealthPercent() const
 {
 	return FMath::FloorToInt((_health / _maxHealth) * 100);
+}
+
+int UHealthComponent::GetMaxHealth() const
+{
+	return _maxHealth;
 }
 
 // Called when the game starts

@@ -3,7 +3,7 @@
 
 #include "SpellBase.h"
 #include "SpellData.h"
-#include "../Effects/Effect.h"
+#include "../Effects/EffectData.h"
 #include "../Interfaces/Damageable.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
@@ -19,8 +19,21 @@ void USpellBase::CastSpell()
 
 void USpellBase::HandleEffects(IEffectable* target)
 {
-	for (Effect effect : spellData->effects)
+	if (spellData->effects.Num() == 0)
 	{
-		target->AddEffect(effect);
+		return;
+	}
+
+	TArray<TObjectPtr<UEffectData>> effects;
+	spellData->effects.GenerateKeyArray(effects);
+
+	for (UEffectData* effect : effects)
+	{
+		int rand = FMath::RandRange(0, 100);
+
+		if (rand <= spellData->effects[effect])
+		{
+			target->AddEffect(effect);
+		}
 	}
 }

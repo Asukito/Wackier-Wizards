@@ -2,8 +2,11 @@
 
 
 #include "EffectsComponent.h"
+#include "../Effects/OverTimeEffect.h"
+#include "../Effects/InstantEffect.h"
+#include "../Effects/DurationEffect.h"
 #include "../Effects/BaseEffect.h"
-#include "../Effects/BurnEffect.h"
+#include "../Effects/EffectData.h"
 
 // Sets default values for this component's properties
 UEffectsComponent::UEffectsComponent()
@@ -15,25 +18,50 @@ UEffectsComponent::UEffectsComponent()
 	// ...
 }
 
-void UEffectsComponent::CreateAndAddEffect(Effect effect)
+void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 {
-	UBaseEffect* newEffect;
+	UBaseEffect* newEffect = nullptr;
 
-	switch (effect)
+	switch (effectData->type)
 	{
-		case Effect::BURN:
-			newEffect = NewObject<UBurnEffect>();
-			_effects.Add(newEffect);
-			newEffect->StartEffect(GetOwner(), this);
+		case EffectType::OVERTIME:
+			newEffect = NewObject<UOverTimeEffect>();
+
+			break;
+		case EffectType::INSTANT:
+			newEffect = NewObject<UInstantEffect>();
+
+			break;
+		case EffectType::FOR_DURATION:
+			newEffect = NewObject<UDurationEffect>();
 
 			break;
 	}
-}
 
-void UEffectsComponent::AddEffect(UBaseEffect* effect)
-{
-	_effects.Add(effect);
-	effect->StartEffect(GetOwner(), this);
+	if (newEffect == nullptr)
+	{
+		return;
+	}
+
+	//If stackable add effect
+	if (effectData->stackable == true)
+	{
+		_effects.Add(newEffect);
+		newEffect->StartEffect(effectData, GetOwner(), this);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
+		return;
+	}
+
+	//If not stackable, check if effect exists in list, if so queue removal
+	if (UBaseEffect* effect = ReturnContains(effectData->name))
+	{
+		effect->EndEffect();
+	}
+
+	//Add effect
+	_effects.Add(newEffect);
+	newEffect->StartEffect(effectData, GetOwner(), this);
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
 }
 
 void UEffectsComponent::QueueRemoval(UBaseEffect* effect)
@@ -45,10 +73,37 @@ void UEffectsComponent::RemoveEffects()
 {
 	for (UBaseEffect* effect : _toRemove)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Removed Effect: %s"), *effect->GetEffectName()));
 		_effects.Remove(effect);
 	}
 
 	_toRemove.Empty();
+}
+
+bool UEffectsComponent::Contains(FString name)
+{
+	for (UBaseEffect* effect : _effects)
+	{
+		if (name == effect->GetEffectName())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+UBaseEffect* UEffectsComponent::ReturnContains(FString name)
+{
+	for (UBaseEffect* effect : _effects)
+	{
+		if (name == effect->GetEffectName())
+		{
+			return effect;
+		}
+	}
+
+	return nullptr;
 }
 
 
