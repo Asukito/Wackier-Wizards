@@ -1,0 +1,10 @@
+#pragma once
+#include "SpellBase.h"
+#include "SpellData.h"
+#include "SpellType.h"
+#include "HitscanSpell.h"
+#include "SelfSpell.h"	
+#include "ProjectileSpell.h"
+#include "AOEProjectileSpell.h"
+#include "LocalAOESpell.h"
+#include "AOEHitscanSpell.h"
