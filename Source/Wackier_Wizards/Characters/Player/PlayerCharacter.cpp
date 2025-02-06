@@ -5,11 +5,13 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "../../Components/HealthComponent.h"
 #include "WWPlayerController.h"
 #include "../../Spells/SpellBase.h"
 #include "../../Spells/SpellData.h"
 #include "../../Spells/SpellFactory.h"
+#include "../../Components/EffectsComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -32,6 +34,10 @@ APlayerCharacter::APlayerCharacter()
 
 	_healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 	checkf(_healthComponent, TEXT("Player HealthComponent failed to initialise"));
+
+	_effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
+	checkf(_effectComponent, TEXT("Player EffectsComponent failed to initialise"));
+
 }
 
 void APlayerCharacter::SetController(AWWPlayerController* controller)
@@ -49,6 +55,45 @@ void APlayerCharacter::Heal(int amount)
 {
 	_healthComponent->AdjustHealth(amount);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("%s: Healed %i health"), *GetName(), amount));
+}
+
+void APlayerCharacter::AdjustMaxHealth(int amount)
+{
+	_healthComponent->AdjustMaxHealth(amount);
+}
+
+void APlayerCharacter::Kill()
+{
+	_healthComponent->SetHealth(0.0f);
+}
+
+void APlayerCharacter::Respawn()
+{
+	SetActorLocation(_lastValidPosition);
+}
+
+void APlayerCharacter::AddEffect(UEffectData* effect)
+{
+	_effectComponent->CreateAndAddEffect(effect);
+}
+
+const int APlayerCharacter::GetHealth(bool getPercent) noexcept
+{
+	if (getPercent == true)
+	{ 
+		return _healthComponent->GetHealthPercent();
+	}
+
+	return _healthComponent->GetHealth();
+}
+const int APlayerCharacter::GetMaxHealth() noexcept
+{
+	return _healthComponent->GetMaxHealth();
+}
+
+bool APlayerCharacter::HasEffect(FString effectName)
+{
+	return _effectComponent->Contains(effectName);
 }
 
 void APlayerCharacter::CastSpell()
@@ -77,12 +122,25 @@ void APlayerCharacter::ChangeSpell(int slot)
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_lastValidPosition = GetActorLocation();
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	_validUpdateTimer += DeltaTime;
+
+	if (_validUpdateTimer >= 3.0f)
+	{
+		if (GetCharacterMovement()->IsFalling() == false)
+		{
+			_lastValidPosition = GetActorLocation();
+			_validUpdateTimer = 0.0f;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -106,6 +164,14 @@ float APlayerCharacter::GetHorizontalSensitivity() const noexcept
 float APlayerCharacter::GetVerticalSensitivity() const noexcept
 {
 	return _verticalSensitivity;
+}
+IDamageable* APlayerCharacter::GetDamageableAccess()
+{
+	return Cast<IDamageable>(this);
+}
+IHealth* APlayerCharacter::GetHealthAccess()
+{
+	return Cast<IHealth>(this);
 }
 AActor* APlayerCharacter::GetSpellOwner() noexcept
 {
