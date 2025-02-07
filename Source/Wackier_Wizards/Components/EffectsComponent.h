@@ -8,6 +8,7 @@
 
 class UBaseEffect;
 class UEffectData;
+class AResultantEffectContainer;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UEffectsComponent : public UActorComponent
@@ -31,6 +32,7 @@ protected:
 private:
 	void RemoveEffects();
 	UBaseEffect* ReturnContains(FString name);
+	UEffectData* CheckIfResultantValid(UEffectData* effectData);
 
 private:
 	UPROPERTY()
@@ -38,4 +40,6 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UBaseEffect>> _toRemove;
+
+	TObjectPtr<AResultantEffectContainer> _resultantContainer;
 };
