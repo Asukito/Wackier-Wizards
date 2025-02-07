@@ -7,6 +7,8 @@
 #include "../Effects/DurationEffect.h"
 #include "../Effects/BaseEffect.h"
 #include "../Effects/EffectData.h"
+#include "../Effects/ResultantEffectContainer.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UEffectsComponent::UEffectsComponent()
@@ -20,9 +22,20 @@ UEffectsComponent::UEffectsComponent()
 
 void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 {
-	UBaseEffect* newEffect = nullptr;
+	TObjectPtr<UEffectData> data = nullptr;
+	TObjectPtr<UBaseEffect> newEffect = nullptr;
 
-	switch (effectData->type)
+	if (_resultantContainer != nullptr && _effects.Num() != 0)
+	{
+		data = CheckIfResultantValid(effectData);
+	}
+
+	if (data == nullptr)
+	{
+		data = effectData;
+	}
+
+	switch (data->type)
 	{
 		case EffectType::OVERTIME:
 			newEffect = NewObject<UOverTimeEffect>();
@@ -44,23 +57,23 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 	}
 
 	//If stackable add effect
-	if (effectData->stackable == true)
+	if (data->stackable == true)
 	{
 		_effects.Add(newEffect);
-		newEffect->StartEffect(effectData, GetOwner(), this);
+		newEffect->StartEffect(data, GetOwner(), this);
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
 		return;
 	}
 
 	//If not stackable, check if effect exists in list, if so queue removal
-	if (UBaseEffect* effect = ReturnContains(effectData->name))
+	if (UBaseEffect* effect = ReturnContains(data->name))
 	{
 		effect->EndEffect();
 	}
 
 	//Add effect
 	_effects.Add(newEffect);
-	newEffect->StartEffect(effectData, GetOwner(), this);
+	newEffect->StartEffect(data, GetOwner(), this);
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
 }
 
@@ -106,6 +119,20 @@ UBaseEffect* UEffectsComponent::ReturnContains(FString name)
 	return nullptr;
 }
 
+UEffectData* UEffectsComponent::CheckIfResultantValid(UEffectData* effectData)
+{
+	for (TObjectPtr<UBaseEffect> effect : _effects)
+	{
+		if (TObjectPtr<UEffectData> data = _resultantContainer->CheckIfValid(effect->GetEffectName(), effectData->name))
+		{
+			QueueRemoval(effect);
+			return data;
+		}
+	}
+
+	return nullptr;
+}
+
 
 // Called when the game starts
 void UEffectsComponent::BeginPlay()
@@ -113,7 +140,7 @@ void UEffectsComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	_resultantContainer = Cast<AResultantEffectContainer>(UGameplayStatics::GetActorOfClass(GetWorld(), AResultantEffectContainer::StaticClass()));
 }
 
 
