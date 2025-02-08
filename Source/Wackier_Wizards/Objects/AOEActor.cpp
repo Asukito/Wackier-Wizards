@@ -15,6 +15,8 @@ AAOEActor::AAOEActor()
 	_collider = CreateDefaultSubobject<USphereComponent>(TEXT("Collider"));
 	checkf(_collider, TEXT("AOE Actor Sphere Component failed to initialise"));
 	_collider->SetCollisionProfileName(FName("OverlapAll"));
+
+	Tags.Add(FName("Effect"));
 }
 
 void AAOEActor::Init(UEffectData* data)
@@ -60,7 +62,7 @@ void AAOEActor::DoAoe()
 
 	TArray<AActor*> targets;
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), _effect->bonusRange, 12, FColor::Red, false, 1.0f);
+	DrawDebugSphere(GetWorld(), GetActorLocation(), _effect->bonusRange, 12, FColor::Red, false, _effect->duration);
 	if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), _effect->bonusRange, types, NULL, _ignore, targets))
 	{
 		for (TObjectPtr<AActor> actor : targets)

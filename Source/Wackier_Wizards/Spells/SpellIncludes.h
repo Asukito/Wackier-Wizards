@@ -8,3 +8,4 @@
 #include "AOEProjectileSpell.h"
 #include "LocalAOESpell.h"
 #include "AOEHitscanSpell.h"
+#include "TrailAOEProjectileSpell.h"
