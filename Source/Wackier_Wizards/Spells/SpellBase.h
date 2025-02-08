@@ -8,6 +8,7 @@
 
 class USpellData;
 class ISpellCaster;
+class IEffectable;
 
 UCLASS()
 class WACKIER_WIZARDS_API USpellBase : public UObject
@@ -18,9 +19,13 @@ public:
 	void Init(USpellData* data, ISpellCaster* owner);
 	virtual void CastSpell();
 
-	void Empty();
+protected:
+	void HandleEffects(IEffectable* target);
+	void HandleInterfaceFunctions(AActor* actor);
 
 protected:
+	UPROPERTY()
 	TWeakObjectPtr<USpellData> spellData;
-	ISpellCaster* spellOwner;
+	UPROPERTY()
+	TScriptInterface<ISpellCaster> spellOwner;
 };

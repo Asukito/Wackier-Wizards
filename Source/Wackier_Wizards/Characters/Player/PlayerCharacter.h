@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../../Interfaces/Effectable.h"
 #include "../../Interfaces/Damageable.h"
 #include "../../Interfaces/SpellCaster.h"
 #include "../../Interfaces/Health.h"
@@ -16,9 +17,10 @@ class UStaticMeshComponent;
 class UHealthComponent;
 class USpellData;
 class USpellBase;
+class UEffectsComponent;
 
 UCLASS()
-class WACKIER_WIZARDS_API APlayerCharacter : public ACharacter, public IDamageable, public ISpellCaster, public IHealth
+class WACKIER_WIZARDS_API APlayerCharacter : public ACharacter, public IEffectable, public IDamageable, public ISpellCaster, public IHealth
 {
 	GENERATED_BODY()
 
@@ -29,6 +31,10 @@ public:
 	void SetController(AWWPlayerController* controller);
 	void TakeDamage(int amount, FString source) override;
 	void Heal(int amount) override;
+	void AdjustMaxHealth(int amount) override;
+	void Kill() override;
+	void Respawn() override;
+	void AddEffect(UEffectData* effect) override;
 	void CastSpell();
 	void ChangeSpell(int slot);
 
@@ -36,10 +42,15 @@ public:
 	UCameraComponent* GetCamera() const noexcept;
 	float GetHorizontalSensitivity() const noexcept;
 	float GetVerticalSensitivity() const noexcept;
+	IDamageable* GetDamageableAccess() override;
+	IHealth* GetHealthAccess() override;
 	AActor* GetSpellOwner() noexcept override;
 	const FVector GetSpellOwnerLocation() noexcept override;
 	const FVector GetSpellOwnerForward() noexcept override;
 	const FVector GetCastStartLocation() noexcept override;
+	const int GetHealth(bool getPercent) noexcept override;
+	const int GetMaxHealth() noexcept override;
+	bool HasEffect(FString effectName) override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -67,6 +78,11 @@ private:
 	TObjectPtr<UStaticMeshComponent> _staticMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UHealthComponent> _healthComponent;
+	TObjectPtr<UEffectsComponent> _effectComponent;
 
-	TWeakObjectPtr<AWWPlayerController> _playerController;
+	UPROPERTY()
+	TObjectPtr<AWWPlayerController> _playerController;
+
+	FVector _lastValidPosition;
+	float _validUpdateTimer;
 };
