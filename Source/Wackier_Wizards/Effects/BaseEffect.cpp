@@ -8,6 +8,7 @@
 #include "../Interfaces/Health.h"
 #include "EffectDoes.h"
 #include "BounceEffectBonus.h"
+#include "AOEEffectBonus.h"
 
 void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list)
 {
@@ -30,11 +31,18 @@ void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponen
 		return;
 	}
 
+	UBaseEffectBonus* effect;
+
 	switch (effectData->bonus)
 	{
 		case EffectBonusType::BOUNCE:
-			UBounceEffectBonus* effect = NewObject<UBounceEffectBonus>();
-			effect->Init(data, actor);
+			effect = NewObject<UBounceEffectBonus>();
+			effect->Init(data, actor, true);
+
+			break;
+		case EffectBonusType::AOE:
+			effect = NewObject<UAOEEffectBonus>();
+			effect->Init(data, actor, true);
 
 			break;
 	}

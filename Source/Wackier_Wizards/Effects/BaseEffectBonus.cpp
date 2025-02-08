@@ -4,17 +4,22 @@
 #include "BaseEffectBonus.h"
 #include "EffectData.h"
 
-void UBaseEffectBonus::Init(UEffectData* data, AActor* owner)
+void UBaseEffectBonus::Init(UEffectData* data, AActor* owner, bool createCopy)
 {
 	effectOwner = owner;
+	
+	effectData = DuplicateObject(data, this);
+	effectData->stackable = false;
 
-	dataCopy = DuplicateObject(data, this);
-	dataCopy->stackable = false;
+	if (effectData->bonus == EffectBonusType::AOE)
+	{
+		effectData->bonus = EffectBonusType::NONE;
+	}
 
 	DoBonus();
 }
 
 void UBaseEffectBonus::DoBonus()
 {
-	dataCopy->MarkAsGarbage();
+	effectData->MarkAsGarbage();
 }

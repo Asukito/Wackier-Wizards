@@ -4,7 +4,6 @@
 #include "ProjectileSpell.h"
 #include "../Objects/Projectile.h"
 #include "../Interfaces/SpellCaster.h"
-#include "Components/StaticMeshComponent.h"
 #include "SpellData.h"
 
 void UProjectileSpell::CastSpell()
@@ -16,7 +15,7 @@ void UProjectileSpell::CastSpell()
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TObjectPtr<AProjectile> projectile = owner->GetWorld()->SpawnActor<AProjectile>(*spellData->projectileDefault, spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
+	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
 	projectile->AddIgnoreActor(owner);
 	projectile->AddOwnerSpell(this);
 	projectile->InitNiagara(spellData->spellNiagara, spellData->collisionNiagara);
@@ -24,10 +23,8 @@ void UProjectileSpell::CastSpell()
 
 	FVector unitDirection = spellOwner->GetSpellOwnerForward();
 
-	projectile->GetStaticMesh()->SetEnableGravity(spellData->useGravity);
-	projectile->GetStaticMesh()->SetPhysicsLinearVelocity(unitDirection * spellData->speed);
-
 	projectile->SetIsActive(true);
+	projectile->ApplyForce(spellData->useGravity, unitDirection, spellData->speed);
 }
 
 void UProjectileSpell::ProcessHit(AActor* hit, FVector projectileLocation)
