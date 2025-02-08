@@ -35,8 +35,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EffectBonusType bonus = EffectBonusType::NONE;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus == EffectBonusType::BOUNCE", EditConditionHides))
-	float bounceRange;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus == EffectBonusType::BOUNCE | bonus == EffectBonusType::AOE", EditConditionHides))
+	float bonusRange;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus == EffectBonusType::AOE", EditConditionHides))
+	float aoeInterval;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool stackable = false;

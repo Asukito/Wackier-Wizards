@@ -18,18 +18,18 @@ void UBounceEffectBonus::DoBonus()
 
 	TArray<AActor*> targets;
 
-	DrawDebugSphere(effectOwner->GetWorld(), effectOwner->GetActorLocation(), dataCopy->bounceRange, 12, FColor::Red, false, 0.3f);
+	DrawDebugSphere(effectOwner->GetWorld(), effectOwner->GetActorLocation(), effectData->bonusRange, 12, FColor::Red, false, 0.3f);
 
-	if (UKismetSystemLibrary::SphereOverlapActors(effectOwner->GetWorld(), effectOwner->GetActorLocation(), dataCopy->bounceRange, types, NULL, ignore, targets))
+	if (UKismetSystemLibrary::SphereOverlapActors(effectOwner->GetWorld(), effectOwner->GetActorLocation(), effectData->bonusRange, types, NULL, ignore, targets))
 	{
 		for (TObjectPtr<AActor> actor : targets)
 		{
 			if (IEffectable* effectable = Cast<IEffectable>(actor))
 			{
-				if (effectable->HasEffect(dataCopy->name) == false)
+				if (effectable->HasEffect(effectData->name) == false)
 				{
-					DrawDebugSphere(effectOwner->GetWorld(), effectOwner->GetActorLocation(), dataCopy->bounceRange, 12, FColor::Green, false, 0.5f);
-					effectable->AddEffect(dataCopy);
+					DrawDebugSphere(effectOwner->GetWorld(), effectOwner->GetActorLocation(), effectData->bonusRange, 12, FColor::Green, false, 0.5f);
+					effectable->AddEffect(effectData);
 				}
 			}
 		}

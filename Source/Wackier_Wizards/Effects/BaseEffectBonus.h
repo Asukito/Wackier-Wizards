@@ -14,12 +14,12 @@ class WACKIER_WIZARDS_API UBaseEffectBonus : public UObject
 	GENERATED_BODY()
 	
 public:
-	void Init(UEffectData* data, AActor* owner);
+	void Init(UEffectData* data, AActor* owner, bool createCopy);
 
 protected:
 	virtual void DoBonus();
 
 protected:
 	TObjectPtr<AActor> effectOwner;
-	TObjectPtr<UEffectData> dataCopy;
+	TObjectPtr<UEffectData> effectData;
 };

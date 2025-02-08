@@ -7,6 +7,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraEmitter.h"
 #include "../Spells/ProjectileSpell.h"
+#include "../Objects/AOEActor.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -16,7 +17,6 @@ AProjectile::AProjectile()
 
 	_staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	checkf(_staticMesh, TEXT("Projectile Static Mesh failed to initialise"));
-
 	_staticMesh->SetSimulatePhysics(true);
 	_staticMesh->SetVisibility(false);
 	_staticMesh->SetCollisionProfileName(FName("Projectile"));
@@ -25,7 +25,10 @@ AProjectile::AProjectile()
 	_niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	checkf(_niagara, TEXT("Projectile Niagara Component failed to initialise"));
 	_niagara->SetupAttachment(_staticMesh);
+
+	_staticMesh->SetWorldScale3D(FVector(0.05f));
 }
+
 void AProjectile::InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara)
 {
 	if (collisionNiagara != nullptr)
@@ -67,18 +70,7 @@ void AProjectile::BeginInteractOverlap(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
-	if (_collisionEffect != nullptr)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), _collisionEffect, GetActorLocation(), FRotator::ZeroRotator);
-	}
 
-	if (_spell != nullptr)
-	{
-		_spell->ProcessHit(OtherActor, GetActorLocation());
-		_spell = nullptr;
-	}
-
-	Destroy();
 }
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
