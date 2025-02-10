@@ -17,7 +17,12 @@ public:
 	UHealthComponent();
 
 	void AdjustHealth(float amount);
+	void AdjustHealthPercentage(float percentage);
+	void SetHealth(float amount);
+	void AdjustMaxHealth(int amount);
 	int GetHealth() const;
+	int GetHealthPercent() const;
+	int GetMaxHealth() const;
 
 public:
 	// Called every frame
