@@ -44,6 +44,7 @@ void UHealthComponent::SetHealth(float amount)
 void UHealthComponent::AdjustMaxHealth(int amount)
 {
 	_maxHealth += amount;
+	AdjustHealth(0);
 }
 
 int UHealthComponent::GetHealth() const

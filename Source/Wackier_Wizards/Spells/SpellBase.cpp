@@ -5,6 +5,7 @@
 #include "SpellData.h"
 #include "../Effects/EffectData.h"
 #include "../Interfaces/Effectable.h"
+#include "../Interfaces/Health.h"
 #include "../Interfaces/SpellCaster.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
@@ -43,9 +44,16 @@ void USpellBase::HandleEffects(IEffectable* target)
 
 void USpellBase::HandleInterfaceFunctions(AActor* actor)
 {
+	bool isKilled = false;
+
 	if (IDamageable* target = Cast<IDamageable>(actor))
 	{
-		target->TakeDamage(spellData->potency, spellData->name);
+		isKilled = target->TakeDamage(spellData->potency, spellData->name);
+	}
+
+	if (isKilled == true)
+	{
+		return;
 	}
 
 	if (IEffectable* effectable = Cast<IEffectable>(actor))

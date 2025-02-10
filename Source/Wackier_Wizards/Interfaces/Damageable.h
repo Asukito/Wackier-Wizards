@@ -18,6 +18,6 @@ class WACKIER_WIZARDS_API IDamageable
 	GENERATED_BODY()
 
 public:
-	virtual void TakeDamage(int amount, FString source) {};
+	virtual bool TakeDamage(int amount, FString source) { return true; };
 	virtual void Kill() {};
 };

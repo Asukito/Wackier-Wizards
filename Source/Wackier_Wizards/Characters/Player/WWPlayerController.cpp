@@ -69,6 +69,10 @@ void AWWPlayerController::HandleSpellSix()
 {
 	_playerCharacter->ChangeSpell(6);
 }
+void AWWPlayerController::HandleToggleSeek()
+{
+	_playerCharacter->ToggleSeek();
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)
@@ -135,4 +139,7 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(actionSpellSix, TEXT("Missing 'SpellSix' Action"));
 	inputComponent->BindAction(actionSpellSix, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellSix);
+
+	checkf(actionToggleSeek, TEXT("Missing 'ToggleSeek' Action"));
+	inputComponent->BindAction(actionToggleSeek, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleToggleSeek);
 }
