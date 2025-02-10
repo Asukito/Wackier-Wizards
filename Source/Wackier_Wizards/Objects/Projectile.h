@@ -11,6 +11,7 @@ class UNiagaraComponent;
 class UNiagaraSystem;
 class UNiagaraEmitter;
 class UProjectileSpell;
+class UEffectData;
 
 UCLASS()
 class WACKIER_WIZARDS_API AProjectile : public AActor
@@ -21,12 +22,14 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
+	void InitTrail(UEffectData* trialEffect);
 	void InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara = nullptr);
 	void AddOwnerSpell(UProjectileSpell* spell);
 	void AddIgnoreActor(AActor* actor);
 	void SetIsActive(bool isactive);
 	void SetRange(float range);
 
+	void ApplyForce(bool gravity, FVector unitDirection, float speed);
 	UStaticMeshComponent* GetStaticMesh();
 
 	UFUNCTION()
@@ -40,6 +43,7 @@ protected:
 
 private:
 	void CheckDistanceTravelled();
+	void PlaceAOE();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -54,6 +58,12 @@ private:
 
 	TArray<TWeakObjectPtr<AActor>> _ignore;
 
+	FVector _startPos;
+
+	TObjectPtr<UEffectData> _trailEffect;
+	FVector _lastLocation;
+	float _trailInterval;
+	bool _hasTrail = false;
 
 	FVector _start;
 	float _maxDistance;

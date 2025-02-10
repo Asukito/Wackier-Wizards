@@ -10,5 +10,7 @@ UENUM(BlueprintType)
 enum class EffectBonusType : uint8
 {
 	NONE UMETA(DisplayName = "None"),
-	BOUNCE UMETA(DisplayName = "Bounce")
+	BOUNCE UMETA(DisplayName = "Bounce"),
+	AOE UMETA(DisplayName = "AOE"),
+	TRAIL_EFFECT UMETA(DisplayName = "Trail Effect")
 };

@@ -51,6 +51,13 @@ USpellBase* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owne
 			spell->Init(spellData, owner);
 
 			return spell;
+
+		case SpellType::TRAIL_PROJECTILE_AOE:
+			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+			spell = NewObject<UTrailAOEProjectileSpell>();
+			spell->Init(spellData, owner);
+
+			return spell;
 	}
 
 	return nullptr;
