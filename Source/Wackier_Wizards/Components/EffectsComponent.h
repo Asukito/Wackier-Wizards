@@ -21,6 +21,7 @@ public:
 
 	void CreateAndAddEffect(UEffectData* effectData);
 	void QueueRemoval(UBaseEffect* effect);
+	void ClearEffects();
 
 	bool Contains(FString name);
 	// Called every frame
