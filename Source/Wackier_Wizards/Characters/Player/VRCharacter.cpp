@@ -75,10 +75,19 @@ void AVRCharacter::SetController(AWWPlayerController* controller)
 	_playerController = controller;
 }
 
-void AVRCharacter::TakeDamage(int amount, FString source)
+bool AVRCharacter::TakeDamage(int amount, FString source)
 {
 	_healthComponent->AdjustHealth(amount * -1);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
+
+	bool isDead = (_healthComponent->GetHealth() <= 0);
+
+	if (isDead)
+	{
+		Kill();
+	}
+
+	return isDead;
 }
 
 void AVRCharacter::Heal(int amount)
@@ -97,9 +106,10 @@ void AVRCharacter::Kill()
 	_healthComponent->SetHealth(0.0f);
 }
 
-void AVRCharacter::Respawn()
+void AVRCharacter::Respawn(bool isDead)
 {
-	SetActorLocation(_lastValidPosition);
+	_healthComponent->SetHealth(0.0f);
+	Respawn(true);
 }
 
 void AVRCharacter::AddEffect(UEffectData* effect)

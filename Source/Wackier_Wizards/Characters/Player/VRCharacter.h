@@ -47,11 +47,11 @@ public:
 	class UInputAction* inputChangeSpell;
 
 	void SetController(AWWPlayerController* controller);
-	void TakeDamage(int amount, FString source) override;
+	bool TakeDamage(int amount, FString source) override;
 	void Heal(int amount) override;
 	void AdjustMaxHealth(int amount) override;
 	void Kill() override;
-	void Respawn() override;
+	void Respawn(bool isDead) override;
 	void AddEffect(UEffectData* effect) override;
 	void CastSpell();
 	void CycleSpell();
