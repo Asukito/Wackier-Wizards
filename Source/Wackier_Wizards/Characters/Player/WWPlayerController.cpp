@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.h"
+#include "VRCharacter.h"
 
 #pragma region "Input Handlers"
 void AWWPlayerController::UpdateSensitivity(float horizontal, float vertical)
@@ -75,7 +76,7 @@ void AWWPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	_playerCharacter = Cast<APlayerCharacter>(aPawn);
+	_playerCharacter = Cast<AVRCharacter>(aPawn);
 	_playerCharacter->SetController(this);
 	_horizontalSens = _playerCharacter->GetHorizontalSensitivity();
 	_verticalSens = _playerCharacter->GetVerticalSensitivity();

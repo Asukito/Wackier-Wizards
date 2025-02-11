@@ -10,7 +10,7 @@ class UInputMappingContext;
 class UEnhancedInputComponent;
 class UInputAction;
 class UCharacterMovementComponent;
-class APlayerCharacter;
+class AVRCharacter;
 
 UCLASS()
 class WACKIER_WIZARDS_API AWWPlayerController : public APlayerController
@@ -80,7 +80,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputComponent> _enhancedInputComponent;
 
-	TWeakObjectPtr<APlayerCharacter> _playerCharacter;
+	TWeakObjectPtr<AVRCharacter> _playerCharacter;
 	TWeakObjectPtr<UCharacterMovementComponent> _movementComponent;
 
 	float _horizontalSens;

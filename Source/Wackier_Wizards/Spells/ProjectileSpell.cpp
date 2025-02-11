@@ -21,7 +21,7 @@ void UProjectileSpell::CastSpell()
 	projectile->InitNiagara(spellData->spellNiagara, spellData->collisionNiagara);
 	projectile->SetRange(spellData->range);
 
-	FVector unitDirection = spellOwner->GetSpellOwnerForward();
+	FVector unitDirection = spellOwner->GetCastStartForward();
 
 	projectile->SetIsActive(true);
 	projectile->ApplyForce(spellData->useGravity, unitDirection, spellData->speed);
