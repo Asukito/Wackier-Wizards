@@ -31,7 +31,7 @@ AProjectile::AProjectile()
 	_staticMesh->Mobility = EComponentMobility::Movable;
 	_staticMesh->CanCharacterStepUpOn = ECB_No;
 	_staticMesh->SetSimulatePhysics(true);
-	_staticMesh->SetVisibility(true);
+	_staticMesh->SetVisibility(false);
 	_staticMesh->SetCollisionProfileName(FName("Projectile"));
 	SetRootComponent(_staticMesh);
 
@@ -83,10 +83,11 @@ void AProjectile::ApplyForce(bool gravity, FVector unitDirection, float speed)
 {
 	_startPos = GetActorLocation();
 
-	_staticMesh->SetRelativeScale3D(FVector(0.05f));
+	_staticMesh->SetRelativeScale3D(FVector(1.0f));
 	_staticMesh->SetEnableGravity(gravity);
 	FVector force = unitDirection * speed;
 	_staticMesh->SetPhysicsLinearVelocity(force);
+	_niagara->SetRelativeRotation(unitDirection.Rotation());
 }
 UStaticMeshComponent* AProjectile::GetStaticMesh()
 {

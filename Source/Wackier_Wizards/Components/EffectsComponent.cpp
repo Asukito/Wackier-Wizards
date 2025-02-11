@@ -82,6 +82,14 @@ void UEffectsComponent::QueueRemoval(UBaseEffect* effect)
 	_toRemove.Add(effect);
 }
 
+void UEffectsComponent::ClearEffects()
+{
+	for (UBaseEffect* effect : _effects)
+	{
+		effect->EndEffect();
+	}
+}
+
 void UEffectsComponent::RemoveEffects()
 {
 	for (UBaseEffect* effect : _toRemove)

@@ -29,14 +29,20 @@ public:
 	APlayerCharacter();
 
 	void SetController(AWWPlayerController* controller);
-	void TakeDamage(int amount, FString source) override;
+	bool TakeDamage(int amount, FString source) override;
 	void Heal(int amount) override;
 	void AdjustMaxHealth(int amount) override;
+	void AdjustWalkSpeed(float percent);
+	bool HasMovementComponent() override
+	{
+		return true;
+	}
 	void Kill() override;
-	void Respawn() override;
+	void Respawn(bool isDead) override;
 	void AddEffect(UEffectData* effect) override;
 	void CastSpell();
 	void ChangeSpell(int slot);
+	void ToggleSeek();
 
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;
@@ -51,6 +57,7 @@ public:
 	const int GetHealth(bool getPercent) noexcept override;
 	const int GetMaxHealth() noexcept override;
 	bool HasEffect(FString effectName) override;
+	const FVector GetSeekLocation() const noexcept;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -78,11 +85,17 @@ private:
 	TObjectPtr<UStaticMeshComponent> _staticMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UHealthComponent> _healthComponent;
+	UPROPERTY()
 	TObjectPtr<UEffectsComponent> _effectComponent;
 
 	UPROPERTY()
 	TObjectPtr<AWWPlayerController> _playerController;
 
+	FVector _spawnLocation;
 	FVector _lastValidPosition;
 	float _validUpdateTimer;
+
+	float _maxWalkSpeed;
+
+	bool _seek;
 };

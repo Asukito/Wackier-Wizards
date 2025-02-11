@@ -25,5 +25,7 @@ public:
 	virtual void AddEffect(UEffectData* effect) {};
 	virtual IDamageable* GetDamageableAccess() { return nullptr; };
 	virtual IHealth* GetHealthAccess() { return nullptr; };
+	virtual bool HasMovementComponent() { return false; };
+	virtual void AdjustWalkSpeed(float percent) {};
 	virtual bool HasEffect(FString effectName) { return false; };
 };

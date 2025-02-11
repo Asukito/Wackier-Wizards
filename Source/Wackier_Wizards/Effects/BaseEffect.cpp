@@ -81,8 +81,7 @@ bool UBaseEffect::ProcessEffect()
 		case EffectDoes::DAMAGE:
 			if (IDamageable* target = owner->GetDamageableAccess())
 			{
-				target->TakeDamage(effectData->strength, effectData->name);
-				return true;
+				return !target->TakeDamage(effectData->strength, effectData->name);
 			}
 
 			break;
@@ -93,8 +92,8 @@ bool UBaseEffect::ProcessEffect()
 				{
 					float maxHealth = target->GetMaxHealth();
 					float amount =  FMath::RoundToFloat(((maxHealth * ((float)(effectData->strength) / 100))));
-					damageable->TakeDamage(amount, effectData->name);
-					return true;
+
+					return !damageable->TakeDamage(amount, effectData->name);;
 				}
 			}
 
@@ -136,6 +135,26 @@ bool UBaseEffect::ProcessEffect()
 			}
 
 			break;
+
+		case EffectDoes::INC_SPEED:
+
+			if (owner->HasMovementComponent() == true)
+			{
+				owner->AdjustWalkSpeed(effectData->strength);
+				return true;
+			}
+
+			break;
+
+		case EffectDoes::DEC_SPEED:
+
+			if (owner->HasMovementComponent() == true)
+			{
+				owner->AdjustWalkSpeed(-(effectData->strength));
+				return true;
+			}
+
+			break;
 	}
 
 	return false;
@@ -160,6 +179,26 @@ void UBaseEffect::ProcessEffectRemoval()
 			target->AdjustMaxHealth(effectData->strength);
 		}
 
+		break;
+
+	case EffectDoes::INC_SPEED:
+
+		if (owner->HasMovementComponent() == false)
+		{
+			return;
+		}
+
+		owner->AdjustWalkSpeed(-(effectData->strength));
+		break;
+
+	case EffectDoes::DEC_SPEED:
+
+		if (owner->HasMovementComponent() == false)
+		{
+			return;
+		}
+
+		owner->AdjustWalkSpeed(effectData->strength);
 		break;
 	}
 }

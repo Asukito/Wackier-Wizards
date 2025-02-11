@@ -21,12 +21,16 @@ public:
 	// Sets default values for this actor's properties
 	APracticeDummy();
 
-	void TakeDamage(int amount, FString source) override;
+	bool TakeDamage(int amount, FString source) override;
 	void AddEffect(UEffectData* effect) override;
 
 	IDamageable* GetDamageableAccess() override;
 	IHealth* GetHealthAccess() override;
-
+	void AdjustWalkSpeed(float percent) override;
+	bool HasMovementComponent() override
+	{
+		return false;
+	}
 	bool HasEffect(FString effectName) override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -45,10 +45,19 @@ void APlayerCharacter::SetController(AWWPlayerController* controller)
 	_playerController = controller;
 }
 
-void APlayerCharacter::TakeDamage(int amount, FString source)
+bool APlayerCharacter::TakeDamage(int amount, FString source)
 {
 	_healthComponent->AdjustHealth(amount * -1);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
+
+	bool isDead = (_healthComponent->GetHealth() <= 0);
+
+	if (isDead)
+	{
+		Kill();
+	}
+
+	return isDead;
 }
 
 void APlayerCharacter::Heal(int amount)
@@ -62,14 +71,39 @@ void APlayerCharacter::AdjustMaxHealth(int amount)
 	_healthComponent->AdjustMaxHealth(amount);
 }
 
+void APlayerCharacter::AdjustWalkSpeed(float percent)
+{
+	float absolute = _maxWalkSpeed * FMath::Abs(percent / 100);
+
+	if (percent >= 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed += absolute;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed -= absolute;
+	}
+}
+
 void APlayerCharacter::Kill()
 {
 	_healthComponent->SetHealth(0.0f);
+	Respawn(true);
 }
 
-void APlayerCharacter::Respawn()
+void APlayerCharacter::Respawn(bool isDead)
 {
-	SetActorLocation(_lastValidPosition);
+	_effectComponent->ClearEffects();
+
+	if (isDead == true)
+	{
+		_healthComponent->SetHealth(_healthComponent->GetMaxHealth());
+		SetActorLocation(_spawnLocation);
+	}
+	else
+	{
+		SetActorLocation(_lastValidPosition);
+	}
 }
 
 void APlayerCharacter::AddEffect(UEffectData* effect)
@@ -96,6 +130,16 @@ bool APlayerCharacter::HasEffect(FString effectName)
 	return _effectComponent->Contains(effectName);
 }
 
+const FVector APlayerCharacter::GetSeekLocation() const noexcept
+{
+	if (_seek == false)
+	{
+		return FVector::ZeroVector;
+	}
+
+	return GetActorLocation();
+}
+
 void APlayerCharacter::CastSpell()
 {
 	if (spell == nullptr)
@@ -117,6 +161,11 @@ void APlayerCharacter::ChangeSpell(int slot)
 	spell = factory->CreateSpell(spellData[slot - 1], this);
 }
 
+void APlayerCharacter::ToggleSeek()
+{
+	_seek = !_seek;
+}
+
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
@@ -124,6 +173,9 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	_lastValidPosition = GetActorLocation();
+	_spawnLocation = _lastValidPosition;
+
+	_maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 // Called every frame
