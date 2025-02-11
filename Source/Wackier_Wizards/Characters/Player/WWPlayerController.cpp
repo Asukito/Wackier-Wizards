@@ -70,6 +70,10 @@ void AWWPlayerController::HandleSpellSix()
 {
 	_playerCharacter->ChangeSpell(6);
 }
+void AWWPlayerController::HandleChangeSpell()
+{
+	_playerCharacter->CycleSpell();
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)

@@ -54,7 +54,10 @@ public:
 	void Respawn() override;
 	void AddEffect(UEffectData* effect) override;
 	void CastSpell();
+	void CycleSpell();
 	void ChangeSpell(int slot);
+
+	int currentSpellIndex = 0;
 
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;

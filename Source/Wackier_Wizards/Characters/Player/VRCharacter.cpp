@@ -137,6 +137,12 @@ void AVRCharacter::CastSpell()
 	UE_LOG(LogTemp, Warning, TEXT("Right Hand Location: %s"), *rightHandLocation.ToString());
 }
 
+void AVRCharacter::CycleSpell()
+{
+	//cycles the spell to the next spell using change spell
+	ChangeSpell(spellData.Num() == 0 ? 0 : (currentSpellIndex + 1) % spellData.Num());
+}
+
 void AVRCharacter::ChangeSpell(int slot)
 {
 	if (spellData.Num() == 0 || slot - 1 < 0 || slot > spellData.Num())
@@ -146,6 +152,7 @@ void AVRCharacter::ChangeSpell(int slot)
 
 	USpellFactory* factory = NewObject<USpellFactory>();
 	spell = factory->CreateSpell(spellData[slot - 1], this);
+	currentSpellIndex = slot - 1;
 }
 
 
