@@ -43,6 +43,7 @@ public:
 	void CastSpell();
 	void ChangeSpell(int slot);
 	void ToggleSeek();
+	virtual void CycleSpell();
 
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;
@@ -54,6 +55,7 @@ public:
 	const FVector GetSpellOwnerLocation() noexcept override;
 	const FVector GetSpellOwnerForward() noexcept override;
 	const FVector GetCastStartLocation() noexcept override;
+	const FVector GetCastStartForward() noexcept override;
 	const int GetHealth(bool getPercent) noexcept override;
 	const int GetMaxHealth() noexcept override;
 	bool HasEffect(FString effectName) override;
@@ -67,7 +69,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category = "Test")
 	TArray<TObjectPtr<USpellData>> spellData;
 	UPROPERTY()
@@ -75,27 +77,30 @@ private:
 	SpellType spellType;
 
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
-	float _horizontalSensitivity;
+	float horizontalSensitivity;
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
-	float _verticalSensitivity;
+	float verticalSensitivity;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UCameraComponent> _camera;
+	TObjectPtr<UCameraComponent> camera;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UStaticMeshComponent> _staticMesh;
+	TObjectPtr<UStaticMeshComponent> staticMesh;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UHealthComponent> _healthComponent;
+	TObjectPtr<UHealthComponent> healthComponent;
 	UPROPERTY()
-	TObjectPtr<UEffectsComponent> _effectComponent;
+	TObjectPtr<UEffectsComponent> effectComponent;
 
 	UPROPERTY()
-	TObjectPtr<AWWPlayerController> _playerController;
+	TObjectPtr<AWWPlayerController> playerController;
 
-	FVector _spawnLocation;
-	FVector _lastValidPosition;
-	float _validUpdateTimer;
+	FVector spawnLocation;
+	FVector lastValidPosition;
+	float validUpdateTimer;
 
-	float _maxWalkSpeed;
+	float maxWalkSpeed;
 
-	bool _seek;
+	bool seek;
+
+private:
+	int _currentSpellIndex = 0;
 };

@@ -23,34 +23,34 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationPitch = false;
 
-	_camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
-	checkf(_camera, TEXT("Player Camera failed to initialise"));
-	_camera->SetupAttachment(RootComponent);
-	_camera->bUsePawnControlRotation = true;
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
+	checkf(camera, TEXT("Player Camera failed to initialise"));
+	camera->SetupAttachment(RootComponent);
+	camera->bUsePawnControlRotation = true;
 
-	_staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh Component"));
-	checkf(_staticMesh, TEXT("Player StaticMesh failed to initialise"));
-	_staticMesh->SetupAttachment(_camera);
+	staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh Component"));
+	checkf(staticMesh, TEXT("Player StaticMesh failed to initialise"));
+	staticMesh->SetupAttachment(camera);
 
-	_healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
-	checkf(_healthComponent, TEXT("Player HealthComponent failed to initialise"));
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	checkf(healthComponent, TEXT("Player HealthComponent failed to initialise"));
 
-	_effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
-	checkf(_effectComponent, TEXT("Player EffectsComponent failed to initialise"));
+	effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
+	checkf(effectComponent, TEXT("Player EffectsComponent failed to initialise"));
 
 }
 
 void APlayerCharacter::SetController(AWWPlayerController* controller)
 {
-	_playerController = controller;
+	playerController = controller;
 }
 
 bool APlayerCharacter::TakeDamage(int amount, FString source)
 {
-	_healthComponent->AdjustHealth(amount * -1);
+	healthComponent->AdjustHealth(amount * -1);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
 
-	bool isDead = (_healthComponent->GetHealth() <= 0);
+	bool isDead = (healthComponent->GetHealth() <= 0);
 
 	if (isDead)
 	{
@@ -62,18 +62,18 @@ bool APlayerCharacter::TakeDamage(int amount, FString source)
 
 void APlayerCharacter::Heal(int amount)
 {
-	_healthComponent->AdjustHealth(amount);
+	healthComponent->AdjustHealth(amount);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("%s: Healed %i health"), *GetName(), amount));
 }
 
 void APlayerCharacter::AdjustMaxHealth(int amount)
 {
-	_healthComponent->AdjustMaxHealth(amount);
+	healthComponent->AdjustMaxHealth(amount);
 }
 
 void APlayerCharacter::AdjustWalkSpeed(float percent)
 {
-	float absolute = _maxWalkSpeed * FMath::Abs(percent / 100);
+	float absolute = maxWalkSpeed * FMath::Abs(percent / 100);
 
 	if (percent >= 0)
 	{
@@ -87,52 +87,52 @@ void APlayerCharacter::AdjustWalkSpeed(float percent)
 
 void APlayerCharacter::Kill()
 {
-	_healthComponent->SetHealth(0.0f);
+	healthComponent->SetHealth(0.0f);
 	Respawn(true);
 }
 
 void APlayerCharacter::Respawn(bool isDead)
 {
-	_effectComponent->ClearEffects();
+	effectComponent->ClearEffects();
 
 	if (isDead == true)
 	{
-		_healthComponent->SetHealth(_healthComponent->GetMaxHealth());
-		SetActorLocation(_spawnLocation);
+		healthComponent->SetHealth(healthComponent->GetMaxHealth());
+		SetActorLocation(spawnLocation);
 	}
 	else
 	{
-		SetActorLocation(_lastValidPosition);
+		SetActorLocation(lastValidPosition);
 	}
 }
 
 void APlayerCharacter::AddEffect(UEffectData* effect)
 {
-	_effectComponent->CreateAndAddEffect(effect);
+	effectComponent->CreateAndAddEffect(effect);
 }
 
 const int APlayerCharacter::GetHealth(bool getPercent) noexcept
 {
 	if (getPercent == true)
 	{ 
-		return _healthComponent->GetHealthPercent();
+		return healthComponent->GetHealthPercent();
 	}
 
-	return _healthComponent->GetHealth();
+	return healthComponent->GetHealth();
 }
 const int APlayerCharacter::GetMaxHealth() noexcept
 {
-	return _healthComponent->GetMaxHealth();
+	return healthComponent->GetMaxHealth();
 }
 
 bool APlayerCharacter::HasEffect(FString effectName)
 {
-	return _effectComponent->Contains(effectName);
+	return effectComponent->Contains(effectName);
 }
 
 const FVector APlayerCharacter::GetSeekLocation() const noexcept
 {
-	if (_seek == false)
+	if (seek == false)
 	{
 		return FVector::ZeroVector;
 	}
@@ -163,7 +163,19 @@ void APlayerCharacter::ChangeSpell(int slot)
 
 void APlayerCharacter::ToggleSeek()
 {
-	_seek = !_seek;
+	seek = !seek;
+}
+
+void APlayerCharacter::CycleSpell()
+{
+	_currentSpellIndex += 1;
+
+	if (_currentSpellIndex > spellData.Num())
+	{
+		_currentSpellIndex = 1;
+	}
+
+	ChangeSpell(_currentSpellIndex);
 }
 
 
@@ -172,10 +184,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	_lastValidPosition = GetActorLocation();
-	_spawnLocation = _lastValidPosition;
+	lastValidPosition = GetActorLocation();
+	spawnLocation = lastValidPosition;
 
-	_maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 // Called every frame
@@ -183,14 +195,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	_validUpdateTimer += DeltaTime;
+	validUpdateTimer += DeltaTime;
 
-	if (_validUpdateTimer >= 3.0f)
+	if (validUpdateTimer >= 3.0f)
 	{
 		if (GetCharacterMovement()->IsFalling() == false)
 		{
-			_lastValidPosition = GetActorLocation();
-			_validUpdateTimer = 0.0f;
+			lastValidPosition = GetActorLocation();
+			validUpdateTimer = 0.0f;
 		}
 	}
 }
@@ -205,17 +217,17 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 #pragma region "Helpers"
 UCameraComponent* APlayerCharacter::GetCamera() const noexcept
 {
-	return _camera;
+	return camera;
 }
 
 float APlayerCharacter::GetHorizontalSensitivity() const noexcept
 {
-	return _horizontalSensitivity;
+	return horizontalSensitivity;
 }
 
 float APlayerCharacter::GetVerticalSensitivity() const noexcept
 {
-	return _verticalSensitivity;
+	return verticalSensitivity;
 }
 IDamageable* APlayerCharacter::GetDamageableAccess()
 {
@@ -235,10 +247,14 @@ const FVector APlayerCharacter::GetSpellOwnerLocation() noexcept
 }
 const FVector APlayerCharacter::GetSpellOwnerForward() noexcept
 {
-	return _camera->GetForwardVector();
+	return camera->GetForwardVector();
 }
 const FVector APlayerCharacter::GetCastStartLocation() noexcept
 {
 	return GetActorLocation() + (GetActorForwardVector() * 100) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+}
+const FVector APlayerCharacter::GetCastStartForward() noexcept
+{
+	return GetActorForwardVector();
 }
 #pragma endregion

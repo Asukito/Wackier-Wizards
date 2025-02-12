@@ -22,7 +22,7 @@ void UTrailAOEProjectileSpell::CastSpell()
 	projectile->InitTrail(spellData->trailEffect);
 	projectile->SetRange(spellData->range);
 
-	FVector unitDirection = spellOwner->GetSpellOwnerForward();
+	FVector unitDirection = spellOwner->GetCastStartForward();
 
 	projectile->SetIsActive(true);
 	projectile->ApplyForce(false, unitDirection, spellData->speed);
