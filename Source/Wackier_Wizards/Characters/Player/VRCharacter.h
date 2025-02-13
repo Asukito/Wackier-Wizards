@@ -4,24 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PlayerCharacter.h"
-#include "InputMappingContext.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedPlayerInput.h"
-#include "../../Interfaces/Effectable.h"
-#include "../../Interfaces/Damageable.h"
-#include "../../Interfaces/SpellCaster.h"
-#include "../../Interfaces/Health.h"
-#include "../../Spells/SpellType.h"
 #include "VRCharacter.generated.h"
-
-class UCameraComponent;
-class AWWPlayerController;
-class UStaticMeshComponent;
-class UHealthComponent;
-class USpellData;
-class USpellBase;
-class UEffectsComponent;
 
 UCLASS()
 class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
@@ -46,5 +29,5 @@ public:
 public:	
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

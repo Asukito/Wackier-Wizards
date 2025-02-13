@@ -2,21 +2,6 @@
 
 
 #include "VRCharacter.h"
-#include "InputMappingContext.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedPlayerInput.h"
-#include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "../../Components/HealthComponent.h"
-#include "WWPlayerController.h"
-#include "../../Spells/SpellBase.h"
-#include "../../Spells/SpellData.h"
-#include "../../Spells/SpellFactory.h"
-#include "../../Components/EffectsComponent.h"
-
 
 // Sets default values
 AVRCharacter::AVRCharacter() : APlayerCharacter()
@@ -31,7 +16,7 @@ AVRCharacter::AVRCharacter() : APlayerCharacter()
 }*/
 
 // Called to bind functionality to input
-void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+/*void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	// Get the player controller
@@ -50,7 +35,7 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	//PEI->BindAction(inputMove, ETriggerEvent::Triggered, this, &AVRCharacter::MovePlayer);
 	//PEI->BindAction(inputShootSpell, ETriggerEvent::Triggered, this, &AVRCharacter::ShootSpell);
 	//PEI->BindAction(inputChangeSpell, ETriggerEvent::Triggered, this, &AVRCharacter::ChangeSpell);
-}
+}*/
 
 /*void AVRCharacter::MovePlayer(const FInputActionValue& Value)
 {

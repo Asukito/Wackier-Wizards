@@ -6,9 +6,12 @@
 #include "../Interfaces/SpellCaster.h"
 #include "SpellData.h"
 
-void UProjectileSpell::CastSpell()
+bool UProjectileSpell::CastSpell()
 {
-	USpellBase::CastSpell();
+	if (USpellBase::CastSpell() == false)
+	{
+		return false;
+	}
 
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
@@ -25,6 +28,8 @@ void UProjectileSpell::CastSpell()
 
 	projectile->SetIsActive(true);
 	projectile->ApplyForce(spellData->useGravity, unitDirection, spellData->speed);
+
+	return true;
 }
 
 void UProjectileSpell::ProcessHit(AActor* hit, FVector projectileLocation)

@@ -15,6 +15,6 @@ class WACKIER_WIZARDS_API UProjectileSpell : public USpellBase
 	GENERATED_BODY()
 	
 public:
-	void CastSpell() override;
+	bool CastSpell() override;
 	virtual void ProcessHit(AActor* actor, FVector projectileLocation);
 };
