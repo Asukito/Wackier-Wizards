@@ -20,6 +20,7 @@ public:
 
 	void InitSpells();
 	void CastSpell();
+	UFUNCTION(BlueprintCallable)
 	void ChangeSpell(int slot);
 	virtual void CycleSpell();
 
