@@ -7,9 +7,12 @@
 #include "../Interfaces/SpellCaster.h"
 #include "NiagaraFunctionLibrary.h"
 
-void USelfSpell::CastSpell()
+bool USelfSpell::CastSpell()
 {
-	USpellBase::CastSpell();
+	if (USpellBase::CastSpell() == false)
+	{
+		return false;
+	}
 
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
@@ -19,4 +22,6 @@ void USelfSpell::CastSpell()
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->spellNiagara, owner->GetActorLocation(), FRotator::ZeroRotator);
+
+	return true;
 }

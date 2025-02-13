@@ -12,5 +12,5 @@ class WACKIER_WIZARDS_API UHitscanSpell : public USpellBase
 	GENERATED_BODY()
 	
 public:
-	void CastSpell() override;
+	bool CastSpell() override;
 };

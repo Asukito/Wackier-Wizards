@@ -3,15 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputMappingContext.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "PlayerCharacter.h"
 #include "VRCharacter.generated.h"
 
-
 UCLASS()
-class WACKIER_WIZARDS_API AVRCharacter : public ACharacter
+class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 {
 	GENERATED_BODY()
 
@@ -19,15 +15,19 @@ public:
 	// Sets default values for this character's properties
 	AVRCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	// Input mapping context for VRCharacter
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input Mapping")
+	//class UInputMappingContext* InputMappingContext;
+
+	const FVector GetCastStartForward() noexcept override;
+
+	//location of right hand to spawn spell
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
+	FVector rightHandLocation;
+
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

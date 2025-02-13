@@ -13,5 +13,5 @@ class WACKIER_WIZARDS_API UTrailAOEProjectileSpell : public UAOEProjectileSpell
 	GENERATED_BODY()
 	
 public:
-	void CastSpell() override;
+	bool CastSpell() override;
 };

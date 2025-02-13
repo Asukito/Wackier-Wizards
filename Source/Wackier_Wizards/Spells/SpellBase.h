@@ -17,8 +17,12 @@ class WACKIER_WIZARDS_API USpellBase : public UObject
 	
 public:
 	void Init(USpellData* data, ISpellCaster* owner);
-	virtual void CastSpell();
+	virtual bool CastSpell();
 
+	void Update(float deltaTime);
+
+	const FString GetSpellName();
+	bool IsOnCooldown();
 protected:
 	void HandleEffects(IEffectable* target);
 	void HandleInterfaceFunctions(AActor* actor);
@@ -28,4 +32,8 @@ protected:
 	TWeakObjectPtr<USpellData> spellData;
 	UPROPERTY()
 	TScriptInterface<ISpellCaster> spellOwner;
+
+private:
+	float _cooldown;
+	float _cooldownTimer;
 };

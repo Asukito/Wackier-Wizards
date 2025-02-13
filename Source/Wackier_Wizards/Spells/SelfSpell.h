@@ -12,5 +12,5 @@ class WACKIER_WIZARDS_API USelfSpell : public USpellBase
 	GENERATED_BODY()
 	
 public:
-	void CastSpell() override;
+	bool CastSpell() override;
 };

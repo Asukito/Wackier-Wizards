@@ -6,9 +6,12 @@
 #include "../Interfaces/SpellCaster.h"
 #include "SpellData.h"
 
-void UTrailAOEProjectileSpell::CastSpell()
+bool UTrailAOEProjectileSpell::CastSpell()
 {
-	USpellBase::CastSpell();
+	if (USpellBase::CastSpell() == false)
+	{
+		return false;
+	}
 
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
@@ -22,8 +25,10 @@ void UTrailAOEProjectileSpell::CastSpell()
 	projectile->InitTrail(spellData->trailEffect);
 	projectile->SetRange(spellData->range);
 
-	FVector unitDirection = spellOwner->GetSpellOwnerForward();
+	FVector unitDirection = spellOwner->GetCastStartForward();
 
 	projectile->SetIsActive(true);
 	projectile->ApplyForce(false, unitDirection, spellData->speed);
+
+	return true;
 }

@@ -7,8 +7,13 @@
 #include "SpellData.h"
 #include "NiagaraFunctionLibrary.h"
 
-void ULocalAOESpell::CastSpell()
+bool ULocalAOESpell::CastSpell()
 {
+	if (USpellBase::CastSpell() == false)
+	{
+		return false;
+	}
+
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> types;
@@ -31,4 +36,6 @@ void ULocalAOESpell::CastSpell()
 	}
 
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->spellNiagara, owner->GetActorLocation(), FRotator::ZeroRotator);
+
+	return true;
 }

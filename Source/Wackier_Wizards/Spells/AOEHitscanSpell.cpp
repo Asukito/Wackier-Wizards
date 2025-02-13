@@ -7,9 +7,12 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-void UAOEHitscanSpell::CastSpell()
+bool UAOEHitscanSpell::CastSpell()
 {
-	USpellBase::CastSpell();
+	if (USpellBase::CastSpell() == false)
+	{
+		return false;
+	}
 
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	FVector start = spellOwner->GetCastStartLocation();
@@ -25,7 +28,7 @@ void UAOEHitscanSpell::CastSpell()
 	{
 		if (hit.GetActor() == nullptr)
 		{
-			return;
+			return true;
 		}
 
 		TArray<TEnumAsByte<EObjectTypeQuery>> types;
@@ -47,4 +50,6 @@ void UAOEHitscanSpell::CastSpell()
 
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(owner->GetWorld(), spellData->collisionNiagara, hit.Location, FRotator::ZeroRotator);
 	}
+
+	return true;
 }

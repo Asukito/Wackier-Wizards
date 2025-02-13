@@ -12,11 +12,41 @@ void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {
 	spellData = data;
 	spellOwner = owner->_getUObject();
+	_cooldown = spellData->cooldown;
+	_cooldownTimer = 0.0f;
 }
 
-void USpellBase::CastSpell()
+bool USpellBase::CastSpell()
 {
+	if (_cooldownTimer > 0.0f)
+	{
+		return false;
+	}
+
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("Casting: %s"), *spellData->name));
+	_cooldownTimer = _cooldown;
+
+	return true;
+}
+
+void USpellBase::Update(float deltaTime)
+{
+	if (_cooldownTimer < 0)
+	{
+		return;
+	}
+
+	_cooldownTimer -= deltaTime;
+}
+
+const FString USpellBase::GetSpellName()
+{
+	return spellData->name;
+}
+
+bool USpellBase::IsOnCooldown()
+{
+	return (_cooldownTimer > 0.0f);
 }
 
 void USpellBase::HandleEffects(IEffectable* target)
