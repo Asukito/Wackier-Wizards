@@ -4,19 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "../BaseCharacter.h"
-#include "MeleeNPC.generated.h"
+#include "BaseEnemy.generated.h"
 
 class AWWAIController;
 class APlayerCharacter;
+class USeekerComponent;
 
 UCLASS()
-class WACKIER_WIZARDS_API AMeleeNPC : public ABaseCharacter
+class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AMeleeNPC();
+	ABaseEnemy();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -24,21 +25,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<APlayerCharacter> player;
 private:
-	void Attack(IDamageable* target);
-
-private:
+	UPROPERTY()
+	TObjectPtr<USeekerComponent> _seeker;
 	UPROPERTY()
 	TObjectPtr<AWWAIController> _controller;
 
-	UPROPERTY()
-	TWeakObjectPtr<APlayerCharacter> _player;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float _meleeRange;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	int _meleeDamage;
-	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	float _meleeDelay;
-	float _timer;
 };

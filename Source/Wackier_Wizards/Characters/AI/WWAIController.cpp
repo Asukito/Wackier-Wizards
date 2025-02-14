@@ -9,7 +9,7 @@ void AWWAIController::SetDestination(const FVector destination)
 	_currentDestination = destination;
 
 	FAIMoveRequest moveTo;
-	moveTo.SetAcceptanceRadius(10);
+	moveTo.SetAcceptanceRadius(50);
 	moveTo.SetGoalLocation(_currentDestination);
 
 	MoveTo(moveTo);

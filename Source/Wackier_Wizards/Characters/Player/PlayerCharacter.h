@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../SpellCasterCharacter.h"
+#include "../BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
 class AWWPlayerController;
+class USpellCasterComponent;
 
 UCLASS()
-class WACKIER_WIZARDS_API APlayerCharacter : public ASpellCasterCharacter
+class WACKIER_WIZARDS_API APlayerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -22,14 +23,20 @@ public:
 	void ToggleSeek();
 	void Respawn(bool isDead) override;
 
+	void CastSpell();
+	UFUNCTION(BlueprintCallable)
+	void ChangeSpell(int slot);
+	virtual void CycleSpell();
+
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;
 	float GetHorizontalSensitivity() const noexcept;
 	float GetVerticalSensitivity() const noexcept;
-	const FVector GetSpellOwnerForward() noexcept override;
-	const FVector GetCastStartLocation() noexcept override;
-	const FVector GetCastStartForward() noexcept override;
+	virtual const FVector GetCastStartLocation();
+	virtual const FVector GetCastStartForward();
 	const FVector GetSeekLocation() const noexcept;
+
+	void BindDelegates() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -46,6 +53,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UCameraComponent> camera;
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	TObjectPtr<USpellCasterComponent> spellCasterComponent;
 
 	UPROPERTY()
 	TObjectPtr<AWWPlayerController> playerController;
