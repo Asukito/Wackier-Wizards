@@ -34,6 +34,7 @@ public:
 	const virtual FVector GetSpellOwnerForward() noexcept override;
 	const virtual FVector GetCastStartLocation() noexcept override;
 	const virtual FVector GetCastStartForward() noexcept override;
+	USpellBase* GetActiveSpell() noexcept;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -44,6 +44,11 @@ const FString USpellBase::GetSpellName()
 	return spellData->name;
 }
 
+const float USpellBase::GetSpellRange()
+{
+	return spellData->range;
+}
+
 bool USpellBase::IsOnCooldown()
 {
 	return (_cooldownTimer > 0.0f);

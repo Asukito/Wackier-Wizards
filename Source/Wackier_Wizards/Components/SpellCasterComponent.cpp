@@ -26,8 +26,8 @@ void USpellCasterComponent::InitSpells()
 	{
 		_spells.Add(factory->CreateSpell(data, this));
 	}
-
-	factory->MarkAsGarbage();
+	
+	ChangeSpell(1);
 }
 
 void USpellCasterComponent::CastSpell()
@@ -121,5 +121,10 @@ const FVector USpellCasterComponent::GetCastStartForward() noexcept
 	}
 
 	return _castStartForward.Execute();
+}
+
+USpellBase* USpellCasterComponent::GetActiveSpell() noexcept
+{
+	return _spell;
 }
 

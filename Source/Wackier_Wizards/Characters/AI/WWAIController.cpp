@@ -39,5 +39,5 @@ FVector AWWAIController::GetCurrentDestination() const
 
 bool AWWAIController::HasPath() const
 {
-	return IsFollowingAPath();
+	return _currentDestination != FVector::ZeroVector;
 }

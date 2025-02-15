@@ -18,6 +18,12 @@ class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
 public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
+	void SetSeekTarget(AActor* target);
+	void ClearSeekTarget();
+	void SetDestination(FVector destination);
+	void ClearDestination();
+
+	bool HasPath();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -27,11 +33,11 @@ protected:
 
 protected:
 	UPROPERTY()
-	TWeakObjectPtr<APlayerCharacter> player;
+	TObjectPtr<APlayerCharacter> player;
+
 private:
 	UPROPERTY()
-	TObjectPtr<USeekerComponent> _seeker;
-	UPROPERTY()
 	TObjectPtr<AWWAIController> _controller;
-
+	UPROPERTY()
+	TObjectPtr<USeekerComponent> _seeker;
 };

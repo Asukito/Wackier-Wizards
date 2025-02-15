@@ -1,0 +1,93 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "SightSensorComponent.h"
+#include "../Characters/AI/GOAP/GOAP_Agent.h"
+
+// Sets default values for this component's properties
+USightSensorComponent::USightSensorComponent()
+{
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
+	PrimaryComponentTick.bCanEverTick = true;
+
+	// ...
+}
+
+void USightSensorComponent::Init(TObjectPtr<UGOAP_Agent> agent)
+{
+	_agent = agent;
+}
+
+void USightSensorComponent::SetTarget(TObjectPtr<AActor> target)
+{
+	_target = target;
+}
+
+bool USightSensorComponent::Scan()
+{
+	FVector dir = _target->GetActorLocation() - _agent->GetActorLocation();
+
+	if (dir.Length() > _distance)
+	{
+		return false;
+	}
+
+	dir.Normalize();
+
+	FVector forward = _agent->GetForwardVector();
+
+	if (forward.Dot(dir) < (1 - _fov))
+	{
+		return false;
+	}
+
+	FHitResult hit;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(_agent->GetOwner());
+
+	DrawDebugLine(GetWorld(), _agent->GetOwner()->GetActorLocation(), _target->GetActorLocation(), FColor::Green, false, 1.0f);
+
+	if (GetWorld()->LineTraceSingleByChannel(hit, _agent->GetOwner()->GetActorLocation(), _target->GetActorLocation(), ECC_Visibility, params))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Sight: %s"), hit.GetActor() ? *hit.GetActor()->GetName() : TEXT("Nothing")));
+
+		if (hit.GetActor() == nullptr || hit.GetActor() != _target)
+		{
+			return false;
+		}
+
+		return true;
+	};
+
+	return false;
+}
+
+
+// Called when the game starts
+void USightSensorComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	_timer = _scanInterval;
+}
+
+// Called every frame
+void USightSensorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (_target == nullptr)
+	{
+		return;
+	}
+
+	_timer += DeltaTime;
+
+	if (_timer >= _scanInterval)
+	{
+		_agent->SetHasLineOfSight(Scan());
+		_timer = 0;
+	}
+}
+
