@@ -46,11 +46,10 @@ bool USightSensorComponent::Scan()
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(_agent->GetOwner());
 
-	DrawDebugLine(GetWorld(), _agent->GetOwner()->GetActorLocation(), _target->GetActorLocation(), FColor::Green, false, 1.0f);
-
 	if (GetWorld()->LineTraceSingleByChannel(hit, _agent->GetOwner()->GetActorLocation(), _target->GetActorLocation(), ECC_Visibility, params))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Sight: %s"), hit.GetActor() ? *hit.GetActor()->GetName() : TEXT("Nothing")));
+		DrawDebugLine(GetWorld(), _agent->GetOwner()->GetActorLocation(), hit.GetActor()->GetActorLocation(), FColor::Green, false, 1.0f);
 
 		if (hit.GetActor() == nullptr || hit.GetActor() != _target)
 		{

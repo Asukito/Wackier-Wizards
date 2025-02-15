@@ -22,5 +22,5 @@ void UChaseStrategy::Stop()
 
 bool UChaseStrategy::Complete()
 {
-	return _agent->TargetIsInRange();
+	return (_agent->TargetIsInRange() || _agent->HasLineOfSight() == false);
 }

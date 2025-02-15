@@ -42,7 +42,6 @@ void UGOAP_Agent::Init()
 
 	_targetSensor->Init(_tooCloseRange, this);
 	_targetSensor->AttachTo(_owner->GetRootComponent());
-
 	_sightSensor->Init(this);
 	_distanceSensor->Init(_preferredDistance, this);
 
