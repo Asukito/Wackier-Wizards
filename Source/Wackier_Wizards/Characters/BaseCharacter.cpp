@@ -83,6 +83,13 @@ void ABaseCharacter::BeginPlay()
 	
 	spawnLocation = GetActorLocation();
 	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	BindDelegates();
+}
+
+void ABaseCharacter::BindDelegates()
+{
+	//Any BeginPlay delegate binding goes here
 }
 
 IDamageable* ABaseCharacter::GetDamageableAccess()

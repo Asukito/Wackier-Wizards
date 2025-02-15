@@ -6,9 +6,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "WWPlayerController.h"
+#include "../../Components/SpellCasterComponent.h"
+#include "GenericPlatform/GenericPlatformMisc.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : ASpellCasterCharacter()
+APlayerCharacter::APlayerCharacter() : ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,6 +23,9 @@ APlayerCharacter::APlayerCharacter() : ASpellCasterCharacter()
 	checkf(camera, TEXT("Player Camera failed to initialise"));
 	camera->SetupAttachment(RootComponent);
 	camera->bUsePawnControlRotation = true;
+
+	spellCasterComponent = CreateDefaultSubobject<USpellCasterComponent>(TEXT("SpellCaster Component"));
+	checkf(spellCasterComponent, TEXT("Player SpellCasterComponent failed to initialise"));
 }
 
 void APlayerCharacter::SetController(AWWPlayerController* controller)
@@ -39,6 +44,21 @@ void APlayerCharacter::Respawn(bool isDead)
 	SetActorLocation(lastValidPosition);
 }
 
+void APlayerCharacter::CastSpell()
+{
+	spellCasterComponent->CastSpell();
+}
+
+void APlayerCharacter::ChangeSpell(int slot)
+{
+	spellCasterComponent->ChangeSpell(slot);
+}
+
+void APlayerCharacter::CycleSpell()
+{
+	spellCasterComponent->CycleSpell();
+}
+
 const FVector APlayerCharacter::GetSeekLocation() const noexcept
 {
 	if (seek == false)
@@ -49,6 +69,14 @@ const FVector APlayerCharacter::GetSeekLocation() const noexcept
 	return GetActorLocation();
 }
 
+void APlayerCharacter::BindDelegates()
+{
+	ABaseCharacter::BindDelegates();
+
+	spellCasterComponent->BindCastStartForward([this]() { return GetCastStartForward(); });
+	spellCasterComponent->BindCastStartLocation([this]() { return GetCastStartLocation(); });
+}
+
 void APlayerCharacter::ToggleSeek()
 {
 	seek = !seek;
@@ -57,15 +85,16 @@ void APlayerCharacter::ToggleSeek()
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
-	ASpellCasterCharacter::BeginPlay();
+	ABaseCharacter::BeginPlay();
 
 	lastValidPosition = GetActorLocation();
+	spellCasterComponent->InitSpells();
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
-	ASpellCasterCharacter::Tick(DeltaTime);
+	ABaseCharacter::Tick(DeltaTime);
 
 	validUpdateTimer += DeltaTime;
 
@@ -92,15 +121,11 @@ float APlayerCharacter::GetVerticalSensitivity() const noexcept
 {
 	return verticalSensitivity;
 }
-const FVector APlayerCharacter::GetSpellOwnerForward() noexcept
+const FVector APlayerCharacter::GetCastStartLocation()
 {
-	return camera->GetForwardVector();
+	return GetActorLocation() + (GetActorForwardVector()) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
-const FVector APlayerCharacter::GetCastStartLocation() noexcept
-{
-	return GetActorLocation() + (GetActorForwardVector() * 100) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
-}
-const FVector APlayerCharacter::GetCastStartForward() noexcept
+const FVector APlayerCharacter::GetCastStartForward()
 {
 	return camera->GetForwardVector();
 }

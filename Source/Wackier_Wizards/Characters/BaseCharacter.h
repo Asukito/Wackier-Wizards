@@ -35,9 +35,11 @@ public:
 	const int GetHealth(bool getPercent) noexcept override;
 	const int GetMaxHealth() noexcept override;
 	bool HasEffect(FString effectName) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void BindDelegates();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

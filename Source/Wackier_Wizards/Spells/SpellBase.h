@@ -22,6 +22,8 @@ public:
 	void Update(float deltaTime);
 
 	const FString GetSpellName();
+	const float GetSpellRange();
+
 	bool IsOnCooldown();
 protected:
 	void HandleEffects(IEffectable* target);

@@ -3,26 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter.h"
+#include "Components/ActorComponent.h"
 #include "../Interfaces/SpellCaster.h"
-#include "SpellCasterCharacter.generated.h"
+#include "SpellCasterComponent.generated.h"
 
 class USpellBase;
 class USpellData;
 
+DECLARE_DELEGATE_RetVal(const FVector, FGetCastStart);
+DECLARE_DELEGATE_RetVal(const FVector, FGetCastForward);
 UCLASS()
-class WACKIER_WIZARDS_API ASpellCasterCharacter : public ABaseCharacter, public ISpellCaster
+class WACKIER_WIZARDS_API USpellCasterComponent : public UActorComponent, public ISpellCaster
 {
 	GENERATED_BODY()
 	
 public:
-	ASpellCasterCharacter();
+	USpellCasterComponent();
 
 	void InitSpells();
 	void CastSpell();
-	UFUNCTION(BlueprintCallable)
 	void ChangeSpell(int slot);
 	virtual void CycleSpell();
+
+	void BindCastStartLocation(TFunction<const FVector()> func);
+	void BindCastStartForward(TFunction<const FVector()> func);
 
 	//---- HELPERS ----
 	AActor* GetSpellOwner() noexcept override;
@@ -30,11 +34,10 @@ public:
 	const virtual FVector GetSpellOwnerForward() noexcept override;
 	const virtual FVector GetCastStartLocation() noexcept override;
 	const virtual FVector GetCastStartForward() noexcept override;
+	USpellBase* GetActiveSpell() noexcept;
 
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-protected:
-	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Test")
@@ -47,4 +50,7 @@ private:
 	TArray<TObjectPtr<USpellBase>> _spells;
 
 	int _currentSpellIndex = 0;
+
+	FGetCastStart _castStartLocation;
+	FGetCastForward _castStartForward;
 };

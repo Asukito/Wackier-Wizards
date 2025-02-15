@@ -15,19 +15,9 @@ public:
 	// Sets default values for this character's properties
 	AVRCharacter();
 
-	// Input mapping context for VRCharacter
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input Mapping")
-	//class UInputMappingContext* InputMappingContext;
-
-	const FVector GetCastStartForward() noexcept override;
+	const FVector GetCastStartForward() override;
 
 	//location of right hand to spawn spell
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
 	FVector rightHandLocation;
-
-
-public:	
-
-	// Called to bind functionality to input
-	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
