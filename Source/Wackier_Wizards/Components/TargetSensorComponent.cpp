@@ -31,7 +31,7 @@ void UTargetSensorComponent::SetTarget(TObjectPtr<AActor> target)
 
 void UTargetSensorComponent::AttachTo(USceneComponent* component)
 {
-	_sensor->SetupAttachment(component);
+	_sensor->AttachToComponent(component, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 void UTargetSensorComponent::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

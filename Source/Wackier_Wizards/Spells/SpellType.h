@@ -10,10 +10,6 @@ UENUM(BlueprintType)
 enum class SpellType : uint8
 {
 	HITSCAN UMETA(DisplayName = "Hitscan"),
-	HITSCAN_AOE UMETA(DisplayName = "Hitscan AOE"),
 	PROJECTILE UMETA(DisplayName = "Projectile"),
-	PROJECTILE_AOE UMETA(DisplayName = "Projectile AOE"),
-	TRAIL_PROJECTILE_AOE UMETA(DisplayName = "Trail Projectile AOE"),
-	LOCAL_AOE UMETA(DisplayName = "Local AOE"),
 	SELF UMETA(DisplayName = "Self")
 };

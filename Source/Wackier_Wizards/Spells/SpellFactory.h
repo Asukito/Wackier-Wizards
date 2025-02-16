@@ -9,6 +9,7 @@
 class USpellBase;
 class USpellData;
 class ISpellCaster;
+class ISpell;
 
 UCLASS()
 class WACKIER_WIZARDS_API USpellFactory : public UObject
@@ -16,5 +17,5 @@ class WACKIER_WIZARDS_API USpellFactory : public UObject
 	GENERATED_BODY()
 
 public:
-	USpellBase* CreateSpell(USpellData* spellData, ISpellCaster* owner);
+	ISpell* CreateSpell(USpellData* spellData, ISpellCaster* owner);
 };

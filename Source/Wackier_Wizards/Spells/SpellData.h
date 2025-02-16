@@ -28,25 +28,31 @@ public:
 	int potency = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	SpellType type = SpellType::HITSCAN;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TObjectPtr<UEffectData>, float> effects;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> spellNiagara;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE || type == SpellType::HITSCAN || type == SpellType::TRAIL_PROJECTILE_AOE", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	SpellType type = SpellType::HITSCAN;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
 	float range = 0.0f;;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::LOCAL_AOE || type == SpellType::TRAIL_PROJECTILE_AOE", EditConditionHides))
-	float aoeRange = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE || type ==SpellType::TRAIL_PROJECTILE_AOE", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
 	float speed;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
 	bool useGravity;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type ==	SpellType::TRAIL_PROJECTILE_AOE", EditConditionHides))
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isAOE;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
+	float aoeRange = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type ==	SpellType::PROJECTILE", EditConditionHides))
+	bool hasTrail;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "hasTrail == true", EditConditionHides))
 	TObjectPtr<UEffectData> trailEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::HITSCAN_AOE || type == SpellType::PROJECTILE_AOE || type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
 	TObjectPtr<UNiagaraSystem> collisionNiagara;
 };
