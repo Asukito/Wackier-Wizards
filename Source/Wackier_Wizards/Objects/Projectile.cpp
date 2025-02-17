@@ -5,8 +5,6 @@
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraEmitter.h"
-#include "../Spells/ProjectileSpell.h"
 #include "../Objects/AOEActor.h"
 #include "Engine/StaticMesh.h"
 #include "../Effects/EffectData.h"
@@ -31,7 +29,7 @@ AProjectile::AProjectile()
 	_staticMesh->Mobility = EComponentMobility::Movable;
 	_staticMesh->CanCharacterStepUpOn = ECB_No;
 	_staticMesh->SetSimulatePhysics(true);
-	_staticMesh->SetVisibility(true);
+	_staticMesh->SetVisibility(false);
 	_staticMesh->SetCollisionProfileName(FName("Projectile"));
 	SetRootComponent(_staticMesh);
 
@@ -49,18 +47,14 @@ void AProjectile::InitTrail(UEffectData* trailEffect)
 	_hasTrail = true;
 }
 
-void AProjectile::InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara)
+void AProjectile::InitNiagara(UNiagaraSystem* niagara)
 {
-	if (collisionNiagara != nullptr)
-	{
-		_collisionEffect = collisionNiagara;
-	}
 	_niagara->SetAsset(niagara);
 	_niagara->Activate();
 }
-void AProjectile::AddOwnerSpell(UProjectileSpell* spell)
+void AProjectile::AddOwnerSpell(ISpell* spell)
 {
-	_spell = spell;
+	_spell = spell->_getUObject();
 }
 void AProjectile::AddIgnoreActor(AActor* actor)
 {
@@ -83,10 +77,11 @@ void AProjectile::ApplyForce(bool gravity, FVector unitDirection, float speed)
 {
 	_startPos = GetActorLocation();
 
-	_staticMesh->SetRelativeScale3D(FVector(0.05f));
+	_staticMesh->SetRelativeScale3D(FVector(1.0f));
 	_staticMesh->SetEnableGravity(gravity);
 	FVector force = unitDirection * speed;
 	_staticMesh->SetPhysicsLinearVelocity(force);
+	_niagara->SetRelativeRotation(unitDirection.Rotation());
 }
 UStaticMeshComponent* AProjectile::GetStaticMesh()
 {
@@ -97,11 +92,6 @@ void AProjectile::BeginInteractOverlap(UPrimitiveComponent* OverlappedComponent,
 	if(_isActive == false || _ignore.Contains(OtherActor) || OtherActor->Tags.Contains("Effect"))
 	{
 		return;
-	}
-
-	if (_collisionEffect != nullptr)
-	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), _collisionEffect, GetActorLocation(), FRotator::ZeroRotator);
 	}
 
 	if (_spell != nullptr)

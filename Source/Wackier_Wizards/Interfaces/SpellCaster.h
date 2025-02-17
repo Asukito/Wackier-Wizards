@@ -25,4 +25,6 @@ public:
 	const virtual FVector GetSpellOwnerLocation() noexcept { return FVector::Zero(); };
 	const virtual FVector GetSpellOwnerForward() noexcept { return FVector::Zero(); };
 	const virtual FVector GetCastStartLocation() noexcept { return FVector::Zero(); };
+	const virtual FVector GetCastStartForward() noexcept { return FVector::Zero(); };
+
 };
