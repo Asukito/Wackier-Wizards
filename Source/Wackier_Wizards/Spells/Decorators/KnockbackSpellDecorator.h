@@ -4,37 +4,36 @@
 
 #include "CoreMinimal.h"
 #include "SpellDecorator.h"
-#include "AOESpellDecorator.generated.h"
+#include "KnockbackSpellDecorator.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class WACKIER_WIZARDS_API UAOESpellDecorator : public USpellDecorator
+class WACKIER_WIZARDS_API UKnockbackSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 	
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
-		TWeakObjectPtr<UAOESpellDecorator> decorator;
+		TWeakObjectPtr<UKnockbackSpellDecorator> decorator;
 
 	public:
 
 		Builder(ISpell* data)
 		{
-			decorator = NewObject<UAOESpellDecorator>();
+			decorator = NewObject<UKnockbackSpellDecorator>();
 			decorator->Decorate(data);
 			data->SetOwnerSpell(decorator.Get());
 		}
-		ISpell* Build()
+		UKnockbackSpellDecorator* Build()
 		{
 			return decorator.Get();
 		}
 	};
 
-	virtual bool CastSpell() override;
-	void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location) override;
 
 	virtual USpellBase* GetBaseSpell() override;
 	virtual ISpell* GetOwnerSpell() override;

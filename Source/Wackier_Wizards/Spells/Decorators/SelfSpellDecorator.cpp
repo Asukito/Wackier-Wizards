@@ -39,5 +39,15 @@ void USelfSpellDecorator::ProcessHit(AActor* hit, FVector location)
 
 USpellBase* USelfSpellDecorator::GetBaseSpell()
 {
-	return nullptr;
+	return spell->GetBaseSpell();
+}
+
+ISpell* USelfSpellDecorator::GetOwnerSpell()
+{
+	if (ownerSpell == nullptr)
+	{
+		return nullptr;
+	}
+
+	return ownerSpell.GetInterface();
 }

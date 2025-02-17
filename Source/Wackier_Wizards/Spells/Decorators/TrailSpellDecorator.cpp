@@ -23,3 +23,13 @@ USpellBase* UTrailSpellDecorator::GetBaseSpell()
 	return spell->GetBaseSpell();
 }
 
+ISpell* UTrailSpellDecorator::GetOwnerSpell()
+{
+	if (ownerSpell == nullptr)
+	{
+		return nullptr;
+	}
+
+	return ownerSpell.GetInterface();
+}
+

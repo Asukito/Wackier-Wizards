@@ -32,7 +32,14 @@ bool USpellBase::CastSpell()
 
 void USpellBase::ProcessHit(AActor* hit, FVector location)
 {
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->collisionNiagara, location, FRotator::ZeroRotator);
+	if (spellData->type != SpellType::SELF)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->collisionNiagara, location, FRotator::ZeroRotator);
+	}
+	else
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, location, FRotator::ZeroRotator);
+	}
 
 	if (hit != nullptr)
 	{

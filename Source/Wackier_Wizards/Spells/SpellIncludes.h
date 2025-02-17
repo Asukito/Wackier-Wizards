@@ -9,3 +9,5 @@
 #include "Decorators/TrailSpellDecorator.h"
 #include "Decorators/HitscanSpellDecorator.h"
 #include "Decorators/SelfSpellDecorator.h"
+#include "Decorators/BeamSpellDecorator.h"
+#include "Decorators/KnockbackSpellDecorator.h"

@@ -11,5 +11,6 @@ enum class SpellType : uint8
 {
 	HITSCAN UMETA(DisplayName = "Hitscan"),
 	PROJECTILE UMETA(DisplayName = "Projectile"),
+	BEAM UMETA(DisplayName = "Beam"),
 	SELF UMETA(DisplayName = "Self")
 };

@@ -46,3 +46,13 @@ USpellBase* UAOESpellDecorator::GetBaseSpell()
 {
 	return spell->GetBaseSpell();
 }
+
+ISpell* UAOESpellDecorator::GetOwnerSpell()
+{
+	if (ownerSpell == nullptr)
+	{
+		return nullptr;
+	}
+
+	return ownerSpell.GetInterface();
+}

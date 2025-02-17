@@ -1,25 +1,35 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HitscanSpellDecorator.h"
+#include "BeamSpellDecorator.h"
 #include "../../Interfaces/SpellCaster.h"
 #include "../../Spells/SpellData.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "../SpellBase.h"
 
-bool UHitscanSpellDecorator::CastSpell()
+bool UBeamSpellDecorator::CastSpell()
 {
 	if (spell->CastSpell() == false)
 	{
 		return false;
 	}
 
+	_timer = 0.2f;
+
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	FVector start = spellOwner->GetCastStartLocation();
 	FVector end = ((spellOwner->GetCastStartForward() * spellData->range) + start);
 
-	UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
+	if (_beam == nullptr)
+	{
+		_beam = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
+	}
+	else
+	{
+		_beam->SetWorldLocation(start);
+		_beam->SetWorldRotation(spellOwner->GetCastStartForward().Rotation());
+	}
 
 	FHitResult hit;
 	FCollisionQueryParams params;
@@ -28,30 +38,43 @@ bool UHitscanSpellDecorator::CastSpell()
 	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
 	{
 		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
-		vfx->SetVariableVec3(FName("TraceEnd"), hit.Location);
+		_beam->SetVariableVec3(FName("TraceEnd"), hit.Location);
 
-		ProcessHit(hit.GetActor(), hit.Location);
+		if (ownerSpell != nullptr)
+		{
+			ownerSpell->ProcessHit(hit.GetActor(), hit.Location);
+		}
+		else
+		{
+			ProcessHit(hit.GetActor(), hit.Location);
+		}
 	}
 	else
 	{
-		vfx->SetVectorParameter(FName("TraceEnd"), end);
+		_beam->SetVectorParameter(FName("TraceEnd"), end);
 		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
 	}
 
 	return true;
 }
 
-void UHitscanSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UBeamSpellDecorator::Update(float deltaTime)
 {
-	spell->ProcessHit(hit, location);
+	_timer -= deltaTime;
+
+	if (_timer < 0.0f && _beam != nullptr)
+	{
+		_beam->DestroyComponent();
+		_beam = nullptr;
+	}
 }
 
-USpellBase* UHitscanSpellDecorator::GetBaseSpell()
+USpellBase* UBeamSpellDecorator::GetBaseSpell()
 {
-	return Cast<USpellBase>(spell.GetObject());
+	return spell->GetBaseSpell();
 }
 
-ISpell* UHitscanSpellDecorator::GetOwnerSpell()
+ISpell* UBeamSpellDecorator::GetOwnerSpell()
 {
 	if (ownerSpell == nullptr)
 	{

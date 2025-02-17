@@ -31,6 +31,7 @@ public:
 
 	virtual void SetOwnerSpell(ISpell* owner) {};
 	virtual class USpellBase* GetBaseSpell() { return nullptr; };
+	virtual ISpell* GetOwnerSpell() { return nullptr; };
 
 	virtual const FString GetSpellName() { return TEXT(" "); };
 	virtual const float GetSpellRange() { return 0.0f; }

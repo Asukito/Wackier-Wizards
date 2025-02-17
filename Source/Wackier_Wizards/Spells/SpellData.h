@@ -17,42 +17,50 @@ class WACKIER_WIZARDS_API USpellData : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+	//---- ALL TYPES ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString name = " ";
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float cooldown = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float duration = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
-	int potency = 0;
-
+	int manaCost = 0.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TObjectPtr<UEffectData>, float> effects;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> spellNiagara;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SpellType type = SpellType::HITSCAN;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
-	float range = 0.0f;;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
-	float speed;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
-	bool useGravity;
-
+	//AOE
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isAOE;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
 	float aoeRange = 0.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
+	int aoeDamage = 0.0f;
 
+	///---- NON-BEAM ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::BEAM", EditConditionHides))
+	float cooldown = 0.0f;
+
+	//---- NON-SELF ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
+	int potency = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
+	float range = 0.0f;;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
+	TObjectPtr<UNiagaraSystem> collisionNiagara;
+	//Knockback
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
+	bool applyKnockback;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyKnockback == true", EditConditionHides))
+	float knockbackStrength = 0.0f;
+
+	//---- PROJECTILE ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
+	float speed;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
+	bool useGravity;
+	//Trail
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type ==	SpellType::PROJECTILE", EditConditionHides))
 	bool hasTrail;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "hasTrail == true", EditConditionHides))
 	TObjectPtr<UEffectData> trailEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || type == SpellType::HITSCAN", EditConditionHides))
-	TObjectPtr<UNiagaraSystem> collisionNiagara;
 };

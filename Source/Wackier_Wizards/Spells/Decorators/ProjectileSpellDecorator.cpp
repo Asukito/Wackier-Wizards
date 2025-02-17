@@ -21,7 +21,7 @@ bool UProjectileSpellDecorator::CastSpell()
 
 	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
 	projectile->AddIgnoreActor(owner);
-
+	
 	if (ownerSpell != nullptr)
 	{
 		projectile->AddOwnerSpell(ownerSpell.GetInterface());
@@ -52,4 +52,14 @@ void UProjectileSpellDecorator::ProcessHit(AActor* hit, FVector location)
 USpellBase* UProjectileSpellDecorator::GetBaseSpell()
 {
 	return spell->GetBaseSpell();
+}
+
+ISpell* UProjectileSpellDecorator::GetOwnerSpell()
+{
+	if (ownerSpell == nullptr)
+	{
+		return nullptr;
+	}
+
+	return ownerSpell.GetInterface();
 }

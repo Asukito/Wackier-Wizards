@@ -42,4 +42,8 @@ protected:
 	TObjectPtr<USpellData> spellData;
 	UPROPERTY()
 	TScriptInterface<ISpellCaster> spellOwner;
+
+	UPROPERTY()
+	TObjectPtr<AActor> spellHit;
+	FVector spellHitLocation;
 };

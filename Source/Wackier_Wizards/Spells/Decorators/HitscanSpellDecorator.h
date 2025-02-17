@@ -6,9 +6,8 @@
 #include "SpellDecorator.h"
 #include "HitscanSpellDecorator.generated.h"
 
-/**
- * 
- */
+class UNiagaraComponent;
+
 UCLASS()
 class WACKIER_WIZARDS_API UHitscanSpellDecorator : public USpellDecorator
 {
@@ -37,4 +36,5 @@ public:
 	virtual void ProcessHit(AActor* hit, FVector location) override;
 
 	virtual USpellBase* GetBaseSpell() override;
+	virtual ISpell* GetOwnerSpell() override;
 };

@@ -4,26 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "SpellDecorator.h"
-#include "AOESpellDecorator.generated.h"
+#include "BeamSpellDecorator.generated.h"
 
-/**
- * 
- */
+class UNiagaraComponent;
+
 UCLASS()
-class WACKIER_WIZARDS_API UAOESpellDecorator : public USpellDecorator
+class WACKIER_WIZARDS_API UBeamSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
-	
+
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
-		TWeakObjectPtr<UAOESpellDecorator> decorator;
+		TWeakObjectPtr<UBeamSpellDecorator> decorator;
 
 	public:
 
 		Builder(ISpell* data)
 		{
-			decorator = NewObject<UAOESpellDecorator>();
+			decorator = NewObject<UBeamSpellDecorator>();
 			decorator->Decorate(data);
 			data->SetOwnerSpell(decorator.Get());
 		}
@@ -34,8 +33,13 @@ public:
 	};
 
 	virtual bool CastSpell() override;
-	void ProcessHit(AActor* hit, FVector location) override;
+
+	virtual void Update(float deltaTime) override;
 
 	virtual USpellBase* GetBaseSpell() override;
 	virtual ISpell* GetOwnerSpell() override;
+private:
+	TObjectPtr<UNiagaraComponent> _beam;
+
+	float _timer;
 };

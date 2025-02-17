@@ -13,17 +13,18 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	switch (spellData->type)
 	{
 		case SpellType::PROJECTILE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 			spell = UProjectileSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
 		case SpellType::HITSCAN:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 			spell = UHitscanSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
+		case SpellType::BEAM:
+			spell = UBeamSpellDecorator::Builder(spellBase).Build()->_getUObject();
+
+			break;
 		case SpellType::SELF:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
@@ -34,17 +35,22 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 		return nullptr;
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+
 	TScriptInterface<ISpell> toReturn = spell;
+
 
 	if (spellData->isAOE == true)
 	{
-		spell = UAOESpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
-		toReturn = spell;
+		toReturn = UAOESpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
 	}
 	if (spellData->type == SpellType::PROJECTILE && spellData->hasTrail == true)
 	{
-		spell = UTrailSpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
-		toReturn = spell;
+		toReturn = UTrailSpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
+	}
+	if (spellData->type != SpellType::SELF && spellData->applyKnockback == true)
+	{
+		toReturn = UKnockbackSpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
 	}
 
 	return toReturn.GetInterface();
