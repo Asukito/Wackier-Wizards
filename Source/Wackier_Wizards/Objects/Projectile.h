@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interfaces/Spell.h"
 #include "Projectile.generated.h"
 
 class UStaticMeshComponent;
@@ -23,8 +24,8 @@ public:
 	AProjectile();
 
 	void InitTrail(UEffectData* trialEffect);
-	void InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara = nullptr);
-	void AddOwnerSpell(UProjectileSpell* spell);
+	void InitNiagara(UNiagaraSystem* niagara);
+	void AddOwnerSpell(ISpell* spell);
 	void AddIgnoreActor(AActor* actor);
 	void SetIsActive(bool isactive);
 	void SetRange(float range);
@@ -54,7 +55,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UNiagaraSystem> _collisionEffect;
 	UPROPERTY()
-	TObjectPtr<UProjectileSpell> _spell;
+	TScriptInterface<ISpell> _spell;
 
 	TArray<TWeakObjectPtr<AActor>> _ignore;
 

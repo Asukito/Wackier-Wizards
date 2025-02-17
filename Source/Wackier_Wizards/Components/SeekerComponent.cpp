@@ -22,7 +22,7 @@ void USeekerComponent::SetSeekTarget(AActor* target)
 void USeekerComponent::ClearSeekTarget()
 {
 	_controller->ClearDestination();
-	_target.Reset();
+	_target = nullptr;
 }
 
 void USeekerComponent::SetController(AWWAIController* controller)
@@ -40,7 +40,7 @@ void USeekerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (_isActive == false || _controller.IsValid() == false || _target.IsValid() == false)
+	if (_isActive == false || _controller.IsValid() == false || _target == nullptr)
 	{
 		return;
 	}

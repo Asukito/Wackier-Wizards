@@ -9,9 +9,11 @@
 
 class USpellBase;
 class USpellData;
+class ISpell;
 
 DECLARE_DELEGATE_RetVal(const FVector, FGetCastStart);
 DECLARE_DELEGATE_RetVal(const FVector, FGetCastForward);
+
 UCLASS()
 class WACKIER_WIZARDS_API USpellCasterComponent : public UActorComponent, public ISpellCaster
 {
@@ -34,6 +36,7 @@ public:
 	const virtual FVector GetSpellOwnerForward() noexcept override;
 	const virtual FVector GetCastStartLocation() noexcept override;
 	const virtual FVector GetCastStartForward() noexcept override;
+	ISpell* GetActiveSpell() noexcept;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -43,10 +46,10 @@ private:
 	TArray<TObjectPtr<USpellData>> _spellData;
 
 	UPROPERTY()
-	TObjectPtr<USpellBase> _spell;
+	TScriptInterface<ISpell> _spell;
 
 	UPROPERTY()
-	TArray<TObjectPtr<USpellBase>> _spells;
+	TArray<TScriptInterface<ISpell>> _spells;
 
 	int _currentSpellIndex = 0;
 

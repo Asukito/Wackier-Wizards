@@ -27,7 +27,7 @@ public:
 
 private:
 	UPROPERTY()
-	TWeakObjectPtr<AActor> _target;
+	TObjectPtr<AActor> _target;
 	UPROPERTY()
 	TWeakObjectPtr<AWWAIController> _controller;
 

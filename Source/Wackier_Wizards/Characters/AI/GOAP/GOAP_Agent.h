@@ -11,6 +11,12 @@ class UGOAP_Goal;
 class UGOAP_Planner;
 class UGOAP_Action;
 class UGOAP_Plan;
+class UDistanceSensorComponent;
+class UTargetSensorComponent;
+class USightSensorComponent;
+class ARangedEnemy;
+class APlayerCharacter;
+class ISpell;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UGOAP_Agent : public UActorComponent
@@ -21,6 +27,7 @@ public:
 	// Sets default values for this component's properties
 	UGOAP_Agent();
 
+	void ConstructorInit();
 	void Init();
 
 	//---- GOAP ----
@@ -32,14 +39,23 @@ public:
 	void SetPauseAgent(bool val);
 	void TogglePauseAgent();
 	void SetDestination(FVector destination);
+	void SetHasLineOfSight(bool val);
+	void SetIsTargetInRange(bool val);
+	void SetIsTargetTooClose(bool val);
+	void SetSeekPlayer(bool val);
+	void Attack();
+	void SetPlayer(APlayerCharacter* player);
 
 	//---- HELPERS ----
-	USkeletalMeshComponent* GetMesh();
 	FVector GetCurrentDestination() const;
 	FVector GetActorLocation() const;
 	FVector GetForwardVector() const;
-
+	bool HasLineOfSight() const;
+	bool TargetIsInRange() const;
+	bool TargetIsTooClose() const;
 	bool HasPath() const;
+	APlayerCharacter* GetPlayer() const;
+	AActor* GetPlayerActor() const;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -74,10 +90,29 @@ private:
 	UPROPERTY()
 	TObjectPtr<UGOAP_Goal> _lastGoal;
 
-	//TWeakObjectPtr<ANPC_Base> _owner;
+	UPROPERTY()
+	TObjectPtr<ARangedEnemy> _owner;
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> _player;
+	UPROPERTY()
+	TScriptInterface<ISpell> _spell;
+	float _spellRange;
 
 	int _planFailCounter;
 	bool _isPaused;
 
-	float _timer;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDistanceSensorComponent> _distanceSensor;
+	UPROPERTY(EditDefaultsOnly)
+	float _preferredDistance;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UTargetSensorComponent> _targetSensor;
+	UPROPERTY(EditDefaultsOnly)
+	float _tooCloseRange;
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USightSensorComponent> _sightSensor;
+
+	bool _hasLineOfSight;
+	bool _isTargetInRange;
+	bool _isTargetTooClose;
 };

@@ -17,6 +17,29 @@ ABaseEnemy::ABaseEnemy() : ABaseCharacter()
 	checkf(_seeker, TEXT("Base Enemy SeekerComponent failed to initialise"));
 }
 
+void ABaseEnemy::SetSeekTarget(AActor* target)
+{
+	_seeker->SetSeekTarget(target);
+}
+
+void ABaseEnemy::ClearSeekTarget()
+{
+	_seeker->ClearSeekTarget();
+}
+
+void ABaseEnemy::SetDestination(FVector destination)
+{
+}
+
+void ABaseEnemy::ClearDestination()
+{
+}
+
+bool ABaseEnemy::HasPath()
+{
+	return _controller->HasPath();
+}
+
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {
@@ -26,17 +49,11 @@ void ABaseEnemy::BeginPlay()
 	player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	_seeker->SetController(_controller);
-	_seeker->SetSeekTarget(player.Get());
 	_seeker->SetIsActive(true);
 }
 // Called every frame
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (player.IsValid() == false)
-	{
-		return;
-	}
 }
 

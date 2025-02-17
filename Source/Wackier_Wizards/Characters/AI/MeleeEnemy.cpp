@@ -22,13 +22,20 @@ void AMeleeEnemy::Attack(IDamageable* target)
 void AMeleeEnemy::BeginPlay()
 {
 	ABaseEnemy::BeginPlay();
+
+	if (player == nullptr)
+	{
+		return;
+	}
+
+	SetSeekTarget(player.Get());
 }
 
 void AMeleeEnemy::Tick(float DeltaTime)
 {
 	ABaseEnemy::Tick(DeltaTime);
 
-	if (player.IsValid() == false)
+	if (player == nullptr)
 	{
 		return;
 	}
