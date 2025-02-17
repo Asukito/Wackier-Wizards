@@ -35,9 +35,6 @@ public:
 	virtual bool CastSpell() override;
 
 	virtual void Update(float deltaTime) override;
-
-	virtual USpellBase* GetBaseSpell() override;
-	virtual ISpell* GetOwnerSpell() override;
 private:
 	TObjectPtr<UNiagaraComponent> _beam;
 

@@ -14,8 +14,6 @@ bool UAOESpellDecorator::CastSpell()
 
 void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
 {
-	spell->ProcessHit(hit, location);
-
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> types;
@@ -37,22 +35,7 @@ void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
 	{
 		for (TObjectPtr<AActor> a : targets)
 		{
-			HandleInterfaceFunctions(a);
+			spell->ProcessHit(a, location);
 		}
 	}
-}
-
-USpellBase* UAOESpellDecorator::GetBaseSpell()
-{
-	return spell->GetBaseSpell();
-}
-
-ISpell* UAOESpellDecorator::GetOwnerSpell()
-{
-	if (ownerSpell == nullptr)
-	{
-		return nullptr;
-	}
-
-	return ownerSpell.GetInterface();
 }

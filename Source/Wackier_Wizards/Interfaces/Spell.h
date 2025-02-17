@@ -13,9 +13,11 @@ class USpell : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
+class USpellData;
+class ISpellCaster;
+class USpellBase;
+class IEffectable;
+
 class WACKIER_WIZARDS_API ISpell
 {
 	GENERATED_BODY()
@@ -23,15 +25,16 @@ class WACKIER_WIZARDS_API ISpell
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void Init(class USpellData* data,  class ISpellCaster* owner) {};
+	virtual void Init(USpellData* data, ISpellCaster* owner) {};
 	virtual bool CastSpell() { return false; };
 
 	virtual void Update(float deltaTime) {};
 	virtual void ProcessHit(AActor* hit, FVector location) {};
 
 	virtual void SetOwnerSpell(ISpell* owner) {};
-	virtual class USpellBase* GetBaseSpell() { return nullptr; };
-	virtual ISpell* GetOwnerSpell() { return nullptr; };
+
+	virtual USpellBase* GetBaseSpell() { return nullptr; };
+	virtual ISpell* GetDecorator() { return nullptr; };
 
 	virtual const FString GetSpellName() { return TEXT(" "); };
 	virtual const float GetSpellRange() { return 0.0f; }
@@ -39,6 +42,6 @@ public:
 	virtual ISpellCaster* GetSpellOwner() { return nullptr; };
 	virtual bool IsOnCooldown() { return false;};
 
-	virtual void HandleEffects(class IEffectable* target) {};
+	virtual void HandleEffects(IEffectable* target) {};
 	virtual void HandleInterfaceFunctions(AActor* actor) {};
 };

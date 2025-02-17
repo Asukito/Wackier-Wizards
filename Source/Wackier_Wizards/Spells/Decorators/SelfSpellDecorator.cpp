@@ -14,40 +14,15 @@ bool USelfSpellDecorator::CastSpell()
 
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	
-	if (ownerSpell != nullptr)
+	if (spellData->isAOE == true)
 	{
-		ownerSpell->ProcessHit(owner, owner->GetActorLocation());
+		GetDecorator()->ProcessHit(nullptr, owner->GetActorLocation());
 	}
 	else
 	{
-		ProcessHit(owner, owner->GetActorLocation());
+		GetDecorator()->ProcessHit(owner, owner->GetActorLocation());
 	}
 
 	return true;
 }
 
-void USelfSpellDecorator::ProcessHit(AActor* hit, FVector location)
-{
-	if (spellData->isAOE == true)
-	{
-		spell->ProcessHit(nullptr, location);
-		return;
-	}
-
-	spell->ProcessHit(hit, location);
-}
-
-USpellBase* USelfSpellDecorator::GetBaseSpell()
-{
-	return spell->GetBaseSpell();
-}
-
-ISpell* USelfSpellDecorator::GetOwnerSpell()
-{
-	if (ownerSpell == nullptr)
-	{
-		return nullptr;
-	}
-
-	return ownerSpell.GetInterface();
-}

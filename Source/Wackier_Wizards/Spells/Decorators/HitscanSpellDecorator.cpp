@@ -19,7 +19,7 @@ bool UHitscanSpellDecorator::CastSpell()
 	FVector start = spellOwner->GetCastStartLocation();
 	FVector end = ((spellOwner->GetCastStartForward() * spellData->range) + start);
 
-	UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
+	//UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
 
 	FHitResult hit;
 	FCollisionQueryParams params;
@@ -28,13 +28,13 @@ bool UHitscanSpellDecorator::CastSpell()
 	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
 	{
 		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
-		vfx->SetVariableVec3(FName("TraceEnd"), hit.Location);
+		//vfx->SetVariableVec3(FName("TraceEnd"), hit.Location);
 
-		ProcessHit(hit.GetActor(), hit.Location);
+		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location);
 	}
 	else
 	{
-		vfx->SetVectorParameter(FName("TraceEnd"), end);
+		//vfx->SetVectorParameter(FName("TraceEnd"), end);
 		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
 	}
 
@@ -49,14 +49,4 @@ void UHitscanSpellDecorator::ProcessHit(AActor* hit, FVector location)
 USpellBase* UHitscanSpellDecorator::GetBaseSpell()
 {
 	return Cast<USpellBase>(spell.GetObject());
-}
-
-ISpell* UHitscanSpellDecorator::GetOwnerSpell()
-{
-	if (ownerSpell == nullptr)
-	{
-		return nullptr;
-	}
-
-	return ownerSpell.GetInterface();
 }

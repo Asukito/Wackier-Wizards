@@ -36,5 +36,4 @@ public:
 	virtual void ProcessHit(AActor* hit, FVector location) override;
 
 	virtual USpellBase* GetBaseSpell() override;
-	virtual ISpell* GetOwnerSpell() override;
 };

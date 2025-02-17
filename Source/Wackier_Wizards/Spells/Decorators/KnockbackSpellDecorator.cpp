@@ -27,18 +27,3 @@ void UKnockbackSpellDecorator::ProcessHit(AActor* hit, FVector location)
 
 	components[0]->Launch(direction * spellData->knockbackStrength);
 }
-
-USpellBase* UKnockbackSpellDecorator::GetBaseSpell()
-{
-	return spell->GetBaseSpell();
-}
-
-ISpell* UKnockbackSpellDecorator::GetOwnerSpell()
-{
-	if (ownerSpell == nullptr)
-	{
-		return nullptr;
-	}
-
-	return ownerSpell.GetInterface();
-}

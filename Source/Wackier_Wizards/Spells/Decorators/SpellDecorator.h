@@ -27,7 +27,8 @@ public:
 	virtual const float GetSpellRange() override;
 	USpellData* GetSpellData() override;
 	ISpellCaster* GetSpellOwner() override;
-
+	virtual USpellBase* GetBaseSpell() override;
+	virtual ISpell* GetDecorator() override;
 	virtual bool IsOnCooldown() override;
 
 	void HandleEffects(IEffectable* target) override;

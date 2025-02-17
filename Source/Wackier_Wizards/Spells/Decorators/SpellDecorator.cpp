@@ -56,6 +56,26 @@ ISpellCaster* USpellDecorator::GetSpellOwner()
 	return spell->GetSpellOwner();
 }
 
+USpellBase* USpellDecorator::GetBaseSpell()
+{
+	if (spell == nullptr)
+	{
+		return nullptr;
+	}
+
+	return spell->GetBaseSpell();
+}
+
+ISpell* USpellDecorator::GetDecorator()
+{
+	if (ownerSpell == nullptr)
+	{
+		return this;
+	}
+
+	return ownerSpell->GetDecorator();
+}
+
 bool USpellDecorator::IsOnCooldown()
 {
 	return spell->IsOnCooldown();

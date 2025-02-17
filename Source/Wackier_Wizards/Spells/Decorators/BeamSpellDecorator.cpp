@@ -40,14 +40,7 @@ bool UBeamSpellDecorator::CastSpell()
 		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
 		_beam->SetVariableVec3(FName("TraceEnd"), hit.Location);
 
-		if (ownerSpell != nullptr)
-		{
-			ownerSpell->ProcessHit(hit.GetActor(), hit.Location);
-		}
-		else
-		{
-			ProcessHit(hit.GetActor(), hit.Location);
-		}
+		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location);
 	}
 	else
 	{
@@ -67,19 +60,4 @@ void UBeamSpellDecorator::Update(float deltaTime)
 		_beam->DestroyComponent();
 		_beam = nullptr;
 	}
-}
-
-USpellBase* UBeamSpellDecorator::GetBaseSpell()
-{
-	return spell->GetBaseSpell();
-}
-
-ISpell* UBeamSpellDecorator::GetOwnerSpell()
-{
-	if (ownerSpell == nullptr)
-	{
-		return nullptr;
-	}
-
-	return ownerSpell.GetInterface();
 }

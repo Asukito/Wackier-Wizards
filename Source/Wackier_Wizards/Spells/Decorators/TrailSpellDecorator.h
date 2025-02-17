@@ -33,7 +33,4 @@ public:
 	};
 
 	virtual bool CastSpell() override;
-
-	virtual USpellBase* GetBaseSpell() override;
-	virtual ISpell* GetOwnerSpell() override;
 };

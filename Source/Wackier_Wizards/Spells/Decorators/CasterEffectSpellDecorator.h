@@ -4,26 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "SpellDecorator.h"
-#include "SelfSpellDecorator.generated.h"
+#include "CasterEffectSpellDecorator.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class WACKIER_WIZARDS_API USelfSpellDecorator : public USpellDecorator
+class WACKIER_WIZARDS_API UCasterEffectSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
+	
 public:
-
 	class WACKIER_WIZARDS_API Builder
 	{
-		TWeakObjectPtr<USelfSpellDecorator> decorator;
+		TWeakObjectPtr<UCasterEffectSpellDecorator> decorator;
 
 	public:
 
 		Builder(ISpell* data)
 		{
-			decorator = NewObject<USelfSpellDecorator>();
+			decorator = NewObject<UCasterEffectSpellDecorator>();
 			decorator->Decorate(data);
 			data->SetOwnerSpell(decorator.Get());
 		}

@@ -11,3 +11,4 @@
 #include "Decorators/SelfSpellDecorator.h"
 #include "Decorators/BeamSpellDecorator.h"
 #include "Decorators/KnockbackSpellDecorator.h"
+#include "Decorators/CasterEffectSpellDecorator.h"

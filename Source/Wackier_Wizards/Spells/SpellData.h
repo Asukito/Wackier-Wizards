@@ -28,13 +28,6 @@ public:
 	TObjectPtr<UNiagaraSystem> spellNiagara;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	SpellType type = SpellType::HITSCAN;
-	//AOE
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool isAOE;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
-	float aoeRange = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
-	int aoeDamage = 0.0f;
 
 	///---- NON-BEAM ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::BEAM", EditConditionHides))
@@ -47,11 +40,7 @@ public:
 	float range = 0.0f;;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
 	TObjectPtr<UNiagaraSystem> collisionNiagara;
-	//Knockback
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
-	bool applyKnockback;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyKnockback == true", EditConditionHides))
-	float knockbackStrength = 0.0f;
+
 
 	//---- PROJECTILE ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
@@ -63,4 +52,22 @@ public:
 	bool hasTrail;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "hasTrail == true", EditConditionHides))
 	TObjectPtr<UEffectData> trailEffect;
+
+	//AOE
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isAOE;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
+	float aoeRange = 0.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
+	int aoeDamage = 0.0f;
+	//Knockback
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
+	bool applyKnockback;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyKnockback == true", EditConditionHides))
+	float knockbackStrength = 0.0f;
+	//Caster Effect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool applyCasterEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyCasterEffect == true", EditConditionHides))
+	TObjectPtr<UEffectData> casterEffect;
 };

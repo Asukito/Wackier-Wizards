@@ -52,6 +52,10 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	{
 		toReturn = UKnockbackSpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
 	}
+	if (spellData->applyCasterEffect == true)
+	{
+		toReturn = UCasterEffectSpellDecorator::Builder(toReturn.GetInterface()).Build()->_getUObject();
+	}
 
 	return toReturn.GetInterface();
 }

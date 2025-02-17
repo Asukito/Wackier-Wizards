@@ -27,14 +27,11 @@ public:
 			decorator->Decorate(data);
 			data->SetOwnerSpell(decorator.Get());
 		}
-		UKnockbackSpellDecorator* Build()
+		ISpell* Build()
 		{
 			return decorator.Get();
 		}
 	};
 
 	virtual void ProcessHit(AActor* hit, FVector location) override;
-
-	virtual USpellBase* GetBaseSpell() override;
-	virtual ISpell* GetOwnerSpell() override;
 };
