@@ -10,7 +10,7 @@
 #include "../../../Components/TargetSensorComponent.h"
 #include "../../../Components/SightSensorComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "../../../Spells/SpellBase.h"
+#include "../../../Interfaces/Spell.h"
 
 // Sets default values for this component's properties
 UGOAP_Agent::UGOAP_Agent()
@@ -51,7 +51,7 @@ void UGOAP_Agent::Init()
 
 	_planner = NewObject<UGOAP_Planner>();
 
-	_spell = _owner->GetSpell();
+	_spell = _owner->GetSpell()->_getUObject();
 
 	if (_spell != nullptr)
 	{

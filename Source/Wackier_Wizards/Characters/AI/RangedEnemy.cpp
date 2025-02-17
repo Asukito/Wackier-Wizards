@@ -23,7 +23,7 @@ void ARangedEnemy::CastSpell()
 	spellCasterComponent->CastSpell();
 }
 
-USpellBase* ARangedEnemy::GetSpell()
+ISpell* ARangedEnemy::GetSpell()
 {
 	return spellCasterComponent->GetActiveSpell();
 }

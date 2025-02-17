@@ -1,14 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ProjectileSpell.h"
-#include "../Objects/Projectile.h"
-#include "../Interfaces/SpellCaster.h"
-#include "SpellData.h"
+#include "ProjectileSpellDecorator.h"
+#include "../../Objects/Projectile.h"
+#include "../../Interfaces/SpellCaster.h"
+#include "../SpellData.h"
+#include "../SpellBase.h"
 
-bool UProjectileSpell::CastSpell()
+bool UProjectileSpellDecorator::CastSpell()
 {
-	if (USpellBase::CastSpell() == false)
+	if (Super::CastSpell() == false)
 	{
 		return false;
 	}
@@ -20,9 +21,13 @@ bool UProjectileSpell::CastSpell()
 
 	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
 	projectile->AddIgnoreActor(owner);
-	projectile->AddOwnerSpell(this);
-	projectile->InitNiagara(spellData->spellNiagara, spellData->collisionNiagara);
+	
+	projectile->AddOwnerSpell(GetDecorator());
+
+	projectile->InitNiagara(spellData->spellNiagara);
 	projectile->SetRange(spellData->range);
+
+	GetBaseSpell()->SetProjectile(projectile);
 
 	FVector unitDirection = spellOwner->GetCastStartForward();
 
@@ -32,7 +37,7 @@ bool UProjectileSpell::CastSpell()
 	return true;
 }
 
-void UProjectileSpell::ProcessHit(AActor* hit, FVector projectileLocation)
+void UProjectileSpellDecorator::ProcessHit(AActor* hit, FVector location)
 {
-	HandleInterfaceFunctions(hit);
+	Super::ProcessHit(hit, location);
 }

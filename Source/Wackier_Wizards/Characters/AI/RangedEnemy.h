@@ -9,6 +9,7 @@
 class USpellCasterComponent;
 class UGOAP_Agent;
 class USpellBase;
+class ISpell;
 
 UCLASS()
 class WACKIER_WIZARDS_API ARangedEnemy : public ABaseEnemy
@@ -19,7 +20,7 @@ public:
 	ARangedEnemy();
 
 	void CastSpell();
-	USpellBase* GetSpell();
+	ISpell* GetSpell();
 
 	void BindDelegates() override;
 

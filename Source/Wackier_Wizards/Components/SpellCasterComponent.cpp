@@ -5,6 +5,7 @@
 #include "../Spells/SpellBase.h"
 #include "../Spells/SpellData.h"
 #include "../Spells/SpellFactory.h"
+#include "../Interfaces/Spell.h"
 
 USpellCasterComponent::USpellCasterComponent()
 {	
@@ -24,7 +25,7 @@ void USpellCasterComponent::InitSpells()
 
 	for (USpellData* data : _spellData)
 	{
-		_spells.Add(factory->CreateSpell(data, this));
+		_spells.Add(factory->CreateSpell(data, this)->_getUObject());
 	}
 	
 	ChangeSpell(1);
@@ -82,7 +83,7 @@ void USpellCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 		return;
 	}
 
-	for (USpellBase* spell : _spells)
+	for (TScriptInterface<ISpell> spell : _spells)
 	{
 		spell->Update(DeltaTime);
 	}
@@ -123,8 +124,8 @@ const FVector USpellCasterComponent::GetCastStartForward() noexcept
 	return _castStartForward.Execute();
 }
 
-USpellBase* USpellCasterComponent::GetActiveSpell() noexcept
+ISpell* USpellCasterComponent::GetActiveSpell() noexcept
 {
-	return _spell;
+	return _spell.GetInterface();
 }
 

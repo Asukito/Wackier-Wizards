@@ -16,7 +16,7 @@ class UTargetSensorComponent;
 class USightSensorComponent;
 class ARangedEnemy;
 class APlayerCharacter;
-class USpellBase;
+class ISpell;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UGOAP_Agent : public UActorComponent
@@ -95,7 +95,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> _player;
 	UPROPERTY()
-	TObjectPtr<USpellBase> _spell;
+	TScriptInterface<ISpell> _spell;
 	float _spellRange;
 
 	int _planFailCounter;
