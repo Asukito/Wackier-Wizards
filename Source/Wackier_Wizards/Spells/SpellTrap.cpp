@@ -17,6 +17,9 @@ ASpellTrap::ASpellTrap()
 	sphereCollider->OnComponentBeginOverlap.AddDynamic(this, &ASpellTrap::OnSpellTrapOverlap);
 	sphereCollider->SetupAttachment(RootComponent);
 
+	spellCasterComponent = CreateDefaultSubobject<USpellCasterComponent>(TEXT("SpellCaster Component"));
+	checkf(spellCasterComponent, TEXT("Player SpellCasterComponent failed to initialise"));
+
 
 }
 
@@ -24,6 +27,10 @@ ASpellTrap::ASpellTrap()
 void ASpellTrap::BeginPlay()
 {
 	Super::BeginPlay();
+
+	spellCasterComponent->InitSpells();
+
+	//Do spell location binds
 }
 
 // Called every frame
@@ -39,6 +46,7 @@ void ASpellTrap::OnSpellTrapOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		spellCasterComponent->CastSpell();
+		UE_LOG(LogTemp, Warning, TEXT("BOOM"));
 	}
 }
 

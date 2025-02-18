@@ -10,6 +10,7 @@
 #include "SpellTrap.generated.h"
 
 class USpellCasterComponent;
+class ISpell;
 UCLASS()
 class WACKIER_WIZARDS_API ASpellTrap : public AActor
 {
@@ -21,7 +22,7 @@ public:
 
 	//reference to the spell base but allowing children of the spell base to be used for polymorphism
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
-	USpellBase* spellBase;
+	TScriptInterface<ISpell> spellBase;
 
 	//reference to the spell data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spell")
