@@ -2,7 +2,7 @@
 
 
 #include "VoidObject.h"
-#include "DamageOnOverlapComponent.h"
+#include "../Components/DamageOnOverlapComponent.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values
