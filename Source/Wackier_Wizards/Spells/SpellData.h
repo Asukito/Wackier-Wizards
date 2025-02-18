@@ -11,7 +11,7 @@ class UNiagaraSystem;
 class AProjectile;
 class UEffectData;
 
-UCLASS()
+UCLASS(BlueprintType)
 class WACKIER_WIZARDS_API USpellData : public UDataAsset
 {
 	GENERATED_BODY()
