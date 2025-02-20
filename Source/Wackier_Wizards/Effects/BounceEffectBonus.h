@@ -13,7 +13,8 @@ UCLASS()
 class WACKIER_WIZARDS_API UBounceEffectBonus : public UBaseEffectBonus
 {
 	GENERATED_BODY()
-	
+
+//Bonus effect that allows the effect to bounce to nearby targets
 protected:
 	virtual void DoBonus() override;
 };

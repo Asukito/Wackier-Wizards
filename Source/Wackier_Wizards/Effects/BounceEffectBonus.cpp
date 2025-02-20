@@ -26,6 +26,7 @@ void UBounceEffectBonus::DoBonus()
 		{
 			if (IEffectable* effectable = Cast<IEffectable>(actor))
 			{
+				//If the target does not already contain this effect, apply the bounce effect (this will repeat until all nearby actors contain the effect).
 				if (effectable->HasEffect(effectData->name) == false)
 				{
 					DrawDebugSphere(effectOwner->GetWorld(), effectOwner->GetActorLocation(), effectData->bonusRange, 12, FColor::Green, false, 0.5f);

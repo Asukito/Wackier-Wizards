@@ -13,6 +13,7 @@ class WACKIER_WIZARDS_API UGOAP_BeliefFactory : public UObject
 {
 	GENERATED_BODY()
 	
+//A factory class that contains and populates a list of beliefs created within a GOAP_Agent.
 public:
 	UGOAP_BeliefFactory();
 

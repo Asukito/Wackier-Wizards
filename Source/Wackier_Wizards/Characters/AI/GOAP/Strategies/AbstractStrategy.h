@@ -13,8 +13,11 @@ class WACKIER_WIZARDS_API UAbstractStrategy : public UObject
 {
 	GENERATED_BODY()
 	
+//Abstract class for Strategies to inherit from. 
 public:
+	//Checks if the action can be performed, currently not in use. Useful if preconditions can be affected after a plan is created (currently not possible).
 	virtual bool CanPerform();
+	//Checks if the action is complete.
 	virtual bool Complete();
 
 	virtual void Start(UGOAP_Agent* agent);

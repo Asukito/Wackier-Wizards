@@ -13,8 +13,10 @@
 void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list)
 {
 	hasEnded = false;
+	//Bind the EffectsComponent QueueRemoval function to clearDelegate;
 	_clearDelegate.BindUObject(list, &UEffectsComponent::QueueRemoval);
 
+	//Checks that the target is effectable and contains a reference if true. If not, clear the effect.
 	if (IEffectable* Owner = Cast<IEffectable>(actor))
 	{
 		owner = Owner->_getUObject();
@@ -22,6 +24,7 @@ void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponen
 	else
 	{
 		ClearEffect();
+		return;
 	}
 
 	effectData = data;
@@ -31,6 +34,7 @@ void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponen
 		return;
 	}
 
+	//Create and execute any bonus effects if necessary.
 	UBaseEffectBonus* effect;
 
 	switch (effectData->bonus)

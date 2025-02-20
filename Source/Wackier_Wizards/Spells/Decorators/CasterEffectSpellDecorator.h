@@ -13,7 +13,8 @@ UCLASS()
 class WACKIER_WIZARDS_API UCasterEffectSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
-	
+
+//Places an effect on the caster. 
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
