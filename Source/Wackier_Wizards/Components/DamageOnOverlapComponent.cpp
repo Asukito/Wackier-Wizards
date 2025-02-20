@@ -50,7 +50,7 @@ void UDamageOnOverlapComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	_collider->OnComponentBeginOverlap.AddDynamic(this, &UDamageOnOverlapComponent::BeginInteractOverlap);
+	_collider->OnComponentBeginOverlap.AddDynamic(this, &UDamageOnOverlapComponent::BeginOverlap);
 	
 }
 
