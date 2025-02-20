@@ -13,6 +13,7 @@ class WACKIER_WIZARDS_API UAOEEffectBonus : public UBaseEffectBonus
 {
 	GENERATED_BODY()
 	
+//Bonus effect that spawns an AOE effect actor.
 public:
 	virtual void DoBonus() override;
 };

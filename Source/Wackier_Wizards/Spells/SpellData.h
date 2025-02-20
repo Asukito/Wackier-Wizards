@@ -11,11 +11,12 @@ class UNiagaraSystem;
 class AProjectile;
 class UEffectData;
 
-UCLASS(BlueprintType)
-class WACKIER_WIZARDS_API USpellData : public UDataAsset
+UCLASS()
+class WACKIER_WIZARDS_API USpellData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
+//Spell DataAsset that contains any spell stats, and is used to Decorate the spell during creation
 public:
 	//---- ALL TYPES ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

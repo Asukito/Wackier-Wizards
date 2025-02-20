@@ -15,12 +15,14 @@ class WACKIER_WIZARDS_API UGOAP_Action : public UObject
 {
 	GENERATED_BODY()
 	
+//Class representing an action. An action contains the logic (a Strategy) to be performed when this action is being worked on. 
+//Actions can have preconditions necessary to start this action. Effects that the action will lead to. A cost that effects planning. 
 public:
 	UGOAP_Action();
 
-	void Start(UGOAP_Agent* agent); //Start Strategy
-	void Update(float deltaTime); //Evaluate Strategy and Beliefs
-	void Stop(); //Stop Strategy
+	void Start(UGOAP_Agent* agent);
+	void Update(float deltaTime); 
+	void Stop();
 
 	bool IsComplete();
 

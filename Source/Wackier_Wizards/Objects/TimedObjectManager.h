@@ -12,7 +12,8 @@ UCLASS()
 class WACKIER_WIZARDS_API ATimedObjectManager : public AActor
 {
 	GENERATED_BODY()
-	
+
+//Container for timed actors (such as pillars) and handles if they are active or inactive (needs rework/replacing).
 public:	
 	// Sets default values for this actor's properties
 	ATimedObjectManager();

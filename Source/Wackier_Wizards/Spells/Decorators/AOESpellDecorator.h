@@ -14,6 +14,7 @@ class WACKIER_WIZARDS_API UAOESpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 	
+//AOE decorator. Generates a SphereOverlap at the collision location passed in through ProcessHit. The lower level ProcessHit function is then called on the actors within the overlap.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{

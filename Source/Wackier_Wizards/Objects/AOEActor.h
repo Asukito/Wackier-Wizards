@@ -14,6 +14,7 @@ class WACKIER_WIZARDS_API AAOEActor : public AActor
 {
 	GENERATED_BODY()
 	
+//Actor that places an effect on IEffectables that enter it's radius.
 public:	
 	// Sets default values for this actor's properties
 	AAOEActor();

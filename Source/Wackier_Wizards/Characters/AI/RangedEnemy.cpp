@@ -14,8 +14,6 @@ ARangedEnemy::ARangedEnemy()
 
 	_agent = CreateDefaultSubobject<UGOAP_Agent>(TEXT("GOAP Agent"));
 	checkf(_agent, TEXT("RangedEnemy GOAP_AgentComponent failed to initialise"));
-
-	_agent->ConstructorInit();
 }
 
 void ARangedEnemy::CastSpell()
