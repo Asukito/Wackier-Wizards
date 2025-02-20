@@ -5,6 +5,8 @@
 #include "../SpellBase.h"
 #include "../../Objects/Projectile.h"
 #include "../SpellData.h"
+
+//Inits the Trail logic in the projectile.
 bool UTrailSpellDecorator::CastSpell()
 {
 	if (spell->CastSpell() == false)

@@ -17,16 +17,20 @@ class WACKIER_WIZARDS_API UBaseEffect : public UObject
 {
 	GENERATED_BODY()
 
+//Base Effect class that all effects inherit from
 public:
 	virtual void StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list);
 	virtual void Update(float deltaTime);
 	virtual void EndEffect();
+	//Queues the effect removal from the effect actor.
 	void ClearEffect();
 	
 	FString GetEffectName();
 
 protected:
+	//Processes any stat-related effects
 	bool ProcessEffect();
+	//Reverses any stat-related effects
 	void ProcessEffectRemoval();
 
 protected:

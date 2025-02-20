@@ -16,6 +16,7 @@ class WACKIER_WIZARDS_API USpellFactory : public UObject
 {
 	GENERATED_BODY()
 
+//Used to create spells. 
 public:
 	ISpell* CreateSpell(USpellData* spellData, ISpellCaster* owner);
 };

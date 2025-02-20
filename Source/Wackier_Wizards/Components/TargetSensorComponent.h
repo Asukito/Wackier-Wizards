@@ -14,12 +14,14 @@ class WACKIER_WIZARDS_API UTargetSensorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+//Sensor that checks if a target is in a set range from the owner.
 public:	
 	// Sets default values for this component's properties
 	UTargetSensorComponent();
 
 	void Init(float radius, TObjectPtr<UGOAP_Agent> agent);
 	void SetTarget(TObjectPtr<AActor> target);
+	//Handles component attachment to this components owner 
 	void AttachTo(USceneComponent* component);
 
 	UFUNCTION()

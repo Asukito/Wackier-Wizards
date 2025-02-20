@@ -25,16 +25,19 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 	TObjectPtr<UEffectData> data = nullptr;
 	TObjectPtr<UBaseEffect> newEffect = nullptr;
 
+	//Check if the effectData can interact with an effect contained within effects. If so, set data to the resulting effect.
 	if (_resultantContainer != nullptr && _effects.Num() != 0)
 	{
 		data = CheckIfResultantValid(effectData);
 	}
 
+	//If a resulting effect doesn't occur, set the data to the effectData.
 	if (data == nullptr)
 	{
 		data = effectData;
 	}
 
+	//Create the effect using the effectData
 	switch (data->type)
 	{
 		case EffectType::OVERTIME:
@@ -56,7 +59,7 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 		return;
 	}
 
-	//If stackable add effect
+	//If stackable add effect no matter what
 	if (data->stackable == true)
 	{
 		_effects.Add(newEffect);
@@ -65,13 +68,13 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 		return;
 	}
 
-	//If not stackable, check if effect exists in list, if so queue removal
+	//If not stackable, check if effect exists in list, if so queue removal of the older effect
 	if (UBaseEffect* effect = ReturnContains(data->name))
 	{
 		effect->EndEffect();
 	}
 
-	//Add effect
+	//Add the new effect
 	_effects.Add(newEffect);
 	newEffect->StartEffect(data, GetOwner(), this);
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));

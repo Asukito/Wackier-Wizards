@@ -10,6 +10,7 @@ void UChaseStrategy::Start(UGOAP_Agent* agent)
 	_agent->SetSeekPlayer(true);
 }
 
+//Attempts to attack the player while chasing
 void UChaseStrategy::Update(float deltaTime)
 {
 	_agent->Attack();
