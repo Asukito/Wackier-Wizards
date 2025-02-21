@@ -8,6 +8,7 @@
 #include "../Objects/AOEActor.h"
 #include "Engine/StaticMesh.h"
 #include "../Effects/EffectData.h"
+#include "../Effects/ShieldAuraEffect.h"
 
 // Sets default values
 AProjectile::AProjectile()

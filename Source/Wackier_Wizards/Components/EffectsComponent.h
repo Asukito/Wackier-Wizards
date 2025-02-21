@@ -9,6 +9,7 @@
 class UBaseEffect;
 class UEffectData;
 class AResultantEffectContainer;
+class UAuraEffect;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UEffectsComponent : public UActorComponent
@@ -26,6 +27,8 @@ public:
 	void QueueRemoval(UBaseEffect* effect);
 	//Queues the removal of all effects
 	void ClearEffects();
+
+	UAuraEffect* GetAura();
 
 	//Check if an effect with the inputted name is contained within effects
 	bool Contains(FString name);
@@ -51,4 +54,7 @@ private:
 	TArray<TObjectPtr<UBaseEffect>> _toRemove;
 
 	TObjectPtr<AResultantEffectContainer> _resultantContainer;
+
+	UPROPERTY()
+	TObjectPtr<UAuraEffect> _aura;
 };

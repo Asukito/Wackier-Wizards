@@ -6,9 +6,7 @@
 #include "SpellDecorator.h"
 #include "KnockbackSpellDecorator.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class WACKIER_WIZARDS_API UKnockbackSpellDecorator : public USpellDecorator
 {

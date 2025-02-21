@@ -78,21 +78,21 @@ FString UBaseEffect::GetEffectName()
 	return effectData->name;
 }
 
-bool UBaseEffect::ProcessEffect()
+bool UBaseEffect::ProcessEffect(IEffectable* effectable)
 {
 	switch (effectData->does)
 	{
 		case EffectDoes::DAMAGE:
-			if (IDamageable* target = owner->GetDamageableAccess())
+			if (IDamageable* target = effectable->GetDamageableAccess())
 			{
 				return !target->TakeDamage(effectData->strength, effectData->name);
 			}
 
 			break;
 		case EffectDoes::DAMAGE_PERCENT:
-			if (IHealth* target = owner->GetHealthAccess())
+			if (IHealth* target = effectable->GetHealthAccess())
 			{
-				if (IDamageable* damageable = owner->GetDamageableAccess())
+				if (IDamageable* damageable = effectable->GetDamageableAccess())
 				{
 					float maxHealth = target->GetMaxHealth();
 					float amount =  FMath::RoundToFloat(((maxHealth * ((float)(effectData->strength) / 100))));
@@ -103,7 +103,7 @@ bool UBaseEffect::ProcessEffect()
 
 			break;
 		case EffectDoes::HEAL:
-			if (IHealth* target = owner->GetHealthAccess())
+			if (IHealth* target = effectable->GetHealthAccess())
 			{
 				target->Heal(effectData->strength);
 				return true;
@@ -113,7 +113,7 @@ bool UBaseEffect::ProcessEffect()
 
 		case EffectDoes::HEAL_PERCENT:
 
-			if (IHealth* target = owner->GetHealthAccess())
+			if (IHealth* target = effectable->GetHealthAccess())
 			{
 				target->Heal(target->GetMaxHealth() * (effectData->strength / 100));
 				return true;
@@ -123,18 +123,24 @@ bool UBaseEffect::ProcessEffect()
 
 		case EffectDoes::INC_MAXHP:
 
-			if (IHealth* target = owner->GetHealthAccess())
+			if (IHealth* target = effectable->GetHealthAccess())
 			{
-				target->AdjustMaxHealth(effectData->strength);
+				float percentage = ((float)effectData->strength) / 100;
+				float amount = target->GetBaseHealth() * percentage;
+
+				target->AdjustMaxHealth(amount);
 				return true;
 			}
 
 			break;
 		case EffectDoes::DEC_MAXHP:
 
-			if (IHealth* target = owner->GetHealthAccess())
+			if (IHealth* target = effectable->GetHealthAccess())
 			{
-				target->AdjustMaxHealth(-(effectData->strength));
+				float percentage = ((float)effectData->strength) / 100;
+				float amount = target->GetBaseHealth() * percentage;
+
+				target->AdjustMaxHealth(-(amount));
 				return true;
 			}
 
@@ -142,9 +148,9 @@ bool UBaseEffect::ProcessEffect()
 
 		case EffectDoes::INC_SPEED:
 
-			if (owner->HasMovementComponent() == true)
+			if (effectable->HasMovementComponent() == true)
 			{
-				owner->AdjustWalkSpeed(effectData->strength);
+				effectable->AdjustWalkSpeed(effectData->strength);
 				return true;
 			}
 
@@ -152,9 +158,9 @@ bool UBaseEffect::ProcessEffect()
 
 		case EffectDoes::DEC_SPEED:
 
-			if (owner->HasMovementComponent() == true)
+			if (effectable->HasMovementComponent() == true)
 			{
-				owner->AdjustWalkSpeed(-(effectData->strength));
+				effectable->AdjustWalkSpeed(-(effectData->strength));
 				return true;
 			}
 
@@ -164,46 +170,56 @@ bool UBaseEffect::ProcessEffect()
 	return false;
 }
 
-void UBaseEffect::ProcessEffectRemoval()
+void UBaseEffect::ProcessEffectRemoval(IEffectable* effectable)
 {
 	switch (effectData->does)
 	{
 	case EffectDoes::INC_MAXHP:
 
-		if (IHealth* target = owner->GetHealthAccess())
+		if (IHealth* target = effectable->GetHealthAccess())
 		{
-			target->AdjustMaxHealth(-(effectData->strength));
+			float percentage = ((float)effectData->strength) / 100;
+			float amount = target->GetBaseHealth() * percentage;
+
+			target->AdjustMaxHealth(-(amount));
 		}
 
 		break;
 	case EffectDoes::DEC_MAXHP:
 
-		if (IHealth* target = owner->GetHealthAccess())
+		if (IHealth* target = effectable->GetHealthAccess())
 		{
-			target->AdjustMaxHealth(effectData->strength);
+			float percentage = ((float)effectData->strength) / 100;
+			float amount = target->GetBaseHealth() * percentage;
+
+			target->AdjustMaxHealth(amount);
 		}
 
 		break;
 
 	case EffectDoes::INC_SPEED:
 
-		if (owner->HasMovementComponent() == false)
+		if (effectable->HasMovementComponent() == false)
 		{
 			return;
 		}
 
-		owner->AdjustWalkSpeed(-(effectData->strength));
+		effectable->AdjustWalkSpeed(-(effectData->strength));
 		break;
 
 	case EffectDoes::DEC_SPEED:
 
-		if (owner->HasMovementComponent() == false)
+		if (effectable->HasMovementComponent() == false)
 		{
 			return;
 		}
 
-		owner->AdjustWalkSpeed(effectData->strength);
+		effectable->AdjustWalkSpeed(effectData->strength);
 		break;
 	}
+}
+
+void UBaseEffect::HandleBonus()
+{
 }
 

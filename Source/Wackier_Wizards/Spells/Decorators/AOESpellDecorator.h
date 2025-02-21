@@ -6,9 +6,6 @@
 #include "SpellDecorator.h"
 #include "AOESpellDecorator.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class WACKIER_WIZARDS_API UAOESpellDecorator : public USpellDecorator
 {

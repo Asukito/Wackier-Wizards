@@ -8,6 +8,7 @@
 #include "../Interfaces/Health.h"
 #include "../Interfaces/SpellCaster.h"
 #include "NiagaraFunctionLibrary.h"
+#include "../Effects/ShieldAuraEffect.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {
@@ -93,9 +94,19 @@ void USpellBase::HandleEffects(IEffectable* target)
 void USpellBase::HandleInterfaceFunctions(AActor* actor)
 {
 	bool isKilled = false;
+	IEffectable* effectable = Cast<IEffectable>(actor);
 
 	if (spellData->type != SpellType::SELF || (spellData->type == SpellType::SELF && actor != spellOwner->GetSpellOwner()))
 	{
+		if (effectable != nullptr)
+		{
+			if (TObjectPtr<UShieldAuraEffect> shield = Cast<UShieldAuraEffect>(effectable->GetAura()))
+			{
+				shield->DamageShield(spellData->potency, spellData->name);
+				return;
+			}
+		}
+
 		if (IDamageable* target = Cast<IDamageable>(actor))
 		{
 			isKilled = target->TakeDamage(spellData->potency, spellData->name);
@@ -107,7 +118,7 @@ void USpellBase::HandleInterfaceFunctions(AActor* actor)
 		}
 	}
 
-	if (IEffectable* effectable = Cast<IEffectable>(actor))
+	if (effectable != nullptr)
 	{
 		HandleEffects(effectable);
 	}

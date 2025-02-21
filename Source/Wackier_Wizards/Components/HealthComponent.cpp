@@ -58,6 +58,11 @@ int UHealthComponent::GetHealthPercent() const
 	return FMath::FloorToInt((_health / _maxHealth) * 100);
 }
 
+int UHealthComponent::GetBaseHealth() const
+{
+	return _baseHealth;
+}
+
 int UHealthComponent::GetMaxHealth() const
 {
 	return _maxHealth;

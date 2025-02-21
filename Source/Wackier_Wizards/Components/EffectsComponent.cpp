@@ -5,6 +5,10 @@
 #include "../Effects/OverTimeEffect.h"
 #include "../Effects/InstantEffect.h"
 #include "../Effects/DurationEffect.h"
+#include "../Effects/AuraEffect.h"
+#include "../Effects/TickAuraEffect.h"
+#include "../Effects/OverlapAuraEffect.h"
+#include "../Effects/ShieldAuraEffect.h"
 #include "../Effects/BaseEffect.h"
 #include "../Effects/EffectData.h"
 #include "../Effects/ResultantEffectContainer.h"
@@ -52,10 +56,40 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 			newEffect = NewObject<UDurationEffect>();
 
 			break;
+		case EffectType::AURA:
+			if (data->isPerTick == true)
+			{
+				newEffect = NewObject<UTickAuraEffect>();
+			}
+			else
+			{
+				newEffect = NewObject<UOverlapAuraEffect>();
+			}
+
+			break;
+		case EffectType::SHIELD:
+			newEffect = NewObject<UShieldAuraEffect>();
+
+			break;
 	}
 
 	if (newEffect == nullptr)
 	{
+		return;
+	}
+
+	if (data->type == EffectType::SHIELD || data->type == EffectType::AURA)
+	{
+		if (_aura != nullptr)
+		{
+			_aura->EndEffect();
+		}
+
+		_aura = Cast<UAuraEffect>(newEffect);
+
+		_effects.Add(newEffect);
+		newEffect->StartEffect(data, GetOwner(), this);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
 		return;
 	}
 
@@ -93,12 +127,22 @@ void UEffectsComponent::ClearEffects()
 	}
 }
 
+UAuraEffect* UEffectsComponent::GetAura()
+{
+	return _aura;
+}
+
 void UEffectsComponent::RemoveEffects()
 {
 	for (UBaseEffect* effect : _toRemove)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Removed Effect: %s"), *effect->GetEffectName()));
 		_effects.Remove(effect);
+
+		if (_aura == effect)
+		{
+			_aura = nullptr;
+		}
 	}
 
 	_toRemove.Empty();
