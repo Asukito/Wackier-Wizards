@@ -56,6 +56,11 @@ void UAuraEffect::Update(float deltaTime)
 
 void UAuraEffect::EndEffect()
 {
+	if (niagara != nullptr)
+	{
+		niagara->DestroyComponent();
+	}
+
 	aura->DestroyComponent();
 	overlaps.Empty();
 
