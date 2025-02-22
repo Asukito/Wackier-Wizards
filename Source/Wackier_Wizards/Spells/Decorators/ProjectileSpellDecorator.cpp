@@ -7,9 +7,10 @@
 #include "../SpellData.h"
 #include "../SpellBase.h"
 
+//Spawns and initialises a projectile
 bool UProjectileSpellDecorator::CastSpell()
 {
-	if (Super::CastSpell() == false)
+	if (spell->CastSpell() == false)
 	{
 		return false;
 	}
@@ -39,5 +40,5 @@ bool UProjectileSpellDecorator::CastSpell()
 
 void UProjectileSpellDecorator::ProcessHit(AActor* hit, FVector location)
 {
-	Super::ProcessHit(hit, location);
+	spell->ProcessHit(hit, location);
 }

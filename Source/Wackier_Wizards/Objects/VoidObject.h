@@ -13,7 +13,8 @@ UCLASS()
 class WACKIER_WIZARDS_API AVoidObject : public AActor
 {
 	GENERATED_BODY()
-	
+
+//Actor that will damage actors that collide with this.
 public:	
 	// Sets default values for this actor's properties
 	AVoidObject();

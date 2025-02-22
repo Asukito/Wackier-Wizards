@@ -11,13 +11,14 @@ class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 {
 	GENERATED_BODY()
 
+//VR PlayerCharacter class. Currently overrides the GetCastStartForward as the spells will be spawned at the player's hand.
 public:
-	// Sets default values for this character's properties
+	//Sets default values for this character's properties
 	AVRCharacter();
 
 	const FVector GetCastStartForward() override;
 
-	//location of right hand to spawn spell
+	//Location of right hand to spawn spell
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
 	FVector rightHandLocation;
 };

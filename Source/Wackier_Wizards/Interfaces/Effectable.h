@@ -20,7 +20,8 @@ class WACKIER_WIZARDS_API IEffectable
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+//Actors that implement the IEffectable interface can have effects applied to them. This also provides easier access to related interfaces to reduce casting. 
+//This additional access logic (to the movement component as well) will ideally be moved.
 public:
 	virtual void AddEffect(UEffectData* effect) {};
 	virtual IDamageable* GetDamageableAccess() { return nullptr; };

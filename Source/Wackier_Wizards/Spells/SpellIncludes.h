@@ -1,4 +1,5 @@
 #pragma once
+//File that contains all include paths relevant to spells (aside from the SpellCaster interface). 
 #include "../Interfaces/Spell.h"
 #include "SpellBase.h"
 #include "SpellData.h"

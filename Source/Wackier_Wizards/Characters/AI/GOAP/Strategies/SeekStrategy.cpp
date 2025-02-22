@@ -10,6 +10,7 @@ void USeekStrategy::Start(UGOAP_Agent* agent)
 	_agent->SetSeekPlayer(true);
 }
 
+//If the agent has no path, seek the player.
 void USeekStrategy::Update(float deltaTime)
 {
 	if (_agent->HasPath() == false)

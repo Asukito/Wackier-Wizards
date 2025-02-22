@@ -16,29 +16,34 @@ class WACKIER_WIZARDS_API ABaseCharacter : public ACharacter, public IEffectable
 {
 	GENERATED_BODY()
 
+//Base Character class that handles base logic for (current) character-related interfaces. 
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
-	bool TakeDamage(int amount, FString source) override;
-	void Heal(int amount) override;
-	void AdjustMaxHealth(int amount) override;
-	void AdjustWalkSpeed(float percent);
-	bool HasMovementComponent() override;
-	void Kill() override;
-	virtual void Respawn(bool isDead) override;
-	void AddEffect(UEffectData* effect) override;
-
-	//---- HELPERS ----
+	//---- IEFFECTABLE OVERRIDES ----
 	IDamageable* GetDamageableAccess() override;
 	IHealth* GetHealthAccess() override;
+	void AdjustWalkSpeed(float percent);
+	bool HasMovementComponent() override;
+	void AddEffect(UEffectData* effect) override;
+	bool HasEffect(FString effectName) override;
+
+	//---- IDAMAGEABLE OVERRIDES ----
+	void Kill() override;
+	bool TakeDamage(int amount, FString source) override;
+
+	//---- IHEALTH OVERRIDES ----
+	void Heal(int amount) override;
+	void AdjustMaxHealth(int amount) override;
 	const int GetHealth(bool getPercent) noexcept override;
 	const int GetMaxHealth() noexcept override;
-	bool HasEffect(FString effectName) override;
+	virtual void Respawn(bool isDead) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	//Binds any delegates if needed.
 	virtual void BindDelegates();
 
 protected:

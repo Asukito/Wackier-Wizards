@@ -19,14 +19,19 @@ class WACKIER_WIZARDS_API USpellCasterComponent : public UActorComponent, public
 {
 	GENERATED_BODY()
 	
+//A component that can be attached to any actor to allow spell casting
 public:
 	USpellCasterComponent();
 
+	//Creates the spells from the contained spellData
 	void InitSpells();
 	void CastSpell();
+	//Change spell based on a provided slot
 	void ChangeSpell(int slot);
+	//Iterates to the next spell slot 
 	virtual void CycleSpell();
 
+	//Functions to bind cast location and forward vector functions
 	void BindCastStartLocation(TFunction<const FVector()> func);
 	void BindCastStartForward(TFunction<const FVector()> func);
 
