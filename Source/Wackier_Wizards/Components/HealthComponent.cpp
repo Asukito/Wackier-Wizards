@@ -24,7 +24,6 @@ void UHealthComponent::AdjustHealthPercentage(float percentage)
 {
 	float adjust = _health;
 
-	//If percentage is negative, then get it's absolute multiplier and negate it from health. Else, add the multiplier to health.
 	if (percentage < 0)
 	{
 		adjust *= (FMath::Abs(percentage) / 100);

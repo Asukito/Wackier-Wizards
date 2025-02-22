@@ -13,8 +13,6 @@ UCLASS()
 class WACKIER_WIZARDS_API UTrailSpellDecorator : public UProjectileSpellDecorator
 {
 	GENERATED_BODY()
-
-//Applied to a ProjectileSpellDecorator. Initialises additional logic on the spawned projectile that periodically places an AOE effect along it's path.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{

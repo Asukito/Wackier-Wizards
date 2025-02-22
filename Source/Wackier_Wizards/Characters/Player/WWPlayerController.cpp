@@ -101,7 +101,6 @@ void AWWPlayerController::OnPossess(APawn* aPawn)
 	UEnhancedInputLocalPlayerSubsystem* inputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	checkf(inputSubsystem, TEXT("INPUT_SUBSYSTEM is an invalid value"));
 
-	//If the VRCharacter is used, bind VR input mappings.
 	if (_isVR == true)
 	{
 		checkf(VR_inputMappingContext, TEXT("VR INPUT_MAPPING_CONTEXT is an invalid value"));

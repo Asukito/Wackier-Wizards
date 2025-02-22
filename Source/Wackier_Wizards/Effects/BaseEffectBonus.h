@@ -13,7 +13,6 @@ class WACKIER_WIZARDS_API UBaseEffectBonus : public UObject
 {
 	GENERATED_BODY()
 	
-//Base class for EffectBonuses.
 public:
 	void Init(UEffectData* data, AActor* owner, bool createCopy);
 

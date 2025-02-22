@@ -13,8 +13,7 @@ UCLASS()
 class WACKIER_WIZARDS_API ATimedPillar : public AActor
 {
 	GENERATED_BODY()
-
-//Pillar that periodically rises and closes (needs rework/replacing).
+	
 public:	
 	// Sets default values for this actor's properties
 	ATimedPillar();

@@ -19,7 +19,6 @@ class WACKIER_WIZARDS_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 	
-//Projectile class spawned by Projectile Spells
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();

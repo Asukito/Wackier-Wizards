@@ -14,7 +14,6 @@ class WACKIER_WIZARDS_API AMeleeEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 	
-//Melee Enemy class. Melee enemies just seek the player when spawned, and attack when in range. 
 public:
 	AMeleeEnemy();
 
@@ -22,6 +21,9 @@ public:
 	void Attack(IDamageable* target);
 protected:
 	virtual void BeginPlay() override;
+
+private:
+
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")

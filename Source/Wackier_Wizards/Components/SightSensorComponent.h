@@ -13,7 +13,6 @@ class WACKIER_WIZARDS_API USightSensorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-//Sensor to determine if owner has line of sight on a target
 public:	
 	// Sets default values for this component's properties
 	USightSensorComponent();

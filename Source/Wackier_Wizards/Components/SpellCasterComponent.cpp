@@ -14,7 +14,6 @@ USpellCasterComponent::USpellCasterComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-//Creates the spells from the contained spellData and then sets the active sell to the first
 void USpellCasterComponent::InitSpells()
 {
 	if (_spellData.Num() == 0)
@@ -107,7 +106,6 @@ const FVector USpellCasterComponent::GetSpellOwnerForward() noexcept
 
 const FVector USpellCasterComponent::GetCastStartLocation() noexcept
 {
-	//If castStartLocation isn't bound, return the spellOwner location. Else, execute the bound function.
 	if (_castStartLocation.IsBound() == false)
 	{
 		return GetSpellOwnerLocation();
@@ -118,7 +116,6 @@ const FVector USpellCasterComponent::GetCastStartLocation() noexcept
 
 const FVector USpellCasterComponent::GetCastStartForward() noexcept
 {
-	//If castStartForward isn't bound, return the spellOwner forward. Else, execute the bound function.
 	if (_castStartForward.IsBound() == false)
 	{
 		return GetSpellOwnerForward();

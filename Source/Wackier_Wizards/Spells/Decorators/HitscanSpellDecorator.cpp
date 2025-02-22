@@ -8,7 +8,6 @@
 #include "NiagaraComponent.h"
 #include "../SpellBase.h"
 
-//Generates a linetrace using the spells parameters
 bool UHitscanSpellDecorator::CastSpell()
 {
 	if (spell->CastSpell() == false)
@@ -20,7 +19,6 @@ bool UHitscanSpellDecorator::CastSpell()
 	FVector start = spellOwner->GetCastStartLocation();
 	FVector end = ((spellOwner->GetCastStartForward() * spellData->range) + start);
 
-	//Uncomment Niagara logic when proper Hitscan Niagara systems are created.
 	//UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
 
 	FHitResult hit;

@@ -15,18 +15,14 @@ class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
-//Base class for all enemies. Contains logic that interacts with the AI unique controller. Also contains a reference to the player and a SeekerComponent
 public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
-
-	//---- SEEKERCOMPONENT FUNCTIONS ----
 	void SetSeekTarget(AActor* target);
 	void ClearSeekTarget();
-
-	//---- AICONTROLLER FUNCTIONS ----
 	void SetDestination(FVector destination);
 	void ClearDestination();
+
 	bool HasPath();
 
 	// Called every frame

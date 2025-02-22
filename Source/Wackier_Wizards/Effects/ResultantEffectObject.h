@@ -14,7 +14,6 @@ class WACKIER_WIZARDS_API UResultantEffectObject : public UObject
 {
 	GENERATED_BODY()
 	
-//Object that is created using ResultantEffect data, created and stored in ResultantEffectContainer at runtime
 public:
 	void Init(UResultantEffectData* data);
 

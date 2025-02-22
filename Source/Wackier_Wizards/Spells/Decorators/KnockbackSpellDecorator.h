@@ -14,7 +14,6 @@ class WACKIER_WIZARDS_API UKnockbackSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 	
-//Applies knockback if (currently) a Character is the target of a hit. An AOE alternative will be created when needed (or if time permits before then). 
 public:
 	class WACKIER_WIZARDS_API Builder
 	{

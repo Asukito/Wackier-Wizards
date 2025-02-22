@@ -14,7 +14,6 @@ class WACKIER_WIZARDS_API UInstantEffect : public UBaseEffect
 {
 	GENERATED_BODY()
 	
-//An effect that is applied instantly
 public:
 	void StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list) override;
 };

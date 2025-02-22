@@ -38,7 +38,6 @@ AProjectile::AProjectile()
 	_niagara->SetupAttachment(_staticMesh);
 }
 
-//Initialises functionality for creating an effect trail
 void AProjectile::InitTrail(UEffectData* trailEffect)
 {
 	_trailEffect = trailEffect;
@@ -80,7 +79,6 @@ void AProjectile::ApplyForce(bool gravity, FVector unitDirection, float speed)
 
 	_staticMesh->SetRelativeScale3D(FVector(1.0f));
 	_staticMesh->SetEnableGravity(gravity);
-
 	FVector force = unitDirection * speed;
 	_staticMesh->SetPhysicsLinearVelocity(force);
 	_niagara->SetRelativeRotation(unitDirection.Rotation());
@@ -112,7 +110,6 @@ void AProjectile::BeginPlay()
 	_staticMesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::BeginInteractOverlap);
 }
 
-//Destroys the projectile if the distance travelled exceeds the maxDistance.
 void AProjectile::CheckDistanceTravelled()
 {
 	if (_start == FVector::Zero())
@@ -128,7 +125,6 @@ void AProjectile::CheckDistanceTravelled()
 	}
 }
 
-//Spawns an AOE actor
 void AProjectile::PlaceAOE()
 {
 	FActorSpawnParameters params;
@@ -156,7 +152,6 @@ void AProjectile::Tick(float DeltaTime)
 		return;
 	}
 
-	//If the distance between the lastLocation and currentLocation is greater than the trailInterval. Execute PlaceAOE().
 	FVector location = GetActorLocation();
 
 	if ((location - _lastLocation).Length() >= _trailInterval)

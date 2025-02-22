@@ -16,59 +16,35 @@ class WACKIER_WIZARDS_API USpellDecorator : public UObject, public ISpell
 {
 	GENERATED_BODY()
 	
-//Abstract Decorator class that all decorators derive from. A reference to the BaseSpell object is stored within the lowest level decorator.
-// 
-//The lowest level decorator will always be one of the main spell types, currently:
-//ProjectileSpellDecorator
-//BeamSpellDecorator
-//HitscanSpellDecorator
-//SelfSpellDecorator
-// 
-//These will hold references to the SpellBase
 public:	
-	//---- DECORATOR CREATION ----
-	//Handles member assignment when decorating this
 	void Decorate(ISpell* decorate);
-	//Sets the previous level of this decorator. This can be a decorator, or the SpellBase if this is the lowest level decorator.
 	void SetOwnerSpell(ISpell* owner) override;
-
-	//---- SPELL OVERRIDES ----
 	virtual bool CastSpell() override;
 	virtual void Update(float deltaTime) override;
-	//Function called when a hit occurs
 	virtual void ProcessHit(AActor* hit, FVector location) override;
 
-	//---- SPELL HELPERS ----
 	virtual const FString GetSpellName() override;
 	virtual const float GetSpellRange() override;
 	USpellData* GetSpellData() override;
 	ISpellCaster* GetSpellOwner() override;
+	virtual USpellBase* GetBaseSpell() override;
+	virtual ISpell* GetDecorator() override;
 	virtual bool IsOnCooldown() override;
 
-	//---- DECORATOR HELPERS ----
-	//Recursive function that returns the SpellBase object that is being decorated
-	virtual USpellBase* GetBaseSpell() override;
-	//Recursive function that returns the highest level decorator of this spell
-	virtual ISpell* GetDecorator() override;
-
-	//---- POST-HIT FUNCTIONS ----
-	//Handles the placement of effects on the target
 	void HandleEffects(IEffectable* target) override;
-	//Handles any relevant interface functions attached to the hit actor. This includes IDamageable, IHealth and IEffectable
 	void HandleInterfaceFunctions(AActor* actor) override;
-
 protected:
-	//Reference to previous level of spell. This can be a decorator, or the SpellBase if this is the lowest level decorator
-	UPROPERTY()
-	TScriptInterface<ISpell> spell;
-	//Reference to next level of spell. This will always be another decorator
 	UPROPERTY()
 	TScriptInterface<ISpell> ownerSpell;
 
-	// The SpellData contained within the SpellBase
+	UPROPERTY()
+	TScriptInterface<ISpell> spell;
 	UPROPERTY()
 	TObjectPtr<USpellData> spellData;
-	// The caster of this spell
 	UPROPERTY()
 	TScriptInterface<ISpellCaster> spellOwner;
+
+	UPROPERTY()
+	TObjectPtr<AActor> spellHit;
+	FVector spellHitLocation;
 };

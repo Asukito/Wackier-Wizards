@@ -13,7 +13,6 @@ class WACKIER_WIZARDS_API UHitscanSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 
-//Hitscan spell that instantly hits a target if a hit occurs. ProcessHit is executed if an actor is hit.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{

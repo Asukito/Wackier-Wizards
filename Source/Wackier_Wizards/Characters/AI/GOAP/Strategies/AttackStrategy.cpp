@@ -12,11 +12,9 @@ void UAttackStrategy::Start(UGOAP_Agent* agent)
 
 void UAttackStrategy::Update(float deltaTime)
 {
-    //Rotate the actor towards the player
     FRotator lookAt = (_player->GetActorLocation() - _agent->GetActorLocation()).Rotation();
     _agent->GetOwner()->SetActorRotation(lookAt);
 
-    //Attempt to attack the player
     _agent->Attack();
 }
 

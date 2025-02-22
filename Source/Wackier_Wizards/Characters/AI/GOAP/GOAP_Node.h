@@ -14,7 +14,6 @@ class WACKIER_WIZARDS_API UGOAP_Node : public UObject
 {
 	GENERATED_BODY()
 	
-//Node class used for path planning. Contains an action and this nodes neighbours (that also contain actions) for plan creation and execution.
 public:
 	UGOAP_Node();
 

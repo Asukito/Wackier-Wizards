@@ -13,10 +13,8 @@ class WACKIER_WIZARDS_API UGOAP_Goal : public UObject
 {
 	GENERATED_BODY()
 	
-//Class that represents a goal. A goal contains it's name, a priority value, and the desired effects (beliefs) that are needed to fulfil the goal.
 public:
 	UGOAP_Goal();
-	//Evaluates all of the desiredEffects to determine if the goal has been achieved.
 	bool CheckIfFulfilled();
 
 	class WACKIER_WIZARDS_API Builder

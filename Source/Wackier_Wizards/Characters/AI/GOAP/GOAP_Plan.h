@@ -13,8 +13,6 @@ UCLASS()
 class WACKIER_WIZARDS_API UGOAP_Plan : public UObject
 {
 	GENERATED_BODY()
-
-//Class that contains actions contained within a plan. Also stores the total plan cost that can be used to compare plans in future (if necessary).
 public:
 	UGOAP_Plan();
 

@@ -16,7 +16,7 @@ void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 	_cooldown = spellData->cooldown;
 	_cooldownTimer = 0.0f;
 }
-//Checks if the spell can be cast. Currently only checks if the cooldown is active, will include mana cost in future.
+
 bool USpellBase::CastSpell()
 {
 	if (_cooldownTimer > 0.0f)
@@ -30,7 +30,6 @@ bool USpellBase::CastSpell()
 	return true;
 }
 
-//Spawns relevant Niagara to display a hit. In the case of SelfSpells, spawns the Niagara for the spell.
 void USpellBase::ProcessHit(AActor* hit, FVector location)
 {
 	if (spellData->type != SpellType::SELF)
@@ -63,8 +62,36 @@ void USpellBase::Update(float deltaTime)
 	_cooldownTimer -= deltaTime;
 }
 
+USpellBase* USpellBase::GetBaseSpell()
+{
+	return this;
+}
 
-//Handles any effects and applies them to the target
+const FString USpellBase::GetSpellName()
+{
+	return spellData->name;
+}
+
+const float USpellBase::GetSpellRange()
+{
+	return spellData->range;
+}
+
+USpellData* USpellBase::GetSpellData()
+{
+	return spellData.Get();
+}
+
+ISpellCaster* USpellBase::GetSpellOwner()
+{
+	return spellOwner.GetInterface();
+}
+
+bool USpellBase::IsOnCooldown()
+{
+	return (_cooldownTimer > 0.0f);
+}
+
 void USpellBase::HandleEffects(IEffectable* target)
 {
 	if (spellData->effects.Num() == 0)
@@ -88,8 +115,6 @@ void USpellBase::HandleEffects(IEffectable* target)
 	effects.Empty();
 }
 
-//Handles any Interface logic relevant to the hit actor. Including damage (IDamageable) and effects (IEffectable). Will include healing spells if the logic is needed outside of SelfSpells.
-//Currently SelfSpells can apply heals by applying an effect that heals.
 void USpellBase::HandleInterfaceFunctions(AActor* actor)
 {
 	bool isKilled = false;
@@ -122,35 +147,3 @@ AProjectile* USpellBase::GetProjectile()
 {
 	return _projectile;
 }
-
-#pragma region "Helpers"
-USpellBase* USpellBase::GetBaseSpell()
-{
-	return this;
-}
-
-const FString USpellBase::GetSpellName()
-{
-	return spellData->name;
-}
-
-const float USpellBase::GetSpellRange()
-{
-	return spellData->range;
-}
-
-USpellData* USpellBase::GetSpellData()
-{
-	return spellData.Get();
-}
-
-ISpellCaster* USpellBase::GetSpellOwner()
-{
-	return spellOwner.GetInterface();
-}
-
-bool USpellBase::IsOnCooldown()
-{
-	return (_cooldownTimer > 0.0f);
-}
-#pragma endregion

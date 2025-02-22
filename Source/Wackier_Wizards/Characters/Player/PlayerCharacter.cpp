@@ -28,8 +28,11 @@ APlayerCharacter::APlayerCharacter() : ABaseCharacter()
 	checkf(spellCasterComponent, TEXT("Player SpellCasterComponent failed to initialise"));
 }
 
-#pragma region "IHealth"
-//Respawns at the spawnpoint if the player is dead. Spawns at the last valid position if not.
+void APlayerCharacter::SetController(AWWPlayerController* controller)
+{
+	playerController = controller;
+}
+
 void APlayerCharacter::Respawn(bool isDead)
 {
 	if (isDead == true)
@@ -40,9 +43,7 @@ void APlayerCharacter::Respawn(bool isDead)
 
 	SetActorLocation(lastValidPosition);
 }
-#pragma endregion
 
-#pragma region "Spell Casting"
 void APlayerCharacter::CastSpell()
 {
 	spellCasterComponent->CastSpell();
@@ -57,7 +58,16 @@ void APlayerCharacter::CycleSpell()
 {
 	spellCasterComponent->CycleSpell();
 }
-#pragma endregion
+
+const FVector APlayerCharacter::GetSeekLocation() const noexcept
+{
+	if (seek == false)
+	{
+		return FVector::ZeroVector;
+	}
+
+	return GetActorLocation();
+}
 
 void APlayerCharacter::BindDelegates()
 {
@@ -65,6 +75,11 @@ void APlayerCharacter::BindDelegates()
 
 	spellCasterComponent->BindCastStartForward([this]() { return GetCastStartForward(); });
 	spellCasterComponent->BindCastStartLocation([this]() { return GetCastStartLocation(); });
+}
+
+void APlayerCharacter::ToggleSeek()
+{
+	seek = !seek;
 }
 
 // Called when the game starts or when spawned
@@ -77,7 +92,6 @@ void APlayerCharacter::BeginPlay()
 }
 
 // Called every frame
-//Updates the character's last valid location every 3 seconds. This is used for respawning if the player falls from the map.
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	ABaseCharacter::Tick(DeltaTime);
@@ -95,10 +109,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 }
 
 #pragma region "Helpers"
-void APlayerCharacter::SetController(AWWPlayerController* controller)
-{
-	playerController = controller;
-}
 UCameraComponent* APlayerCharacter::GetCamera() const noexcept
 {
 	return camera;
@@ -118,22 +128,5 @@ const FVector APlayerCharacter::GetCastStartLocation()
 const FVector APlayerCharacter::GetCastStartForward()
 {
 	return camera->GetForwardVector();
-}
-#pragma endregion
-
-#pragma region "Test"
-void APlayerCharacter::ToggleSeek()
-{
-	seek = !seek;
-}
-//Returns the actor location if seeking is active. Returns a zero vector if not.
-const FVector APlayerCharacter::GetSeekLocation() const noexcept
-{
-	if (seek == false)
-	{
-		return FVector::ZeroVector;
-	}
-
-	return GetActorLocation();
 }
 #pragma endregion

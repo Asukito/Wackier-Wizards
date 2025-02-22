@@ -31,7 +31,11 @@ UGOAP_Agent::UGOAP_Agent()
 	checkf(_distanceSensor, TEXT("GOAP_Agent DistanceSensor failed to initialise"));
 }
 
-//Initialises the agent's member variables, as well as any components attach to the agent.
+void UGOAP_Agent::ConstructorInit()
+{
+
+}
+
 void UGOAP_Agent::Init()
 {
 	_owner = Cast<ARangedEnemy>(GetOwner());
@@ -56,7 +60,6 @@ void UGOAP_Agent::Init()
 }
 
 #pragma region "GOAP"
-//Creates a BeliefFactory and passes in the _beliefs list to be populated. Add beliefs using a name and it's condition or location to evaluate.
 void UGOAP_Agent::SetupBeliefs()
 {
 	TObjectPtr<UGOAP_BeliefFactory> factory = NewObject<UGOAP_BeliefFactory>();
@@ -71,26 +74,23 @@ void UGOAP_Agent::SetupBeliefs()
 
 	factory->MarkAsGarbage();
 }
-//Creates potential actions that the agent can perform.
+
 void UGOAP_Agent::SetupActions()
 {
 	_actions.Add(UGOAP_Action::Builder(TEXT("SEEK")).WithStrategy(NewObject<USeekStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("NO_LOS"))).AddEffect(_beliefs.FindChecked(TEXT("HAS_LOS"))).Build());
 	_actions.Add(UGOAP_Action::Builder(TEXT("CHASE")).WithStrategy(NewObject<UChaseStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("HAS_LOS"))).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_NOT_IN_RANGE"))).AddEffect(_beliefs.FindChecked(TEXT("TARGET_IN_RANGE"))).Build());
 	_actions.Add(UGOAP_Action::Builder(TEXT("ATTACK")).WithStrategy(NewObject<UAttackStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_IN_RANGE"))).AddEffect(_beliefs.FindChecked(TEXT("ATTACKING"))).Build());
 }
-//Creates the goals that the agent will try to achieve.
+
 void UGOAP_Agent::SetupGoals()
 {
 	_goals.Add(UGOAP_Goal::Builder(TEXT("SEEK")).WithPriority(1).AddDesiredEffect(_beliefs.FindChecked(TEXT("HAS_LOS"))).Build());
 	_goals.Add(UGOAP_Goal::Builder(TEXT("ATTACK")).WithPriority(3).AddDesiredEffect(_beliefs.FindChecked(TEXT("ATTACKING"))).Build());
 }
-//Create and assign an action plan
+
 void UGOAP_Agent::CalculateActionPlan()
 {
-	///------- Logic necessary to order goals by their priority. Currently not in use as the goals have no overlap, and we currently don't need goals to be overriden by higher priority ones.-----
-
-	//If the currentGoal exists, ignore any goals that have a lower priority level than the currentGoal
-	/*int priorityLevel = (_currentGoal != nullptr) ? _currentGoal->_priority : 0;
+	int priorityLevel = (_currentGoal != nullptr) ? _currentGoal->_priority : 0;
 
 	TArray<UGOAP_Goal*> goalsToCheck;
 
@@ -101,9 +101,7 @@ void UGOAP_Agent::CalculateActionPlan()
 	else
 	{
 		goalsToCheck = _goals;
-	}*/
-
-	///-------------------------------------------------------------------------------------------------------------------
+	}
 
 	UGOAP_Plan* potentialPlan = _planner->Plan(this, _goals, nullptr);
 
@@ -113,7 +111,6 @@ void UGOAP_Agent::CalculateActionPlan()
 	}
 }
 
-//Resets the ancient if any errors occur. Known memory management(?) bug that needs to be handled in future. Current fix causes no noticeable issues so priority is low for now.  
 void UGOAP_Agent::Reset()
 {
 	_goals.Empty();
@@ -146,7 +143,6 @@ TArray<TObjectPtr<UGOAP_Goal>> UGOAP_Agent::GetGoals() const
 #pragma endregion
 
 #pragma region "AI"
-//Will pause the agent. (Currently not in use)
 void UGOAP_Agent::SetPauseAgent(bool val)
 {
 	if (_isPaused == val)
@@ -166,7 +162,7 @@ void UGOAP_Agent::TogglePauseAgent()
 
 void UGOAP_Agent::SetDestination(FVector destination)
 {
-	_owner->SetDestination(destination);
+	//_owner->SetDestination(destination);
 }
 void UGOAP_Agent::SetHasLineOfSight(bool val)
 {
@@ -190,7 +186,6 @@ void UGOAP_Agent::SetSeekPlayer(bool val)
 
 	_owner->ClearSeekTarget();
 }
-//Attacks the player if the spell can reach
 void UGOAP_Agent::Attack()
 {
 	if (_spell == nullptr)
@@ -286,7 +281,6 @@ void UGOAP_Agent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Cyan, FString::Printf(TEXT("%s"), _currentAction ? *_currentAction->_name : TEXT("NO ACTION")));
 
-	//If there is no action, attempt to create a plan
 	if (_currentAction == nullptr)
 	{
 		CalculateActionPlan();
@@ -300,18 +294,15 @@ void UGOAP_Agent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 		}
 	}
 
-	//If a plan and current action exists, call the action's functions.
 	if (_plan != nullptr && _currentAction != nullptr)
 	{
 		_currentAction->Update(DeltaTime);
 
-		//If the currentAction is complete, stop the action and check if the plan has another action.
 		if (_currentAction->IsComplete() == true)
 		{
 			_currentAction->Stop();
 			_currentAction = nullptr;
 
-			//If the plan has no more actions, set the lastGoal to the currentGoal and set the currentGoal to nullptr. If another action exists, set it to the currentAction and start it.
 			if (_plan->actions.Num() == 0)
 			{
 				_lastGoal = _currentGoal;
@@ -325,8 +316,6 @@ void UGOAP_Agent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 		}
 	}
 
-	//If the currentAction is null but a plan exists, an error has occured. (Related to the bug mentioned in the comment on the Reset() function).
-	//A counter is used as the action could be set to nullptr when the action is complete. 5 is just a random number.
 	if (_currentAction == nullptr)
 	{
 		_planFailCounter += 1;

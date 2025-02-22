@@ -15,61 +15,7 @@ ABaseCharacter::ABaseCharacter()
 	effectComponent = CreateDefaultSubobject<UEffectsComponent>(TEXT("Effects Component"));
 	checkf(effectComponent, TEXT("Player EffectsComponent failed to initialise"));
 }
-// Called when the game starts or when spawned
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
 
-	spawnLocation = GetActorLocation();
-	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-
-	BindDelegates();
-}
-
-void ABaseCharacter::BindDelegates()
-{
-	//Any BeginPlay delegate binding goes here
-}
-
-#pragma region "IEffectable"
-IDamageable* ABaseCharacter::GetDamageableAccess()
-{
-	return Cast<IDamageable>(this);
-}
-IHealth* ABaseCharacter::GetHealthAccess()
-{
-	return Cast<IHealth>(this);;
-}
-
-void ABaseCharacter::AddEffect(UEffectData* effect)
-{
-	effectComponent->CreateAndAddEffect(effect);
-}
-bool ABaseCharacter::HasEffect(FString effectName)
-{
-	return effectComponent->Contains(effectName);
-}
-
-bool ABaseCharacter::HasMovementComponent()
-{
-	return true;
-}
-void ABaseCharacter::AdjustWalkSpeed(float percent)
-{
-	float absolute = maxWalkSpeed * FMath::Abs(percent / 100);
-
-	if (percent >= 0)
-	{
-		GetCharacterMovement()->MaxWalkSpeed += absolute;
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed -= absolute;
-	}
-}
-#pragma endregion
-
-#pragma region "IDamageable"
 bool ABaseCharacter::TakeDamage(int amount, FString source)
 {
 	healthComponent->AdjustHealth(amount * -1);
@@ -84,24 +30,78 @@ bool ABaseCharacter::TakeDamage(int amount, FString source)
 
 	return isDead;
 }
-void ABaseCharacter::Kill()
-{
-	effectComponent->ClearEffects();
-	Respawn(true);
-}
-#pragma endregion
 
-#pragma region "IHealth"
 void ABaseCharacter::Heal(int amount)
 {
 	healthComponent->AdjustHealth(amount);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("%s: Healed %i health"), *GetName(), amount));
 }
+
 void ABaseCharacter::AdjustMaxHealth(int amount)
 {
 	healthComponent->AdjustMaxHealth(amount);
 }
-//Returns health. If getPercent is true, returns health percent based on max health.
+
+void ABaseCharacter::AdjustWalkSpeed(float percent)
+{
+	float absolute = maxWalkSpeed * FMath::Abs(percent / 100);
+
+	if (percent >= 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed += absolute;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed -= absolute;
+	}
+}
+
+void ABaseCharacter::Kill()
+{
+	effectComponent->ClearEffects();
+	Respawn(true);
+}
+
+void ABaseCharacter::Respawn(bool isDead)
+{
+	if (isDead == true)
+	{
+		healthComponent->SetHealth(healthComponent->GetMaxHealth());
+		SetActorLocation(spawnLocation);
+	}
+}
+
+void ABaseCharacter::AddEffect(UEffectData* effect)
+{
+	effectComponent->CreateAndAddEffect(effect);
+}
+
+// Called when the game starts or when spawned
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	spawnLocation = GetActorLocation();
+	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
+	BindDelegates();
+}
+
+void ABaseCharacter::BindDelegates()
+{
+	//Any BeginPlay delegate binding goes here
+}
+
+IDamageable* ABaseCharacter::GetDamageableAccess()
+{
+	return Cast<IDamageable>(this);
+}
+
+IHealth* ABaseCharacter::GetHealthAccess()
+{
+	return Cast<IHealth>(this);;
+}
+
 const int ABaseCharacter::GetHealth(bool getPercent) noexcept
 {
 	if (getPercent == true)
@@ -116,19 +116,13 @@ const int ABaseCharacter::GetMaxHealth() noexcept
 {
 	return healthComponent->GetMaxHealth();
 }
-void ABaseCharacter::Respawn(bool isDead)
+
+bool ABaseCharacter::HasEffect(FString effectName)
 {
-	if (isDead == true)
-	{
-		healthComponent->SetHealth(healthComponent->GetMaxHealth());
-		SetActorLocation(spawnLocation);
-	}
+	return effectComponent->Contains(effectName);
 }
-#pragma endregion
 
-
-
-
-
-
-
+bool ABaseCharacter::HasMovementComponent()
+{
+	return true;
+}

@@ -15,7 +15,6 @@ class WACKIER_WIZARDS_API AResultantEffectContainer : public AActor
 {
 	GENERATED_BODY()
 	
-//Data container for storing ResultantEffects
 public:	
 	// Sets default values for this actor's properties
 	AResultantEffectContainer();

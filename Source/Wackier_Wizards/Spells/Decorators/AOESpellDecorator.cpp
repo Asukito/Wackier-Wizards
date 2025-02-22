@@ -12,7 +12,6 @@ bool UAOESpellDecorator::CastSpell()
 	return spell->CastSpell();
 }
 
-//Generates a SphereOverlap at the collision location. The lower level ProcessHit function is then called on the actors within the overlap.
 void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
 {
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();

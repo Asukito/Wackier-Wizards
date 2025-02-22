@@ -8,7 +8,6 @@
 #include "NiagaraComponent.h"
 #include "../SpellBase.h"
 
-//Generates a linetrace using the spells parameters. A NiagaraComponent is created and initialised if one doesn't exist. If one does, the TraceStart and TraceEnd positions are updated. 
 bool UBeamSpellDecorator::CastSpell()
 {
 	if (spell->CastSpell() == false)
@@ -52,7 +51,6 @@ bool UBeamSpellDecorator::CastSpell()
 	return true;
 }
 
-//_beam NiagaraComponent destroyed after a small delay. 
 void UBeamSpellDecorator::Update(float deltaTime)
 {
 	_timer -= deltaTime;

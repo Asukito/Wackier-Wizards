@@ -16,8 +16,7 @@ UCLASS()
 class WACKIER_WIZARDS_API APracticeDummy : public AActor, public IEffectable, public IDamageable
 {
 	GENERATED_BODY()
-
-//An actor that can be damaged and effected. Created at the start of development for spell/effect testing. 
+	
 public:	
 	// Sets default values for this actor's properties
 	APracticeDummy();

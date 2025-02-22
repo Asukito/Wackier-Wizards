@@ -26,7 +26,6 @@ void USightSensorComponent::SetTarget(TObjectPtr<AActor> target)
 
 bool USightSensorComponent::Scan()
 {
-	//Checks if the distance between the actor and target is greater than the seeable distance
 	FVector dir = _target->GetActorLocation() - _agent->GetActorLocation();
 
 	if (dir.Length() > _distance)
@@ -36,7 +35,6 @@ bool USightSensorComponent::Scan()
 
 	dir.Normalize();
 
-	//Checks to see if the target is in the owners FOV
 	FVector forward = _agent->GetForwardVector();
 
 	if (forward.Dot(dir) < (1 - _fov))
@@ -44,7 +42,6 @@ bool USightSensorComponent::Scan()
 		return false;
 	}
 
-	//Finally, creates a linetrace from the owner to the target, if an actor that isn't the target blocks the linetrace, the target is not in sight.
 	FHitResult hit;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(_agent->GetOwner());

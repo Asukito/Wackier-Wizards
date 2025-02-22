@@ -18,18 +18,16 @@ class ARangedEnemy;
 class APlayerCharacter;
 class ISpell;
 
-//TO DO:
-//Look at GOAP_Action to check if the action can be performed. Implement the logic to cancel the plan if it cannot be performed. Potential fix for bug. (Low priority, bug isn't major).
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UGOAP_Agent : public UActorComponent
 {
 	GENERATED_BODY()
 
-//The component that is attached to NPCs. An agent contains all of the beliefs, potential actions, and desired goals needed to perform actions. 
 public:	
 	// Sets default values for this component's properties
 	UGOAP_Agent();
 
+	void ConstructorInit();
 	void Init();
 
 	//---- GOAP ----

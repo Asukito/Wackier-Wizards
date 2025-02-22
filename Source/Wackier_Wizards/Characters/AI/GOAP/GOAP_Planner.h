@@ -17,7 +17,6 @@ class WACKIER_WIZARDS_API UGOAP_Planner : public UObject
 {
 	GENERATED_BODY()
 	
-//A planner class to handled the creation and handling of GOAP action plans
 public:
 	UGOAP_Planner();
 

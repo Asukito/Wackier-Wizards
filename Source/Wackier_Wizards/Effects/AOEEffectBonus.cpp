@@ -5,7 +5,6 @@
 #include "../Objects/AOEActor.h"
 #include "EffectData.h"
 
-//Create an AOEActor and initialise it.
 void UAOEEffectBonus::DoBonus()
 {
 	TObjectPtr<AAOEActor> actor = effectOwner->GetWorld()->SpawnActor<AAOEActor>(AAOEActor::StaticClass(), effectOwner->GetActorLocation(), FRotator::ZeroRotator);

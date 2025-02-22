@@ -13,8 +13,6 @@ UCLASS()
 class WACKIER_WIZARDS_API USelfSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
-
-//Casts a spell that applies effects to the caster. If AOE is selected, will apply the AOE at the casters location. 
 public:
 
 	class WACKIER_WIZARDS_API Builder
