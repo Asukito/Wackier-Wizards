@@ -19,19 +19,11 @@ void UAttackStrategy::Update(float deltaTime)
         return;
     }
     
-    if (_agent->TargetIsTooClose() == true)
+    //Attacking enemy shouldn't be pathing, reset if pathing.
+    if (_agent->HasPath() == true)
     {
-        _agent->SetSeekPlayer(true);
-        _agent->SetDestination(-(_agent->GetCurrentDestination()));
-    }
-    else
-    {
-        //Attacking enemy shouldn't be pathing, reset if pathing.
-        if (_agent->HasPath() == true)
-        {
-            _agent->SetSeekPlayer(false);
-            _agent->SetFocus(_player.Get());
-        }
+        _agent->SetSeekPlayer(false);
+        _agent->SetFocus(_player.Get());
     }
 
     //Attempt to attack the player
@@ -45,5 +37,5 @@ void UAttackStrategy::Stop()
 
 bool UAttackStrategy::Complete()
 {
-    return (_agent->TargetIsInRange() == false || _agent->HasLineOfSight() == false);
+    return (_agent->TargetIsInRange() == false || _agent->TargetIsTooClose() == true || _agent->HasLineOfSight() == false);
 }

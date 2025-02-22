@@ -42,6 +42,11 @@ void ABaseEnemy::ClearSeekTarget()
 	ClearFocus();
 }
 
+void ABaseEnemy::SetToRetreat(bool val)
+{
+	_seeker->SetToRetreat(val);
+}
+
 void ABaseEnemy::SetDestination(FVector destination)
 {
 	_controller->SetDestination(destination);

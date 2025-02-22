@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../../../Interfaces/Spell.h"
 #include "Wackier_Wizards/Definitions.h"
+#include "Strategies/RetreatStrategy.h"
 
 // Sets default values for this component's properties
 UGOAP_Agent::UGOAP_Agent()
@@ -67,6 +68,7 @@ void UGOAP_Agent::SetupBeliefs()
 	factory->AddBelief(TEXT("HAS_LOS"), [this] { return _hasLineOfSight; });
 	factory->AddBelief(TEXT("TARGET_NOT_IN_RANGE"), [this] { return !_isTargetInRange; });
 	factory->AddBelief(TEXT("TARGET_IN_RANGE"), [this] { return _isTargetInRange; });
+	factory->AddBelief(TEXT("TARGET_ISNT_TOO_CLOSE"), [this] { return !_isTargetTooClose; });
 	factory->AddBelief(TEXT("TARGET_TOO_CLOSE"), [this] { return _isTargetTooClose; });
 	factory->AddBelief(TEXT("ATTACKING"), [] { return false; });
 
@@ -77,7 +79,8 @@ void UGOAP_Agent::SetupActions()
 {
 	_actions.Add(UGOAP_Action::Builder(TEXT("SEEK")).WithStrategy(NewObject<USeekStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("NO_LOS"))).AddEffect(_beliefs.FindChecked(TEXT("HAS_LOS"))).Build());
 	_actions.Add(UGOAP_Action::Builder(TEXT("CHASE")).WithStrategy(NewObject<UChaseStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("HAS_LOS"))).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_NOT_IN_RANGE"))).AddEffect(_beliefs.FindChecked(TEXT("TARGET_IN_RANGE"))).Build());
-	_actions.Add(UGOAP_Action::Builder(TEXT("ATTACK")).WithStrategy(NewObject<UAttackStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_IN_RANGE"))).AddEffect(_beliefs.FindChecked(TEXT("ATTACKING"))).Build());
+	_actions.Add(UGOAP_Action::Builder(TEXT("RETREAT")).WithStrategy(NewObject<URetreatStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("HAS_LOS"))).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_TOO_CLOSE"))).AddEffect(_beliefs.FindChecked(TEXT("TARGET_ISNT_TOO_CLOSE"))).Build());
+	_actions.Add(UGOAP_Action::Builder(TEXT("ATTACK")).WithStrategy(NewObject<UAttackStrategy>()).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_IN_RANGE"))).AddPrecondition(_beliefs.FindChecked(TEXT("TARGET_ISNT_TOO_CLOSE"))).AddEffect(_beliefs.FindChecked(TEXT("ATTACKING"))).Build());
 }
 //Creates the goals that the agent will try to achieve.
 void UGOAP_Agent::SetupGoals()
@@ -157,7 +160,7 @@ void UGOAP_Agent::SetPauseAgent(bool val)
 
 	_isPaused = val;
 
-	//_owner->SetPauseMovement(_isPaused);
+//_owner->SetPauseMovement(_isPaused);
 }
 
 void UGOAP_Agent::TogglePauseAgent()
@@ -190,6 +193,10 @@ void UGOAP_Agent::SetSeekPlayer(bool val)
 	}
 
 	_owner->ClearSeekTarget();
+}
+void UGOAP_Agent::SetToRetreat(bool val)
+{
+	_owner->SetToRetreat(val);
 }
 //Attacks the player if the spell can reach
 void UGOAP_Agent::Attack()
@@ -235,8 +242,9 @@ bool UGOAP_Agent::CheckForEnemyLOS()
 	FHitResult hit;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(_owner);
+
 	//DrawDebugLine(_owner->GetWorld(), _owner->GetActorLocation(), _player->GetActorLocation(), FColor::Red, false, 0.1f);
-	
+
 	if (_owner->GetWorld()->LineTraceSingleByChannel(hit, _owner->GetActorLocation(), _player->GetActorLocation(), ECC_Enemy, params))
 	{
 		//DrawDebugLine(_owner->GetWorld(), _owner->GetActorLocation(), hit.GetActor()->GetActorLocation(), FColor::Green, false, 10.0f);
@@ -249,6 +257,10 @@ bool UGOAP_Agent::CheckForEnemyLOS()
 			if (_currentAction->_name == "ATTACK")
 			{
 				SetSeekPlayer(true);
+			}
+			else if (_currentAction->_name == "RETREAT")
+			{
+				SetToRetreat(true);
 			}
 
 			FVector current = _owner->GetCurrentDestination();
@@ -326,6 +338,7 @@ void UGOAP_Agent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	_enemySightTimer = 0.5f;
 }
 
 // Called every frame
@@ -389,6 +402,8 @@ void UGOAP_Agent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 		{
 			Reset();
 		}
+
+		GEngine->AddOnScreenDebugMessage(1, 5, FColor::Cyan, FString::Printf(TEXT("Failed plans: %i"), _planFailCounter));
 	}
 	else
 	{

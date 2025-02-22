@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ChaseStrategy.h"
+#include "RetreatStrategy.h"
 #include "../GOAP_Agent.h"
 
-void UChaseStrategy::Start(UGOAP_Agent* agent)
+void URetreatStrategy::Start(UGOAP_Agent* agent)
 {
 	_agent = agent;
 	_agent->SetSeekPlayer(true);
+	_agent->SetToRetreat(true);
 }
 
-//Attempts to attack the player while chasing
-void UChaseStrategy::Update(float deltaTime)
-{
+void URetreatStrategy::Update(float deltaTime)
+{	
 	//If an enemy is blocking los, return.
 	if (_agent->CheckForEnemyLOS() == true)
 	{
@@ -23,12 +23,12 @@ void UChaseStrategy::Update(float deltaTime)
 	_agent->Attack();
 }
 
-void UChaseStrategy::Stop()
+void URetreatStrategy::Stop()
 {
 	_agent->SetSeekPlayer(false);
 }
 
-bool UChaseStrategy::Complete()
+bool URetreatStrategy::Complete()
 {
-	return (_agent->TargetIsInRange() || _agent->HasLineOfSight() == false);
+	return (_agent->TargetIsTooClose() == false || _agent->HasLineOfSight() == false);
 }

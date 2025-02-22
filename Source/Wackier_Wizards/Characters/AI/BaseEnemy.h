@@ -24,6 +24,7 @@ public:
 	//---- SEEKERCOMPONENT FUNCTIONS ----
 	void SetSeekTarget(AActor* target);
 	void ClearSeekTarget();
+	void SetToRetreat(bool val);
 
 	//---- AICONTROLLER FUNCTIONS ----
 	void SetDestination(FVector destination);

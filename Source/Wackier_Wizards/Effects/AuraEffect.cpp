@@ -91,8 +91,16 @@ void UAuraEffect::SetUpAura(AActor* actor)
 	aura->AttachToComponent(actor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	float originalRadius = aura->GetUnscaledSphereRadius();
-	aura->SetCollisionProfileName(FName("OverlapAll"));
-	aura->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	if (effectData->type == EffectType::SHIELD)
+	{
+		aura->SetCollisionProfileName(FName("Shield"));
+	}
+	else
+	{
+		aura->SetCollisionProfileName(FName("Aura"));
+	}
+
 	aura->SetSphereRadius(effectData->auraSize);
 	aura->SetHiddenInGame(false);
 	aura->SetVisibility(true);
@@ -104,9 +112,6 @@ void UAuraEffect::SetUpAura(AActor* actor)
 	niagara->AttachToComponent(actor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	niagara->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	niagara->SetRelativeScale3D(FVector(effectData->auraSize / 20));
-
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Yellow, FString::Printf(TEXT("Aura: %f"), aura->GetUnscaledSphereRadius()));
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Yellow, FString::Printf(TEXT("Niagra: %f"), niagara->GetRelativeScale3D().X));
 }
 
 void UAuraEffect::HandleOverlap()

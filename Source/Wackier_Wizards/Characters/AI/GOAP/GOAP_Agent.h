@@ -45,6 +45,7 @@ public:
 	void SetIsTargetInRange(bool val);
 	void SetIsTargetTooClose(bool val);
 	void SetSeekPlayer(bool val);
+	void SetToRetreat(bool val);
 	void Attack();
 	void SetPlayer(APlayerCharacter* player);
 	//Set focus of owner to rotate towards
@@ -122,4 +123,6 @@ private:
 	bool _hasLineOfSight;
 	bool _isTargetInRange;
 	bool _isTargetTooClose;
+
+	float _enemySightTimer;
 };
