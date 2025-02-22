@@ -47,6 +47,11 @@ public:
 	void SetSeekPlayer(bool val);
 	void Attack();
 	void SetPlayer(APlayerCharacter* player);
+	//Set focus of owner to rotate towards
+	void SetFocus(AActor* focus);
+	void ClearFocus();
+	//Checks to see if enemy is blocking LoS to player, then adjusts destination to create a strafe effect.
+	bool CheckForEnemyLOS();
 
 	//---- HELPERS ----
 	FVector GetCurrentDestination() const;

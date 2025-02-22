@@ -11,6 +11,7 @@
 #include "../../../Components/SightSensorComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../../Interfaces/Spell.h"
+#include "Wackier_Wizards/Definitions.h"
 
 // Sets default values for this component's properties
 UGOAP_Agent::UGOAP_Agent()
@@ -220,12 +221,65 @@ void UGOAP_Agent::SetPlayer(APlayerCharacter* player)
 
 	_isPaused = false;
 }
+void UGOAP_Agent::SetFocus(AActor* focus)
+{
+	_owner->SetFocus(focus);
+}
+void UGOAP_Agent::ClearFocus()
+{
+	_owner->ClearFocus();
+}
+//Checks to see if enemy is blocking LoS to player
+bool UGOAP_Agent::CheckForEnemyLOS()
+{
+	FHitResult hit;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(_owner);
+	//DrawDebugLine(_owner->GetWorld(), _owner->GetActorLocation(), _player->GetActorLocation(), FColor::Red, false, 0.1f);
+	
+	if (_owner->GetWorld()->LineTraceSingleByChannel(hit, _owner->GetActorLocation(), _player->GetActorLocation(), ECC_Enemy, params))
+	{
+		//DrawDebugLine(_owner->GetWorld(), _owner->GetActorLocation(), hit.GetActor()->GetActorLocation(), FColor::Green, false, 10.0f);
+
+		if (hit.GetActor() != nullptr)
+		{
+			FVector ownerRight = _owner->GetActorRightVector();
+
+			//If attacking (so no pathing), start to seek the player
+			if (_currentAction->_name == "ATTACK")
+			{
+				SetSeekPlayer(true);
+			}
+
+			FVector current = _owner->GetCurrentDestination();
+
+			//Get direction from the player to the hit actor
+			FVector dir = _player->GetActorLocation() - hit.GetActor()->GetActorLocation();
+			dir.Normalize();
+
+			//Adjust destination based on direction
+			//TO DO: make the 500 multiplier an adjustable variable, "Seek strength/speed".
+			if (FVector::DotProduct(dir, ownerRight) > 0)
+			{
+				SetDestination(current + (ownerRight * 500));
+			}
+			else
+			{
+				SetDestination(current - (ownerRight * 500));
+			}
+
+			return true;
+		}
+	}
+
+	return false;
+}
 #pragma endregion
 
 #pragma region "Helpers"
 FVector UGOAP_Agent::GetCurrentDestination() const
 {
-	return FVector::ZeroVector;// _owner->GetCurrentDestination();
+	return _owner->GetCurrentDestination();
 }
 
 FVector UGOAP_Agent::GetActorLocation() const

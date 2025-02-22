@@ -26,7 +26,7 @@ bool UHitscanSpellDecorator::CastSpell()
 	FHitResult hit;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(owner);
-
+	
 	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
 	{
 		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);

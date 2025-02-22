@@ -6,6 +6,8 @@
 #include "../Player/PlayerCharacter.h"
 #include "../../Components/SeekerComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy() : ABaseCharacter()
@@ -15,29 +17,58 @@ ABaseEnemy::ABaseEnemy() : ABaseCharacter()
 
 	_seeker = CreateDefaultSubobject<USeekerComponent>(TEXT("Seeker Component"));
 	checkf(_seeker, TEXT("Base Enemy SeekerComponent failed to initialise"));
+
+	SetRootComponent(GetCapsuleComponent());
+
+	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
+	GetMesh()->SetupAttachment(GetRootComponent());
+
+	_sightCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Sight Collider"));
+	checkf(_sightCollider, TEXT("BaseEnemy SightCollider failed to initialise"));
+	_sightCollider->SetCollisionProfileName(FName("EnemyTrace"));
+	_sightCollider->SetupAttachment(GetRootComponent());
+	_sightCollider->bHiddenInGame = false;
 }
 
 void ABaseEnemy::SetSeekTarget(AActor* target)
 {
+	SetFocus(target);
 	_seeker->SetSeekTarget(target);
 }
 
 void ABaseEnemy::ClearSeekTarget()
 {
 	_seeker->ClearSeekTarget();
+	ClearFocus();
 }
 
 void ABaseEnemy::SetDestination(FVector destination)
 {
+	_controller->SetDestination(destination);
 }
 
 void ABaseEnemy::ClearDestination()
 {
 }
 
+void ABaseEnemy::SetFocus(AActor* target)
+{
+	_controller->SetFocus(target);
+}
+
+void ABaseEnemy::ClearFocus()
+{
+	_controller->ClearFocus(EAIFocusPriority::Gameplay);
+}
+
 bool ABaseEnemy::HasPath()
 {
 	return _controller->HasPath();
+}
+
+const FVector ABaseEnemy::GetCurrentDestination()
+{
+	return _controller->GetCurrentDestination();
 }
 
 // Called when the game starts or when spawned

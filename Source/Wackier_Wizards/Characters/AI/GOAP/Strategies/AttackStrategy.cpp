@@ -8,13 +8,31 @@ void UAttackStrategy::Start(UGOAP_Agent* agent)
 {
     _agent = agent;
     _player = _agent->GetPlayerActor();
+    agent->SetFocus(_player.Get());
 }
 
 void UAttackStrategy::Update(float deltaTime)
 {
-    //Rotate the actor towards the player
-    FRotator lookAt = (_player->GetActorLocation() - _agent->GetActorLocation()).Rotation();
-    _agent->GetOwner()->SetActorRotation(lookAt);
+    //If an enemy is blocking los, return.
+    if (_agent->CheckForEnemyLOS() == true)
+    {
+        return;
+    }
+    
+    if (_agent->TargetIsTooClose() == true)
+    {
+        _agent->SetSeekPlayer(true);
+        _agent->SetDestination(-(_agent->GetCurrentDestination()));
+    }
+    else
+    {
+        //Attacking enemy shouldn't be pathing, reset if pathing.
+        if (_agent->HasPath() == true)
+        {
+            _agent->SetSeekPlayer(false);
+            _agent->SetFocus(_player.Get());
+        }
+    }
 
     //Attempt to attack the player
     _agent->Attack();
@@ -22,6 +40,7 @@ void UAttackStrategy::Update(float deltaTime)
 
 void UAttackStrategy::Stop()
 {
+    _agent->ClearFocus();
 }
 
 bool UAttackStrategy::Complete()
