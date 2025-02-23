@@ -70,7 +70,7 @@ void ABaseCharacter::AdjustWalkSpeed(float percent)
 #pragma endregion
 
 #pragma region "IDamageable"
-bool ABaseCharacter::TakeDamage(int amount, FString source)
+bool ABaseCharacter::DamageTake(int amount, FString source)
 {
 	healthComponent->AdjustHealth(amount * -1);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));

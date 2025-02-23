@@ -85,7 +85,7 @@ bool UBaseEffect::ProcessEffect()
 		case EffectDoes::DAMAGE:
 			if (IDamageable* target = owner->GetDamageableAccess())
 			{
-				return !target->TakeDamage(effectData->strength, effectData->name);
+				return !target->DamageTake(effectData->strength, effectData->name);
 			}
 
 			break;
@@ -97,7 +97,7 @@ bool UBaseEffect::ProcessEffect()
 					float maxHealth = target->GetMaxHealth();
 					float amount =  FMath::RoundToFloat(((maxHealth * ((float)(effectData->strength) / 100))));
 
-					return !damageable->TakeDamage(amount, effectData->name);;
+					return !damageable->DamageTake(amount, effectData->name);;
 				}
 			}
 

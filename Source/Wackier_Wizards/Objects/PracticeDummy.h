@@ -22,9 +22,7 @@ public:
 	// Sets default values for this actor's properties
 	APracticeDummy();
 
-	using IDamageable::TakeDamage;
-
-	bool TakeDamage(int amount, FString source) override;
+	bool DamageTake(int amount, FString source) override;
 	void AddEffect(UEffectData* effect) override;
 
 	IDamageable* GetDamageableAccess() override;

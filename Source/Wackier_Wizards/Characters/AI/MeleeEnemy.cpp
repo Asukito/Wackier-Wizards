@@ -15,7 +15,7 @@ void AMeleeEnemy::Attack(IDamageable* target)
 		return;
 	}
 
-	target->TakeDamage(_meleeDamage, "Melee NPC");
+	target->DamageTake(_meleeDamage, "Melee NPC");
 	_timer = _meleeDelay;
 }
 
