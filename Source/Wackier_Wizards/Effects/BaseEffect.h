@@ -25,6 +25,7 @@ public:
 	//Queues the effect removal from the effect actor.
 	void ClearEffect();
 	
+	bool IsStackable();
 	FString GetEffectName();
 
 protected:

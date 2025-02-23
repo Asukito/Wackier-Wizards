@@ -6,11 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "../../Spells/SpellData.h"
 #include "../SpellBase.h"
-
-bool UAOESpellDecorator::CastSpell()
-{
-	return spell->CastSpell();
-}
+#include "Wackier_Wizards/Definitions.h"
 
 //Generates a SphereOverlap at the collision location. The lower level ProcessHit function is then called on the actors within the overlap.
 void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
@@ -18,8 +14,7 @@ void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> types;
-	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+	types.Add(UEngineTypes::ConvertToObjectType(ECC_DamageableObject));
 	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
 	TArray<TObjectPtr<AActor>> ignore;

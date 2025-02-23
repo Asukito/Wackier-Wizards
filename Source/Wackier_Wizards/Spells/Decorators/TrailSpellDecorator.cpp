@@ -15,7 +15,7 @@ bool UTrailSpellDecorator::CastSpell()
 	}
 
 	AProjectile* projectile = GetBaseSpell()->GetProjectile();
-	projectile->InitTrail(spellData->trailEffect);
+	projectile->InitTrail();
 
 	return true;
 }

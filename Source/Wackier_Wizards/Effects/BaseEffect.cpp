@@ -7,8 +7,7 @@
 #include "../Interfaces/Damageable.h"
 #include "../Interfaces/Health.h"
 #include "EffectDoes.h"
-#include "BounceEffectBonus.h"
-#include "AOEEffectBonus.h"
+#include "Bonuses/BounceEffectBonus.h"
 
 void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list)
 {
@@ -35,17 +34,12 @@ void UBaseEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComponen
 	}
 
 	//Create and execute any bonus effects if necessary.
-	UBaseEffectBonus* effect;
+	TObjectPtr<UBaseEffectBonus> effect;
 
 	switch (effectData->bonus)
 	{
 		case EffectBonusType::BOUNCE:
 			effect = NewObject<UBounceEffectBonus>();
-			effect->Init(data, actor, true);
-
-			break;
-		case EffectBonusType::AOE:
-			effect = NewObject<UAOEEffectBonus>();
 			effect->Init(data, actor, true);
 
 			break;
@@ -71,6 +65,11 @@ void UBaseEffect::EndEffect()
 void UBaseEffect::ClearEffect()
 {
 	_clearDelegate.ExecuteIfBound(this);
+}
+
+bool UBaseEffect::IsStackable()
+{
+	return effectData->stackable;
 }
 
 FString UBaseEffect::GetEffectName()

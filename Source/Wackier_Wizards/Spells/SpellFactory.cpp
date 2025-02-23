@@ -31,6 +31,10 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
+		case SpellType::SCATTER:
+			spell = UScatterSpellDecorator::Builder(spellBase).Build()->_getUObject();
+
+			break;
 	}
 
 	if (spell == nullptr)
@@ -57,6 +61,10 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	if (spellData->applyCasterEffect == true)
 	{
 		spell = UCasterEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+	if (spellData->spawnAOEEffect == true)
+	{
+		spell = UAOEEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
 
 	return spell.GetInterface();

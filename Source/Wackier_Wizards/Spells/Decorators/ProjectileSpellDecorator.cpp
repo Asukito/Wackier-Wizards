@@ -2,10 +2,7 @@
 
 
 #include "ProjectileSpellDecorator.h"
-#include "../../Objects/Projectile.h"
 #include "../../Interfaces/SpellCaster.h"
-#include "../SpellData.h"
-#include "../SpellBase.h"
 
 //Spawns and initialises a projectile
 bool UProjectileSpellDecorator::CastSpell()
@@ -15,25 +12,10 @@ bool UProjectileSpellDecorator::CastSpell()
 		return false;
 	}
 
-	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
-
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
-	projectile->AddIgnoreActor(owner);
-	
-	projectile->AddOwnerSpell(GetDecorator());
-
-	projectile->InitNiagara(spellData->spellNiagara);
-	projectile->SetRange(spellData->range);
-
-	GetBaseSpell()->SetProjectile(projectile);
-
 	FVector unitDirection = spellOwner->GetCastStartForward();
+	unitDirection.Normalize();
 
-	projectile->SetIsActive(true);
-	projectile->ApplyForce(spellData->useGravity, unitDirection, spellData->speed);
+	FireProjectile(unitDirection);
 
 	return true;
 }

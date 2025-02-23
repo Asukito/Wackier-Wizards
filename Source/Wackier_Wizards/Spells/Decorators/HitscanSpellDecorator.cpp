@@ -23,22 +23,8 @@ bool UHitscanSpellDecorator::CastSpell()
 	//Uncomment Niagara logic when proper Hitscan Niagara systems are created.
 	//UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
 
-	FHitResult hit;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(owner);
-	
-	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
-	{
-		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
-		//vfx->SetVariableVec3(FName("TraceEnd"), hit.Location);
-
-		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location);
-	}
-	else
-	{
-		//vfx->SetVectorParameter(FName("TraceEnd"), end);
-		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
-	}
+	FVector hitEnd;
+	FireLineTrace(owner, start, end, hitEnd);
 
 	return true;
 }

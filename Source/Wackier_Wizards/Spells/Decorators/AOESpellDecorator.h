@@ -31,6 +31,5 @@ public:
 		}
 	};
 
-	virtual bool CastSpell() override;
 	void ProcessHit(AActor* hit, FVector location) override;
 };

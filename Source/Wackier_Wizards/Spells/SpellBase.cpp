@@ -8,7 +8,7 @@
 #include "../Interfaces/Health.h"
 #include "../Interfaces/SpellCaster.h"
 #include "NiagaraFunctionLibrary.h"
-#include "../Effects/ShieldAuraEffect.h"
+#include "../Effects/Auras/ShieldAuraEffect.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {

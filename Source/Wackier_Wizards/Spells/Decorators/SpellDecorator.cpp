@@ -3,6 +3,9 @@
 
 #include "SpellDecorator.h"
 #include "../../Interfaces/SpellCaster.h"
+#include "../../Objects/Projectile.h"
+#include "../SpellData.h"
+#include "../SpellBase.h"
 
 void USpellDecorator::Decorate(ISpell* decorate)
 {
@@ -74,6 +77,47 @@ ISpell* USpellDecorator::GetDecorator()
 	}
 
 	return ownerSpell->GetDecorator();
+}
+
+void USpellDecorator::FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd)
+{
+	FHitResult hit;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(owner);
+
+	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
+	{
+		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
+
+		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location);
+	}
+	else
+	{
+		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
+	}
+
+	OutEnd = end;
+}
+
+void USpellDecorator::FireProjectile(FVector direction)
+{
+	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
+
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
+	projectile->AddIgnoreActor(owner);
+
+	projectile->AddOwnerSpell(GetDecorator());
+
+	projectile->InitNiagara(spellData->spellNiagara);
+	projectile->SetRange(spellData->range);
+
+	GetBaseSpell()->SetProjectile(projectile);
+
+	projectile->SetIsActive(true);
+	projectile->ApplyForce(spellData->useGravity, direction, spellData->speed);
 }
 
 bool USpellDecorator::IsOnCooldown()

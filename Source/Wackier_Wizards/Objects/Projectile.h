@@ -13,6 +13,7 @@ class UNiagaraSystem;
 class UNiagaraEmitter;
 class UProjectileSpell;
 class UEffectData;
+class USpellData;
 
 UCLASS()
 class WACKIER_WIZARDS_API AProjectile : public AActor
@@ -24,7 +25,7 @@ public:
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	void InitTrail(UEffectData* trialEffect);
+	void InitTrail();
 	void InitNiagara(UNiagaraSystem* niagara);
 	void AddOwnerSpell(ISpell* spell);
 	void AddIgnoreActor(AActor* actor);
@@ -55,8 +56,11 @@ private:
 	TObjectPtr<UNiagaraComponent> _niagara;
 	UPROPERTY()
 	TObjectPtr<UNiagaraSystem> _collisionEffect;
+
 	UPROPERTY()
 	TScriptInterface<ISpell> _spell;
+	UPROPERTY()
+	TObjectPtr<USpellData> _spellData;
 
 	TArray<TWeakObjectPtr<AActor>> _ignore;
 

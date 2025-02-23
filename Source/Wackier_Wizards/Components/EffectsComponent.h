@@ -49,6 +49,8 @@ private:
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<UBaseEffect>> _effects;
+	UPROPERTY()
+	TMap<FString, int> _stacks;
 
 	UPROPERTY()
 	TArray<TObjectPtr<UBaseEffect>> _toRemove;

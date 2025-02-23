@@ -42,25 +42,36 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
 	TObjectPtr<UNiagaraSystem> collisionNiagara;
 
+	//---- SCATTER ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides))
+	bool isHitscan = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides))
+	int scatterAmount;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides), meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float scatterRange;
 
 	//---- PROJECTILE ----
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || (type == SpellType::SCATTER && isHitscan == false)", EditConditionHides))
 	float speed;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || (type == SpellType::SCATTER && isHitscan == false)", EditConditionHides))
 	bool useGravity;
 	//Trail
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type ==	SpellType::PROJECTILE", EditConditionHides))
 	bool hasTrail;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "hasTrail == true", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
 	TObjectPtr<UEffectData> trailEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
+	float aoeLifetime;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
+	float aoeInterval;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
+	float aoeSize;
 
 	//AOE
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool isAOE;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
 	float aoeRange = 0.0f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isAOE == true", EditConditionHides))
-	int aoeDamage = 0.0f;
 	//Knockback
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
 	bool applyKnockback;
@@ -71,4 +82,15 @@ public:
 	bool applyCasterEffect;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyCasterEffect == true", EditConditionHides))
 	TObjectPtr<UEffectData> casterEffect;
+	//AOE Effect
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool spawnAOEEffect = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
+	TObjectPtr<UEffectData> aoeEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
+	float aoeEffectDuration;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
+	float aoeEffectSize;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
+	float aoeEffectInterval;
 };
