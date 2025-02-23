@@ -14,6 +14,7 @@ UTargetSensorComponent::UTargetSensorComponent()
 
 	_sensor = CreateDefaultSubobject<USphereComponent>(TEXT("Target Sensor"));
 	checkf(_sensor, TEXT("TargetSensorComponent SphereComponent failed to intitialise"));
+	_sensor->SetCollisionProfileName(FName("Sensor"));
 }
 
 void UTargetSensorComponent::Init(float radius, TObjectPtr<UGOAP_Agent> agent)

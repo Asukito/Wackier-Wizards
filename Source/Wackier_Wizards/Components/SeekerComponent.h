@@ -22,6 +22,7 @@ public:
 	void ClearSeekTarget();
 	void SetController(AWWAIController* controller);
 	void SetIsActive(bool isActive);
+	void SetToRetreat(bool val);
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -32,5 +33,6 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<AWWAIController> _controller;
 
+	bool _toRetreat;
 	bool _isActive;
 };

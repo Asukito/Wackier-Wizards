@@ -5,9 +5,12 @@
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "../Objects/AOEActor.h"
+#include "AOEEffectActor.h"
 #include "Engine/StaticMesh.h"
 #include "../Effects/EffectData.h"
+#include "../Effects/Auras/ShieldAuraEffect.h"
+#include "../Spells/SpellData.h"
+#include "../Interfaces/SpellCaster.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -39,10 +42,10 @@ AProjectile::AProjectile()
 }
 
 //Initialises functionality for creating an effect trail
-void AProjectile::InitTrail(UEffectData* trailEffect)
+void AProjectile::InitTrail()
 {
-	_trailEffect = trailEffect;
-	_trailInterval = _trailEffect->bonusRange / 2;
+	_trailEffect = _spellData->trailEffect;
+	_trailInterval = _spellData->aoeSize / 2;
 	_lastLocation = GetActorLocation();
 
 	_hasTrail = true;
@@ -56,6 +59,7 @@ void AProjectile::InitNiagara(UNiagaraSystem* niagara)
 void AProjectile::AddOwnerSpell(ISpell* spell)
 {
 	_spell = spell->_getUObject();
+	_spellData = _spell->GetSpellData();
 }
 void AProjectile::AddIgnoreActor(AActor* actor)
 {
@@ -134,9 +138,11 @@ void AProjectile::PlaceAOE()
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TObjectPtr<AAOEActor> actor = GetWorld()->SpawnActor<AAOEActor>(AAOEActor::StaticClass(), GetActorLocation(), FRotator::ZeroRotator, params);
+	TObjectPtr<AAOEEffectActor> actor = GetWorld()->SpawnActor<AAOEEffectActor>(AAOEEffectActor::StaticClass(), GetActorLocation(), FRotator::ZeroRotator, params);
 	AddIgnoreActor(actor);
-	actor->Init(_trailEffect);
+	actor->AddIgnoredActor(_spell->GetSpellOwner()->GetSpellOwner());
+
+	actor->Init(_trailEffect, _spellData->aoeLifetime, _spellData->aoeSize, _spellData->aoeInterval);
 }
 
 // Called every frame

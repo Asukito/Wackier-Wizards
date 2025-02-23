@@ -34,6 +34,6 @@ private:
 	TObjectPtr<AActor> _target;
 	TObjectPtr<UGOAP_Agent> _agent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float _distance;
 };

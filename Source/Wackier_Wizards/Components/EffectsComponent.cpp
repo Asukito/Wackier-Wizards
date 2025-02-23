@@ -5,9 +5,13 @@
 #include "../Effects/OverTimeEffect.h"
 #include "../Effects/InstantEffect.h"
 #include "../Effects/DurationEffect.h"
+#include "../Effects/Auras/AuraEffect.h"
+#include "../Effects/Auras/TickAuraEffect.h"
+#include "../Effects/Auras/OverlapAuraEffect.h"
+#include "../Effects/Auras/ShieldAuraEffect.h"
 #include "../Effects/BaseEffect.h"
 #include "../Effects/EffectData.h"
-#include "../Effects/ResultantEffectContainer.h"
+#include "../Effects/Resultant/ResultantEffectContainer.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -37,6 +41,16 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 		data = effectData;
 	}
 
+	//If stackable, check if the cap is hit before any creation.
+	if (data->stackable == true)
+	{
+		if (_stacks.Contains(data->name) == true && _stacks[data->name] == data->stackCap)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, FString::Printf(TEXT("%s at max stack"), *data->name));
+			return;
+		}
+	}
+
 	//Create the effect using the effectData
 	switch (data->type)
 	{
@@ -52,6 +66,21 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 			newEffect = NewObject<UDurationEffect>();
 
 			break;
+		case EffectType::AURA:
+			if (data->isPerTick == true)
+			{
+				newEffect = NewObject<UTickAuraEffect>();
+			}
+			else
+			{
+				newEffect = NewObject<UOverlapAuraEffect>();
+			}
+
+			break;
+		case EffectType::SHIELD:
+			newEffect = NewObject<UShieldAuraEffect>();
+
+			break;
 	}
 
 	if (newEffect == nullptr)
@@ -59,11 +88,36 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 		return;
 	}
 
-	//If stackable add effect no matter what
-	if (data->stackable == true)
+	if (data->type == EffectType::SHIELD || data->type == EffectType::AURA)
 	{
+		if (_aura != nullptr)
+		{
+			_aura->EndEffect();
+		}
+
+		_aura = Cast<UAuraEffect>(newEffect);
+
 		_effects.Add(newEffect);
 		newEffect->StartEffect(data, GetOwner(), this);
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
+		return;
+	}
+
+	//If stackable add effect
+	if (data->stackable == true)
+	{
+		if (_stacks.Contains(data->name) == false)
+		{
+			_stacks.Add(data->name, 1);
+		}
+		else
+		{
+			_stacks[data->name] += 1;
+		}
+
+		_effects.Add(newEffect);
+		newEffect->StartEffect(data, GetOwner(), this);
+
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Added Effect: %s"), *newEffect->GetEffectName()));
 		return;
 	}
@@ -93,12 +147,40 @@ void UEffectsComponent::ClearEffects()
 	}
 }
 
+UAuraEffect* UEffectsComponent::GetAura()
+{
+	return _aura;
+}
+
 void UEffectsComponent::RemoveEffects()
 {
 	for (UBaseEffect* effect : _toRemove)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::Printf(TEXT("Removed Effect: %s"), *effect->GetEffectName()));
 		_effects.Remove(effect);
+
+		if (_aura == effect)
+		{
+			_aura = nullptr;
+		}
+
+		if (effect->IsStackable() == false)
+		{
+			continue;
+		}
+
+		//Decrement stack amount if stackable.
+		FString name = effect->GetEffectName();
+
+		if (_stacks.Contains(name) == true)
+		{
+			_stacks[name] -= 1;
+
+			if (_stacks[name] <= 0)
+			{
+				_stacks.Remove(name);
+			}
+		}
 	}
 
 	_toRemove.Empty();

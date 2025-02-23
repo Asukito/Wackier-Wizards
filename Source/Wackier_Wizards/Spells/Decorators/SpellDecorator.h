@@ -51,6 +51,9 @@ public:
 	//Recursive function that returns the highest level decorator of this spell
 	virtual ISpell* GetDecorator() override;
 
+	void FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd);
+	void FireProjectile(FVector direction);
+
 	//---- POST-HIT FUNCTIONS ----
 	//Handles the placement of effects on the target
 	void HandleEffects(IEffectable* target) override;

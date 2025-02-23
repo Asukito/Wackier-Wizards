@@ -28,6 +28,7 @@ public:
 	int GetHealth() const;
 	//Return health as a percentage of the max health
 	int GetHealthPercent() const;
+	int GetBaseHealth() const;
 	int GetMaxHealth() const;
 
 public:
