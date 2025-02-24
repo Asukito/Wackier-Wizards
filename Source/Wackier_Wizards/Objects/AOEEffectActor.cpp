@@ -6,6 +6,7 @@
 #include "../Interfaces/Effectable.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Wackier_Wizards/Definitions.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AAOEEffectActor::AAOEEffectActor()
@@ -16,27 +17,32 @@ AAOEEffectActor::AAOEEffectActor()
 	_collider = CreateDefaultSubobject<USphereComponent>(TEXT("Collider"));
 	checkf(_collider, TEXT("AOE Actor Sphere Component failed to initialise"));
 	_collider->SetCollisionProfileName(FName("Aura"));
+	_collider->bHiddenInGame = false;
+	_collider->SetVisibility(true);
 }
 
-void AAOEEffectActor::Init(UEffectData* data, float lifeTime, float aoeSize, float overlapDelay)
+void AAOEEffectActor::Init(UEffectData* data, float lifeTime, float aoeSize, bool addPullEffect)
 {
 	_aoeSize = aoeSize;	
+	_pullActors = addPullEffect;
 
 	_effect = data;
-	_collider->bHiddenInGame = false;
-	_collider->InitSphereRadius(_aoeSize);
+
+	_collider->SetSphereRadius(_aoeSize);
 
 	_lifeTime = lifeTime;
 
-	DoAoe();
+	Populate();
 
-	if (_effect->type == EffectType::INSTANT)
+	if (_effect != nullptr && _effect->type == EffectType::INSTANT)
 	{
+		ProcessEffects();
 		Destroy();
 		return;
 	}
 
-	_overlapDelay = overlapDelay;
+	_collider->OnComponentBeginOverlap.AddDynamic(this, &AAOEEffectActor::BeginOverlap);
+	_collider->OnComponentEndOverlap.AddDynamic(this, &AAOEEffectActor::EndOverlap);
 }
 
 void AAOEEffectActor::AddIgnoredActor(AActor* actor)
@@ -57,13 +63,39 @@ void AAOEEffectActor::AddIgnoredActors(TArray<AActor*> actors)
 	}
 }
 
+void AAOEEffectActor::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (_ignore.Contains(OtherActor))
+	{
+		return;
+	}
+
+	if (_overlaps.Contains(OtherActor) == false)
+	{
+		_overlaps.Add(OtherActor);
+	}
+}
+
+void AAOEEffectActor::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (_ignore.Contains(OtherActor))
+	{
+		return;
+	}
+
+	if (_overlaps.Contains(OtherActor) == true)
+	{
+		_overlaps.Remove(OtherActor);
+	}
+}
+
 // Called when the game starts or when spawned
 void AAOEEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AAOEEffectActor::DoAoe()
+void AAOEEffectActor::Populate()
 {
 	TArray<TEnumAsByte<EObjectTypeQuery>> types;
 	types.Add(UEngineTypes::ConvertToObjectType(ECC_DamageableObject));
@@ -71,20 +103,46 @@ void AAOEEffectActor::DoAoe()
 
 	TArray<AActor*> targets;
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), _aoeSize, 12, FColor::Red, false, _overlapDelay);
 	if (UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), _aoeSize, types, NULL, _ignore, targets))
 	{
 		for (TObjectPtr<AActor> actor : targets)
 		{
-			if (IEffectable* target = Cast<IEffectable>(actor))
-			{
-				if (target->HasEffect(_effect->name))
-				{
-					continue;
-				}
+			_overlaps.Add(actor);
+		}
+	}
+}
 
-				target->AddEffect(_effect);
+void AAOEEffectActor::ProcessEffects()
+{
+	for (TObjectPtr<AActor> actor : _overlaps)
+	{
+		if (_pullActors == true)
+		{
+			TArray<UCharacterMovementComponent*> components;
+			actor->GetComponents<UCharacterMovementComponent>(components);
+
+			if (components.Num() != 0)
+			{
+				FVector direction = actor->GetActorLocation() - GetActorLocation();
+				direction.Normalize();
+
+				components[0]->Launch(-direction * 500);
 			}
+		}
+
+		if (_effect == nullptr)
+		{
+			continue;
+		}
+
+		if (IEffectable* target = Cast<IEffectable>(actor))
+		{
+			if (target->HasEffect(_effect->name))
+			{
+				continue;
+			}
+
+			target->AddEffect(_effect);
 		}
 	}
 }
@@ -101,14 +159,11 @@ void AAOEEffectActor::Tick(float DeltaTime)
 		Destroy();
 	}
 
-	_overlapTimer += DeltaTime;
-	if ( _overlapTimer < _overlapDelay)
+	if (_overlaps.Num() == 0)
 	{
 		return;
 	}
 
-	DoAoe();
-
-	_overlapTimer = 0.0f;
+	ProcessEffects();
 }
 

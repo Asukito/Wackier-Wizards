@@ -3,7 +3,6 @@
 
 #include "SpellDecorator.h"
 #include "../../Interfaces/SpellCaster.h"
-#include "../../Objects/Projectile.h"
 #include "../SpellData.h"
 #include "../SpellBase.h"
 
@@ -34,9 +33,9 @@ void USpellDecorator::Update(float deltaTime)
 	spell->Update(deltaTime);
 }
 
-void USpellDecorator::ProcessHit(AActor* hit, FVector location)
+void USpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 }
 
 const FString USpellDecorator::GetSpellName()
@@ -81,43 +80,12 @@ ISpell* USpellDecorator::GetDecorator()
 
 void USpellDecorator::FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd)
 {
-	FHitResult hit;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(owner);
-
-	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
-	{
-		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
-
-		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location);
-	}
-	else
-	{
-		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
-	}
-
-	OutEnd = end;
+	spell->FireLineTrace(owner, start, end, OutEnd);
 }
 
 void USpellDecorator::FireProjectile(FVector direction)
 {
-	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
-
-	FActorSpawnParameters spawnParams;
-	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
-	projectile->AddIgnoreActor(owner);
-
-	projectile->AddOwnerSpell(GetDecorator());
-
-	projectile->InitNiagara(spellData->spellNiagara);
-	projectile->SetRange(spellData->range);
-
-	GetBaseSpell()->SetProjectile(projectile);
-
-	projectile->SetIsActive(true);
-	projectile->ApplyForce(spellData->useGravity, direction, spellData->speed);
+	spell->FireProjectile(direction);
 }
 
 bool USpellDecorator::IsOnCooldown()
@@ -125,12 +93,7 @@ bool USpellDecorator::IsOnCooldown()
 	return spell->IsOnCooldown();
 }
 
-void USpellDecorator::HandleEffects(IEffectable* target)
+int USpellDecorator::GetSpellDamage()
 {
-	spell->HandleEffects(target);
-}
-
-void USpellDecorator::HandleInterfaceFunctions(AActor* actor)
-{
-	spell->HandleInterfaceFunctions(actor);
+	return spell->GetSpellDamage();
 }

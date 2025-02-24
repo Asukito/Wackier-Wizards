@@ -7,6 +7,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "../SpellBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 bool UScatterSpellDecorator::CastSpell()
 {
@@ -18,9 +19,6 @@ bool UScatterSpellDecorator::CastSpell()
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 	FVector start = spellOwner->GetCastStartLocation();
 
-	float min = 1 - spellData->scatterRange;
-	float max = 1 + spellData->scatterRange;
-
 	FVector unitDirection = spellOwner->GetCastStartForward();
 	unitDirection.Normalize();
 
@@ -28,10 +26,7 @@ bool UScatterSpellDecorator::CastSpell()
 
 	for (int i = 0; i < spellData->scatterAmount; i++)
 	{
-		double dotX = FMath::RandRange(min, max) - 1;
-		double dotZ = FMath::RandRange(min, max) - 1;
-
-		FVector direction = unitDirection + FVector(dotX, 0, dotZ);
+		FVector direction = unitDirection + (UKismetMathLibrary::RandomUnitVectorInConeInDegrees(unitDirection, spellData->scatterRange));
 
 		if (spellData->isHitscan == true)
 		{
@@ -39,20 +34,20 @@ bool UScatterSpellDecorator::CastSpell()
 			//UNiagaraComponent* vfx = UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, start, spellOwner->GetCastStartForward().Rotation());
 
 			FVector end = ((direction * spellData->range) + start);
-			FireLineTrace(owner, start, end , hitEnd);
+			GetDecorator()->FireLineTrace(owner, start, end, hitEnd);
 		}
 		else
 		{
-			FireProjectile(direction);
+			GetDecorator()->FireProjectile(direction);
 		}
 	}
 
 	return true;
 }
 
-void UScatterSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UScatterSpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 }
 
 USpellBase* UScatterSpellDecorator::GetBaseSpell()

@@ -32,7 +32,7 @@ public:
 	};
 
 	virtual bool CastSpell() override;
-	virtual void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment) override;
 
 	virtual USpellBase* GetBaseSpell() override;
 };

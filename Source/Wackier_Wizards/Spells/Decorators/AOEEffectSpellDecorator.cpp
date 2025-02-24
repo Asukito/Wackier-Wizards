@@ -6,9 +6,9 @@
 #include "../../Interfaces/SpellCaster.h"
 #include "../SpellData.h"
 
-void UAOEEffectSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UAOEEffectSpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -16,5 +16,5 @@ void UAOEEffectSpellDecorator::ProcessHit(AActor* hit, FVector location)
 	TObjectPtr<AAOEEffectActor> actor = spellOwner->GetSpellOwner()->GetWorld()->SpawnActor<AAOEEffectActor>(AAOEEffectActor::StaticClass(), location, FRotator::ZeroRotator, params);
 	actor->AddIgnoredActor(spellOwner->GetSpellOwner());
 
-	actor->Init(spellData->aoeEffect, spellData->aoeEffectDuration, spellData->aoeEffectSize, spellData->aoeEffectInterval);
+	actor->Init(spellData->aoeEffect, spellData->aoeEffectDuration, spellData->aoeEffectSize, spellData->doPullEffect);
 }

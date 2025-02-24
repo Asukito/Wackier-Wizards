@@ -29,9 +29,9 @@ bool UHitscanSpellDecorator::CastSpell()
 	return true;
 }
 
-void UHitscanSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UHitscanSpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 }
 
 USpellBase* UHitscanSpellDecorator::GetBaseSpell()

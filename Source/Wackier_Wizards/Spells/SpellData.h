@@ -47,7 +47,7 @@ public:
 	bool isHitscan = false;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides))
 	int scatterAmount;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides), meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::SCATTER", EditConditionHides), meta = (ClampMin = "0.0", ClampMax = "90"))
 	float scatterRange;
 
 	//---- PROJECTILE ----
@@ -61,11 +61,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
 	TObjectPtr<UEffectData> trailEffect;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
-	float aoeLifetime;
+	float trailLifetime;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
-	float aoeInterval;
+	bool trailPullEffect;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE && hasTrail == true", EditConditionHides))
-	float aoeSize;
+	float trailSize;
+	//Penetrate
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == SpellType::PROJECTILE || (type == SpellType::SCATTER && isHitscan == false)", EditConditionHides))
+	bool canPenetrate;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "(type == SpellType::PROJECTILE || (type == SpellType::SCATTER && isHitscan == false)) && canPenetrate == true", EditConditionHides))
+	int penetrateLimit;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "(type == SpellType::PROJECTILE || (type == SpellType::SCATTER && isHitscan == false)) && canPenetrate == true", EditConditionHides))
+	int damageLossPerHit;
 
 	//AOE
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -75,7 +82,7 @@ public:
 	//Knockback
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF", EditConditionHides))
 	bool applyKnockback;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "applyKnockback == true", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::SELF && applyKnockback == true", EditConditionHides))
 	float knockbackStrength = 0.0f;
 	//Caster Effect
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -92,5 +99,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
 	float aoeEffectSize;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "spawnAOEEffect == true", EditConditionHides))
-	float aoeEffectInterval;
+	bool doPullEffect;
 };
