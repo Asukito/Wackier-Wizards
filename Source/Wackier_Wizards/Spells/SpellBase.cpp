@@ -9,6 +9,7 @@
 #include "../Interfaces/SpellCaster.h"
 #include "NiagaraFunctionLibrary.h"
 #include "../Effects/Auras/ShieldAuraEffect.h"
+#include "../Objects/Projectile.h"
 
 void USpellBase::Init(USpellData* data, ISpellCaster* owner)
 {
@@ -32,7 +33,7 @@ bool USpellBase::CastSpell()
 }
 
 //Spawns relevant Niagara to display a hit. In the case of SelfSpells, spawns the Niagara for the spell.
-void USpellBase::ProcessHit(AActor* hit, FVector location)
+void USpellBase::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
 	if (spellData->type != SpellType::SELF)
 	{
@@ -45,8 +46,49 @@ void USpellBase::ProcessHit(AActor* hit, FVector location)
 
 	if (hit != nullptr)
 	{
-		HandleInterfaceFunctions(hit);
+		HandleInterfaceFunctions(hit, damageAdjustment);
 	}
+}
+
+void USpellBase::FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd)
+{
+	FHitResult hit;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(owner);
+
+	if (owner->GetWorld()->LineTraceSingleByChannel(hit, start, end, ECollisionChannel::ECC_WorldStatic, params))
+	{
+		DrawDebugLine(owner->GetWorld(), start, hit.Location, FColor::Green, false, 2.0f);
+
+		GetDecorator()->ProcessHit(hit.GetActor(), hit.Location, 0);
+	}
+	else
+	{
+		DrawDebugLine(owner->GetWorld(), start, end, FColor::Green, false, 2.0f);
+	}
+
+	OutEnd = end;
+}
+
+void USpellBase::FireProjectile(FVector direction)
+{
+	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
+
+	FActorSpawnParameters spawnParams;
+	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
+	projectile->AddIgnoreActor(owner);
+
+	projectile->AddOwnerSpell(GetDecorator());
+
+	projectile->InitNiagara(spellData->spellNiagara);
+	projectile->SetRange(spellData->range);
+
+	GetBaseSpell()->SetProjectile(projectile);
+
+	projectile->SetIsActive(true);
+	projectile->ApplyForce(spellData->useGravity, direction, spellData->speed);
 }
 
 void USpellBase::SetOwnerSpell(ISpell* owner)
@@ -91,7 +133,7 @@ void USpellBase::HandleEffects(IEffectable* target)
 
 //Handles any Interface logic relevant to the hit actor. Including damage (IDamageable) and effects (IEffectable). Will include healing spells if the logic is needed outside of SelfSpells.
 //Currently SelfSpells can apply heals by applying an effect that heals.
-void USpellBase::HandleInterfaceFunctions(AActor* actor)
+void USpellBase::HandleInterfaceFunctions(AActor* actor, int damageAdjustment)
 {
 	bool isKilled = false;
 	IEffectable* effectable = Cast<IEffectable>(actor);
@@ -102,14 +144,14 @@ void USpellBase::HandleInterfaceFunctions(AActor* actor)
 		{
 			if (TObjectPtr<UShieldAuraEffect> shield = Cast<UShieldAuraEffect>(effectable->GetAura()))
 			{
-				shield->DamageShield(spellData->potency, spellData->name);
+				shield->DamageShield(spellData->potency + damageAdjustment, spellData->name);
 				return;
 			}
 		}
 
 		if (IDamageable* target = Cast<IDamageable>(actor))
 		{
-			isKilled = target->TakeDamage(spellData->potency, spellData->name);
+			isKilled = target->TakeDamage(spellData->potency + damageAdjustment, spellData->name);
 		}
 
 		if (isKilled == true)
@@ -140,6 +182,16 @@ USpellBase* USpellBase::GetBaseSpell()
 	return this;
 }
 
+ISpell* USpellBase::GetDecorator()
+{
+	if (ownerSpell == nullptr)
+	{
+		return this;
+	}
+
+	return ownerSpell->GetDecorator();
+}
+
 const FString USpellBase::GetSpellName()
 {
 	return spellData->name;
@@ -163,5 +215,9 @@ ISpellCaster* USpellBase::GetSpellOwner()
 bool USpellBase::IsOnCooldown()
 {
 	return (_cooldownTimer > 0.0f);
+}
+int USpellBase::GetSpellDamage()
+{
+	return spellData->potency;
 }
 #pragma endregion

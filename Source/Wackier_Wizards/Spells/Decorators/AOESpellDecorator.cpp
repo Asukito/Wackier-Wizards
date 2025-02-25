@@ -9,7 +9,7 @@
 #include "Wackier_Wizards/Definitions.h"
 
 //Generates a SphereOverlap at the collision location. The lower level ProcessHit function is then called on the actors within the overlap.
-void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
 	TObjectPtr<AActor> owner = spellOwner->GetSpellOwner();
 
@@ -31,7 +31,7 @@ void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location)
 	{
 		for (TObjectPtr<AActor> a : targets)
 		{
-			spell->ProcessHit(a, location);
+			spell->ProcessHit(a, location, damageAdjustment);
 		}
 	}
 }

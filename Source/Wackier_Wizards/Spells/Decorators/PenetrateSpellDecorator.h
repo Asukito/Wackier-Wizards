@@ -4,27 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "SpellDecorator.h"
-#include "TrailSpellDecorator.generated.h"
+#include "PenetrateSpellDecorator.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class WACKIER_WIZARDS_API UTrailSpellDecorator : public USpellDecorator
+class WACKIER_WIZARDS_API UPenetrateSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 
-//Applied to a ProjectileSpellDecorator. Initialises additional logic on the spawned projectile that periodically places an AOE effect along it's path.
+//AOE Effect decorator. Generates an AOE Effect at the collision location passed in through ProcessHit.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
-		TWeakObjectPtr<UTrailSpellDecorator> decorator;
+		TWeakObjectPtr<UPenetrateSpellDecorator> decorator;
 
 	public:
 
 		Builder(ISpell* data)
 		{
-			decorator = NewObject<UTrailSpellDecorator>();
+			decorator = NewObject<UPenetrateSpellDecorator>();
 			decorator->Decorate(data);
 			data->SetOwnerSpell(decorator.Get());
 		}

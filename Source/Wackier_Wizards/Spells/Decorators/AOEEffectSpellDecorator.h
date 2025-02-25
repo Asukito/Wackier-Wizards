@@ -34,5 +34,5 @@ public:
 		}
 	};
 
-	void ProcessHit(AActor* hit, FVector location) override;
+	void ProcessHit(AActor* hit, FVector location, int damageAdjustment = 0) override;
 };

@@ -15,12 +15,12 @@ bool UProjectileSpellDecorator::CastSpell()
 	FVector unitDirection = spellOwner->GetCastStartForward();
 	unitDirection.Normalize();
 
-	FireProjectile(unitDirection);
+	GetDecorator()->FireProjectile(unitDirection);
 
 	return true;
 }
 
-void UProjectileSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UProjectileSpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 }

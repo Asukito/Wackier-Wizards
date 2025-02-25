@@ -36,7 +36,7 @@ public:
 	virtual bool CastSpell() override;
 	virtual void Update(float deltaTime) override;
 	//Function called when a hit occurs
-	virtual void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment) override;
 
 	//---- SPELL HELPERS ----
 	virtual const FString GetSpellName() override;
@@ -44,6 +44,7 @@ public:
 	USpellData* GetSpellData() override;
 	ISpellCaster* GetSpellOwner() override;
 	virtual bool IsOnCooldown() override;
+	virtual int GetSpellDamage() override;
 
 	//---- DECORATOR HELPERS ----
 	//Recursive function that returns the SpellBase object that is being decorated
@@ -51,14 +52,8 @@ public:
 	//Recursive function that returns the highest level decorator of this spell
 	virtual ISpell* GetDecorator() override;
 
-	void FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd);
-	void FireProjectile(FVector direction);
-
-	//---- POST-HIT FUNCTIONS ----
-	//Handles the placement of effects on the target
-	void HandleEffects(IEffectable* target) override;
-	//Handles any relevant interface functions attached to the hit actor. This includes IDamageable, IHealth and IEffectable
-	void HandleInterfaceFunctions(AActor* actor) override;
+	virtual void FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd) override;
+	virtual void FireProjectile(FVector direction) override;
 
 protected:
 	//Reference to previous level of spell. This can be a decorator, or the SpellBase if this is the lowest level decorator

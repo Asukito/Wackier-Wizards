@@ -26,6 +26,7 @@ public:
 	AProjectile();
 
 	void InitTrail();
+	void InitPenetrate();
 	void InitNiagara(UNiagaraSystem* niagara);
 	void AddOwnerSpell(ISpell* spell);
 	void AddIgnoreActor(AActor* actor);
@@ -71,6 +72,12 @@ private:
 	float _trailInterval;
 	bool _hasTrail = false;
 
+	bool _canPenetrate;
+	int _penetrateAmount;
+	int _maxPenetrateAmount;
+	int _damageLossPerIndex;
+
+	FVector _velocity;
 	FVector _start;
 	float _maxDistance;
 	bool _isActive;

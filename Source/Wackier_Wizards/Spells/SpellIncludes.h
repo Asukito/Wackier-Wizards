@@ -15,3 +15,4 @@
 #include "Decorators/CasterEffectSpellDecorator.h"
 #include "Decorators/ScatterSpellDecorator.h"
 #include "Decorators/AOEEffectSpellDecorator.h"
+#include "Decorators/PenetrateSpellDecorator.h"
