@@ -6,9 +6,6 @@
 #include "SpellDecorator.h"
 #include "AOESpellDecorator.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class WACKIER_WIZARDS_API UAOESpellDecorator : public USpellDecorator
 {
@@ -34,6 +31,5 @@ public:
 		}
 	};
 
-	virtual bool CastSpell() override;
-	void ProcessHit(AActor* hit, FVector location) override;
+	void ProcessHit(AActor* hit, FVector location, int damageAdjustment) override;
 };

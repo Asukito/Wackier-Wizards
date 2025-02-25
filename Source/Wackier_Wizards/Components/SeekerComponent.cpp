@@ -23,6 +23,7 @@ void USeekerComponent::ClearSeekTarget()
 {
 	_controller->ClearDestination();
 	_target = nullptr;
+	_toRetreat = false;
 }
 
 void USeekerComponent::SetController(AWWAIController* controller)
@@ -35,6 +36,11 @@ void USeekerComponent::SetIsActive(bool isActive)
 	_isActive = isActive;
 }
 
+void USeekerComponent::SetToRetreat(bool val)
+{
+	_toRetreat = val;
+}
+
 // Called every frame
 void USeekerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -42,6 +48,16 @@ void USeekerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	if (_isActive == false || _controller.IsValid() == false || _target == nullptr)
 	{
+		return;
+	}
+
+	//If retreating, take the direction to the target from the current location
+	if (_toRetreat == true)
+	{
+		FVector location = GetOwner()->GetActorLocation();
+		FVector direction = _target->GetActorLocation() - location;
+
+		_controller->SetDestination(location - direction);
 		return;
 	}
 

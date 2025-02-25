@@ -25,14 +25,16 @@ public:
 	//Queues the effect removal from the effect actor.
 	void ClearEffect();
 	
+	bool IsStackable();
 	FString GetEffectName();
 
 protected:
 	//Processes any stat-related effects
-	bool ProcessEffect();
+	bool ProcessEffect(IEffectable* effectable);
 	//Reverses any stat-related effects
-	void ProcessEffectRemoval();
+	void ProcessEffectRemoval(IEffectable* effectable);
 
+	void HandleBonus();
 protected:
 	UPROPERTY()
 	TScriptInterface<IEffectable> owner;
@@ -42,6 +44,6 @@ protected:
 	float timer;
 	int duration;
 	bool hasEnded = false;
-private:
+
 	FOnClear _clearDelegate;
 };

@@ -9,6 +9,7 @@
 class AWWAIController;
 class APlayerCharacter;
 class USeekerComponent;
+class UBoxComponent;
 
 UCLASS()
 class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
@@ -23,11 +24,15 @@ public:
 	//---- SEEKERCOMPONENT FUNCTIONS ----
 	void SetSeekTarget(AActor* target);
 	void ClearSeekTarget();
+	void SetToRetreat(bool val);
 
 	//---- AICONTROLLER FUNCTIONS ----
 	void SetDestination(FVector destination);
 	void ClearDestination();
+	void SetFocus(AActor* target);
+	void ClearFocus();
 	bool HasPath();
+	const FVector GetCurrentDestination();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,4 +49,7 @@ private:
 	TObjectPtr<AWWAIController> _controller;
 	UPROPERTY()
 	TObjectPtr<USeekerComponent> _seeker;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UBoxComponent> _sightCollider;
 };

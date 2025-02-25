@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ProjectileSpellDecorator.h"
+#include "SpellDecorator.h"
 #include "TrailSpellDecorator.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class WACKIER_WIZARDS_API UTrailSpellDecorator : public UProjectileSpellDecorator
+class WACKIER_WIZARDS_API UTrailSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 
@@ -34,5 +34,5 @@ public:
 		}
 	};
 
-	virtual bool CastSpell() override;
+	virtual void FireProjectile(FVector direction) override;
 };
