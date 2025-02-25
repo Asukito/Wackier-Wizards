@@ -10,6 +10,7 @@ UENUM(BlueprintType)
 enum class EffectType : uint8
 {
 	//DoT, Heal Over Time, etc
+	EMPTY UMETA(DisplayName = "Empty"),
 	OVERTIME UMETA(DisplayName = "OverTime"),
 	INSTANT UMETA(DisplayName = "Instant"),
 	FOR_DURATION UMETA(DisplayName = "For Duration"),

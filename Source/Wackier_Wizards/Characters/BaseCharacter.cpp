@@ -22,6 +22,7 @@ void ABaseCharacter::BeginPlay()
 
 	spawnLocation = GetActorLocation();
 	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	canAttack = true;
 
 	BindDelegates();
 }
@@ -53,6 +54,12 @@ bool ABaseCharacter::HasEffect(FString effectName)
 UAuraEffect* ABaseCharacter::GetAura()
 {
 	return effectComponent->GetAura();
+}
+
+void ABaseCharacter::SetCanAct(bool val)
+{
+	//Disable movement
+	canAttack = val;
 }
 
 bool ABaseCharacter::HasMovementComponent()

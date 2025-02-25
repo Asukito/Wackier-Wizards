@@ -164,6 +164,12 @@ bool UBaseEffect::ProcessEffect(IEffectable* effectable)
 			}
 
 			break;
+
+		case EffectDoes::DISABLE_ACTIONS:
+
+			effectable->SetCanAct(false);
+
+			return true;
 	}
 
 	return false;
@@ -214,6 +220,12 @@ void UBaseEffect::ProcessEffectRemoval(IEffectable* effectable)
 		}
 
 		effectable->AdjustWalkSpeed(effectData->strength);
+		break;
+
+	case EffectDoes::DISABLE_ACTIONS:
+
+		effectable->SetCanAct(true);
+
 		break;
 	}
 }

@@ -10,7 +10,7 @@ AMeleeEnemy::AMeleeEnemy() : ABaseEnemy()
 
 void AMeleeEnemy::Attack(IDamageable* target)
 {
-	if (_timer > 0.0f || target == nullptr)
+	if (canAttack == false || _timer > 0.0f || target == nullptr)
 	{
 		return;
 	}

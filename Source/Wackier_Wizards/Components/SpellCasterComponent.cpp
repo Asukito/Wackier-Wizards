@@ -65,6 +65,7 @@ void USpellCasterComponent::CycleSpell()
 	ChangeSpell(_currentSpellIndex);
 }
 
+
 void USpellCasterComponent::BindCastStartLocation(TFunction<const FVector()> func)
 {
 	_castStartLocation.BindLambda(func);

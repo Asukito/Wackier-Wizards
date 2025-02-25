@@ -18,6 +18,11 @@ ARangedEnemy::ARangedEnemy()
 
 void ARangedEnemy::CastSpell()
 {
+	if (canAttack == false)
+	{
+		return;
+	}
+
 	spellCasterComponent->CastSpell();
 }
 
