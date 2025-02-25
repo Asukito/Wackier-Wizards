@@ -6,9 +6,7 @@
 #include "SpellDecorator.h"
 #include "KnockbackSpellDecorator.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class WACKIER_WIZARDS_API UKnockbackSpellDecorator : public USpellDecorator
 {
@@ -34,5 +32,5 @@ public:
 		}
 	};
 
-	virtual void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment) override;
 };

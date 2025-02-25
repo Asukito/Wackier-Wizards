@@ -31,6 +31,10 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
+		case SpellType::SCATTER:
+			spell = UScatterSpellDecorator::Builder(spellBase).Build()->_getUObject();
+
+			break;
 	}
 
 	if (spell == nullptr)
@@ -42,18 +46,32 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 
 	//Applies any additional Decorators to the spell if necessary.
-	if (spellData->isAOE == true)
-	{
-		spell = UAOESpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
-	}
+
+	//Decorators that modify the creation of a projectile
 	if (spellData->type == SpellType::PROJECTILE && spellData->hasTrail == true)
 	{
 		spell = UTrailSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
+	if ((spellData->type == SpellType::PROJECTILE || (spellData->type == SpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
+	{
+		spell = UPenetrateSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+
+	//OnHit Decorators. Anything wanted to be affected by AOE decorate beforehand (such as knockback). 
 	if (spellData->type != SpellType::SELF && spellData->applyKnockback == true)
 	{
 		spell = UKnockbackSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
+	if (spellData->isAOE == true)
+	{
+		spell = UAOESpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+	if (spellData->spawnAOEEffect == true)
+	{
+		spell = UAOEEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+
+	//Decorators that apply to the caster
 	if (spellData->applyCasterEffect == true)
 	{
 		spell = UCasterEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();

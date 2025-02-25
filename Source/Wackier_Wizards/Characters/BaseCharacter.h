@@ -28,6 +28,7 @@ public:
 	bool HasMovementComponent() override;
 	void AddEffect(UEffectData* effect) override;
 	bool HasEffect(FString effectName) override;
+	UAuraEffect* GetAura() override;
 
 	//---- IDAMAGEABLE OVERRIDES ----
 	void Kill() override;
@@ -37,6 +38,7 @@ public:
 	void Heal(int amount) override;
 	void AdjustMaxHealth(int amount) override;
 	const int GetHealth(bool getPercent) noexcept override;
+	const int GetBaseHealth() noexcept override;
 	const int GetMaxHealth() noexcept override;
 	virtual void Respawn(bool isDead) override;
 

@@ -1,0 +1,16 @@
+#pragma once
+//File that contains all include paths relevant to spells (aside from the SpellCaster interface). 
+#include "../Interfaces/Spell.h"
+#include "SpellBase.h"
+#include "SpellData.h"
+#include "SpellType.h"
+#include "Decorators/ProjectileSpellDecorator.h"
+#include "Decorators/SpellDecorator.h"
+#include "Decorators/AOESpellDecorator.h"
+#include "Decorators/TrailSpellDecorator.h"
+#include "Decorators/HitscanSpellDecorator.h"
+#include "Decorators/SelfSpellDecorator.h"
+#include "Decorators/BeamSpellDecorator.h"
+#include "Decorators/KnockbackSpellDecorator.h"
+#include "Decorators/CasterEffectSpellDecorator.h"
+#include "Decorators/ScatterSpellDecorator.h"

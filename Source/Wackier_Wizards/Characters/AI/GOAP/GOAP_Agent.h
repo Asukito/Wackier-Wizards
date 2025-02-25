@@ -45,8 +45,14 @@ public:
 	void SetIsTargetInRange(bool val);
 	void SetIsTargetTooClose(bool val);
 	void SetSeekPlayer(bool val);
+	void SetToRetreat(bool val);
 	void Attack();
 	void SetPlayer(APlayerCharacter* player);
+	//Set focus of owner to rotate towards
+	void SetFocus(AActor* focus);
+	void ClearFocus();
+	//Checks to see if enemy is blocking LoS to player, then adjusts destination to create a strafe effect.
+	bool CheckForEnemyLOS();
 
 	//---- HELPERS ----
 	FVector GetCurrentDestination() const;
@@ -117,4 +123,6 @@ private:
 	bool _hasLineOfSight;
 	bool _isTargetInRange;
 	bool _isTargetTooClose;
+
+	float _enemySightTimer;
 };

@@ -16,6 +16,8 @@ class UEffectable : public UInterface
 	GENERATED_BODY()
 };
 
+class UAuraEffect;
+
 class WACKIER_WIZARDS_API IEffectable
 {
 	GENERATED_BODY()
@@ -26,6 +28,7 @@ public:
 	virtual void AddEffect(UEffectData* effect) {};
 	virtual IDamageable* GetDamageableAccess() { return nullptr; };
 	virtual IHealth* GetHealthAccess() { return nullptr; };
+	virtual UAuraEffect* GetAura() { return nullptr; };
 	virtual bool HasMovementComponent() { return false; };
 	virtual void AdjustWalkSpeed(float percent) {};
 	virtual bool HasEffect(FString effectName) { return false; };

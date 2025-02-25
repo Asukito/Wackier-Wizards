@@ -8,6 +8,6 @@ void UInstantEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsCompo
 {
 	UBaseEffect::StartEffect(data, actor, list);
 
-	ProcessEffect();
+	ProcessEffect(owner.GetInterface());
 	ClearEffect();
 }

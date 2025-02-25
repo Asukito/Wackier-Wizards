@@ -6,9 +6,9 @@
 #include "../SpellData.h"
 
 //Applies knockback if (currently) a Character is the target of a hit. Can add an additional check to apply knockback to actors. 
-void UKnockbackSpellDecorator::ProcessHit(AActor* hit, FVector location)
+void UKnockbackSpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 
 	if (hit == nullptr)
 	{
@@ -16,6 +16,7 @@ void UKnockbackSpellDecorator::ProcessHit(AActor* hit, FVector location)
 	}
 
 	TArray<UCharacterMovementComponent*> components;
+
 	hit->GetComponents<UCharacterMovementComponent>(components);
 
 	if (components.Num() == 0)

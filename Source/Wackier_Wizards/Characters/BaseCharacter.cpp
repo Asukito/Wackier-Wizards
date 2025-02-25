@@ -50,6 +50,11 @@ bool ABaseCharacter::HasEffect(FString effectName)
 	return effectComponent->Contains(effectName);
 }
 
+UAuraEffect* ABaseCharacter::GetAura()
+{
+	return effectComponent->GetAura();
+}
+
 bool ABaseCharacter::HasMovementComponent()
 {
 	return true;
@@ -110,6 +115,11 @@ const int ABaseCharacter::GetHealth(bool getPercent) noexcept
 	}
 
 	return healthComponent->GetHealth();
+}
+
+const int ABaseCharacter::GetBaseHealth() noexcept
+{
+	return healthComponent->GetBaseHealth();
 }
 
 const int ABaseCharacter::GetMaxHealth() noexcept

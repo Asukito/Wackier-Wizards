@@ -13,3 +13,6 @@
 #include "Decorators/BeamSpellDecorator.h"
 #include "Decorators/KnockbackSpellDecorator.h"
 #include "Decorators/CasterEffectSpellDecorator.h"
+#include "Decorators/ScatterSpellDecorator.h"
+#include "Decorators/AOEEffectSpellDecorator.h"
+#include "Decorators/PenetrateSpellDecorator.h"

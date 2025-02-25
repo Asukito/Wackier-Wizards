@@ -113,7 +113,7 @@ float APlayerCharacter::GetVerticalSensitivity() const noexcept
 }
 const FVector APlayerCharacter::GetCastStartLocation()
 {
-	return GetActorLocation() + (GetActorForwardVector()) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+	return GetActorLocation() + (GetCamera()->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
 const FVector APlayerCharacter::GetCastStartForward()
 {

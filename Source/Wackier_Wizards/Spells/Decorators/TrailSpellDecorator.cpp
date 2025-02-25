@@ -6,17 +6,9 @@
 #include "../../Objects/Projectile.h"
 #include "../SpellData.h"
 
-//Inits the Trail logic in the projectile.
-bool UTrailSpellDecorator::CastSpell()
+//Inits Trail logic
+void UTrailSpellDecorator::FireProjectile(FVector direction)
 {
-	if (spell->CastSpell() == false)
-	{
-		return false;
-	}
-
-	AProjectile* projectile = GetBaseSpell()->GetProjectile();
-	projectile->InitTrail(spellData->trailEffect);
-
-	return true;
+	spell->FireProjectile(direction);
+	GetBaseSpell()->GetProjectile()->InitTrail();
 }
-
