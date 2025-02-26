@@ -23,12 +23,13 @@ void AArcaneCircle::BeginPlay()
 {
 	ASpellTrapBase::BeginPlay();
 
-	if (_spell == nullptr || _spell->isAOE == false)
+	if (_spell == nullptr || _spell->type != SpellType::SELF || _spell->isAOE == false)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Black, FString::Printf(TEXT("ARCANE CIRCLE HAS INVALID SPELL TYPE")));
 		return;
 	}
 
-	USpellData* copy = DuplicateObject(_spell, this);
+	TObjectPtr<USpellData> copy = DuplicateObject(_spell, this);
 	copy->aoeRange = staticMesh->GetRelativeScale3D().X * 50;
 
 	TArray<USpellData*> spells;

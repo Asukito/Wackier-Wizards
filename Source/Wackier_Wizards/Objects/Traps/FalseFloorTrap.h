@@ -4,25 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SpikeTrap.generated.h"
+#include "FalseFloorTrap.generated.h"
 
 class UBoxComponent;
-class USkeletalMeshComponent;
-class UAnimSequenceBase;
 
 UCLASS()
-class WACKIER_WIZARDS_API ASpikeTrap : public AActor
+class WACKIER_WIZARDS_API AFalseFloorTrap : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASpikeTrap();
+	AFalseFloorTrap();
 
 	UFUNCTION()
 	virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-	virtual void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -32,18 +28,11 @@ protected:
 
 private:
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USkeletalMeshComponent> _spikeMesh;
+	TObjectPtr<UStaticMeshComponent> _staticMesh;
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UBoxComponent> _triggerBox;
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UAnimSequenceBase> _animation;
 
-	TArray<TObjectPtr<ACharacter>> _overlaps;
+	float _resetTimer;
 
-	UPROPERTY(EditDefaultsOnly)
-	int damage;
-
-	UPROPERTY(EditDefaultsOnly)
-	float _triggerCooldown;
-	float _cooldownTimer;
+	bool _triggered;
 };

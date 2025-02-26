@@ -11,23 +11,28 @@ void UResultantEffectObject::Init(UResultantEffectData* data)
 	_effectTwo = data->conditionTwo;
 
 	_resultantEffect = data->resultantEffect;
+
+	_isRandom = data->isRandom;
+	_chance = data->chance;
 }
 
 UEffectData* UResultantEffectObject::CheckIfValid(FString nameOne, FString nameTwo)
 {
-	if (nameOne == _effectOne)
+	if (nameOne == _effectOne || nameOne == _effectTwo)
 	{
-		if (nameTwo == _effectTwo)
+		if (nameTwo == _effectTwo || nameTwo == _effectOne)
 		{
-			return _resultantEffect;
-		}
-	}
+			if (_isRandom == false)
+			{
+				return _resultantEffect;
+			}
 
-	if (nameOne == _effectTwo)
-	{
-		if (nameTwo == _effectOne)
-		{
-			return _resultantEffect;
+			float rand = FMath::RandRange(0, 100);
+
+			if (rand < _chance)
+			{
+				return _resultantEffect;
+			}
 		}
 	}
 

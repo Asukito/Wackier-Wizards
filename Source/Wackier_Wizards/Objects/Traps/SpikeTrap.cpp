@@ -2,7 +2,7 @@
 
 
 #include "SpikeTrap.h"
-#include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "../../Interfaces/Damageable.h"
@@ -13,10 +13,18 @@ ASpikeTrap::ASpikeTrap()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	_staticMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Static Mesh Component"));
-	checkf(_staticMesh, TEXT("Spike Trap StaticMeshComponent failed to intitialise"));
-	_staticMesh->SetCollisionProfileName(FName("Aura"));
-	_staticMesh->SetGenerateOverlapEvents(true);
+	_spikeMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Spike Mesh"));
+	checkf(_spikeMesh, TEXT("Spike Trap SpikeMesh failed to intitialise"));
+	_spikeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetRootComponent(_spikeMesh);
+
+	_triggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box"));
+	checkf(_triggerBox, TEXT("Spike Trap TriggerBox failed to intitialise"));
+	_triggerBox->bHiddenInGame = false;
+	_triggerBox->SetVisibility(true);
+	_triggerBox->SetCollisionProfileName(FName("Aura"));
+	_triggerBox->SetGenerateOverlapEvents(true);
+	_triggerBox->SetupAttachment(RootComponent);
 }
 
 void ASpikeTrap::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -50,8 +58,8 @@ void ASpikeTrap::BeginPlay()
 {
 	Super::BeginPlay();
 
-	_staticMesh->OnComponentBeginOverlap.AddDynamic(this, &ASpikeTrap::BeginOverlap);
-	_staticMesh->OnComponentEndOverlap.AddDynamic(this, &ASpikeTrap::EndOverlap);
+	_triggerBox->OnComponentBeginOverlap.AddDynamic(this, &ASpikeTrap::BeginOverlap);
+	_triggerBox->OnComponentEndOverlap.AddDynamic(this, &ASpikeTrap::EndOverlap);
 
 	_cooldownTimer = _triggerCooldown;
 }
@@ -67,6 +75,11 @@ void ASpikeTrap::Tick(float DeltaTime)
 	if (_cooldownTimer > 0 || _overlaps.Num() == 0)
 	{
 		return;
+	}
+
+	if (_animation != nullptr)
+	{
+		_spikeMesh->PlayAnimation(_animation, false);
 	}
 
 	int size = _overlaps.Num();
