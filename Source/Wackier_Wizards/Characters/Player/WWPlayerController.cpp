@@ -44,7 +44,7 @@ void AWWPlayerController::HandleCastSpell()
 }
 void AWWPlayerController::HandleDamageSelf()
 {
-	_playerCharacter->TakeDamage(40, FString("Self"));
+	_playerCharacter->DealDamage(40, FString("Self"));
 }
 void AWWPlayerController::HandleSpellOne()
 {

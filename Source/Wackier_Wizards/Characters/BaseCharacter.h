@@ -33,7 +33,7 @@ public:
 
 	//---- IDAMAGEABLE OVERRIDES ----
 	void Kill() override;
-	bool TakeDamage(int amount, FString source) override;
+	bool DealDamage(int amount, FString source) override;
 
 	//---- IHEALTH OVERRIDES ----
 	void Heal(int amount) override;

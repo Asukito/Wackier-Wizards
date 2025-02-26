@@ -18,7 +18,7 @@ class WACKIER_WIZARDS_API UShieldAuraEffect : public UAuraEffect, public IDamage
 public:
 	void DamageShield(int amount, FString source);
 
-	virtual bool TakeDamage(int amount, FString source) final;
+	virtual bool DealDamage(int amount, FString source) final;
 	virtual void Kill() final;
 
 	virtual void StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list) override;
