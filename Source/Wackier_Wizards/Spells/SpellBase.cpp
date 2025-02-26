@@ -151,11 +151,7 @@ void USpellBase::HandleInterfaceFunctions(AActor* actor, int damageAdjustment)
 
 		if (IDamageable* target = Cast<IDamageable>(actor))
 		{
-<<<<<<< HEAD
-			isKilled = target->DamageTake(spellData->potency, spellData->name);
-=======
-			isKilled = target->TakeDamage(spellData->potency + damageAdjustment, spellData->name);
->>>>>>> main
+			isKilled = target->DamageTake(spellData->potency + damageAdjustment, spellData->name);
 		}
 
 		if (isKilled == true)
