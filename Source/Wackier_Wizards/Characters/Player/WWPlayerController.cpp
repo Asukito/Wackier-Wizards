@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.h"
+#include "VRCharacter.h"
 
 #pragma region "Input Handlers"
 void AWWPlayerController::UpdateSensitivity(float horizontal, float vertical)
@@ -37,7 +38,7 @@ void AWWPlayerController::HandleJump()
 	_playerCharacter->UnCrouch();
 	_playerCharacter->Jump();
 }
-void AWWPlayerController::HandleTest()
+void AWWPlayerController::HandleCastSpell()
 {
 	_playerCharacter->CastSpell();
 }
@@ -69,13 +70,26 @@ void AWWPlayerController::HandleSpellSix()
 {
 	_playerCharacter->ChangeSpell(6);
 }
+void AWWPlayerController::HandleChangeSpell()
+{
+	_playerCharacter->CycleSpell();
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	_playerCharacter = Cast<APlayerCharacter>(aPawn);
+	if (AVRCharacter* vr = Cast<AVRCharacter>(aPawn))
+	{
+		_playerCharacter = vr;
+		_isVR = true;
+	}
+	else
+	{
+		_playerCharacter = Cast<APlayerCharacter>(aPawn);
+	}
+
 	_playerCharacter->SetController(this);
 	_horizontalSens = _playerCharacter->GetHorizontalSensitivity();
 	_verticalSens = _playerCharacter->GetVerticalSensitivity();
@@ -87,11 +101,23 @@ void AWWPlayerController::OnPossess(APawn* aPawn)
 	UEnhancedInputLocalPlayerSubsystem* inputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	checkf(inputSubsystem, TEXT("INPUT_SUBSYSTEM is an invalid value"));
 
-	checkf(inputMappingContext, TEXT("INPUT_MAPPING_CONTEXT is an invalid value"));
-	inputSubsystem->ClearAllMappings();
-	inputSubsystem->AddMappingContext(inputMappingContext, 0);
+	//If the VRCharacter is used, bind VR input mappings.
+	if (_isVR == true)
+	{
+		checkf(VR_inputMappingContext, TEXT("VR INPUT_MAPPING_CONTEXT is an invalid value"));
+		inputSubsystem->ClearAllMappings();
+		inputSubsystem->AddMappingContext(VR_inputMappingContext, 0);
 
-	BindActions(_enhancedInputComponent);
+		BindVRActions(_enhancedInputComponent);
+	}
+	else
+	{
+		checkf(inputMappingContext, TEXT("INPUT_MAPPING_CONTEXT is an invalid value"));
+		inputSubsystem->ClearAllMappings();
+		inputSubsystem->AddMappingContext(inputMappingContext, 0);
+
+		BindActions(_enhancedInputComponent);
+	}
 }
 
 void AWWPlayerController::OnUnPossess()
@@ -113,7 +139,7 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 	inputComponent->BindAction(actionJump, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleJump);
 
 	checkf(actionTest, TEXT("Missing 'Test' Action"));
-	inputComponent->BindAction(actionTest, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTest);
+	inputComponent->BindAction(actionTest, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleCastSpell);
 
 	checkf(actionDamageSelf, TEXT("Missing 'DamageSelf' Action"));
 	inputComponent->BindAction(actionDamageSelf, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleDamageSelf);
@@ -135,4 +161,16 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(actionSpellSix, TEXT("Missing 'SpellSix' Action"));
 	inputComponent->BindAction(actionSpellSix, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellSix);
+}
+
+void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)
+{
+	checkf(VR_actionMove, TEXT("Missing 'Move' Action"));
+	inputComponent->BindAction(VR_actionMove, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleMove);
+
+	checkf(VR_actionCastSpell, TEXT("Missing 'Move' Action"));
+	inputComponent->BindAction(VR_actionCastSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleCastSpell);
+
+	checkf(VR_actionChangeSpell, TEXT("Missing 'Move' Action"));
+	inputComponent->BindAction(VR_actionChangeSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleChangeSpell);
 }

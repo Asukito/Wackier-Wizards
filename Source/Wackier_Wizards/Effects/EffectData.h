@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "EffectType.h"
 #include "EffectDoes.h"
-#include "EffectBonusType.h"
+#include "Bonuses/EffectBonusType.h"
 #include "EffectData.generated.h"
 
 class UNiagaraSystem;
@@ -23,25 +23,38 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EffectType type = EffectType::OVERTIME;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::SHIELD", EditConditionHides))
 	EffectDoes does = EffectDoes::DAMAGE;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int strength = 10;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == EffectType::OVERTIME || type == EffectType::FOR_DURATION", EditConditionHides))
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> effectNiagara;
+
+	//---- NOT INSTANT ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::INSTANT", EditConditionHides))
 	float duration = 10.0f;
+
+	//---- OVERTIME ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == EffectType::OVERTIME", EditConditionHides))
 	float effectInterval = 1.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	EffectBonusType bonus = EffectBonusType::NONE;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus == EffectBonusType::BOUNCE || bonus == EffectBonusType::AOE || bonus == EffectBonusType::TRAIL_EFFECT", EditConditionHides))
-	float bonusRange;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus == EffectBonusType::AOE || EffectBonusType::TRAIL_EFFECT", EditConditionHides))
-	float aoeInterval;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	//---- NON AURA ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
 	bool stackable = false;
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	//TObjectPtr<UNiagaraSystem> spellNiagara;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
+	int stackCap = 2;
+
+	//---- AURA ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == EffectType::AURA || type == EffectType::SHIELD", EditConditionHides))
+	float auraSize;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == EffectType::AURA", EditConditionHides))
+	bool isPerTick = false;
+
+	//---- BONUS ----
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
+	EffectBonusType bonus = EffectBonusType::NONE;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus != EffectBonusType::NONE", EditConditionHides))
+	float bonusRange;
 };

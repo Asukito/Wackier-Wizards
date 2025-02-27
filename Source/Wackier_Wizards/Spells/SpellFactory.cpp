@@ -4,63 +4,80 @@
 #include "SpellFactory.h"
 #include "SpellIncludes.h"
 
-USpellBase* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
+//Creates a SpellBase and then applies Decorators to it. Returns the result.
+ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 {
-	TObjectPtr<USpellBase> spell = nullptr;
+	TScriptInterface<ISpell> spell = nullptr;
+	//Creates and initialises a SpellBase object.
+	TObjectPtr<USpellBase> spellBase = NewObject<USpellBase>();
+	spellBase->Init(spellData, owner);
 
+	//Applies a SpellType Decorator to the SpellBase. This is the lowest level Decorator.
 	switch (spellData->type)
 	{
-		case SpellType::HITSCAN:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<UHitscanSpell>();
-			spell->Init(spellData, owner);
-
-			return spell;
-
-		case SpellType::SELF:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));			
-			spell = NewObject<USelfSpell>();
-			spell->Init(spellData, owner);
-
-			return spell;
-
 		case SpellType::PROJECTILE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<UProjectileSpell>();
-			spell->Init(spellData, owner);
+			spell = UProjectileSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
-			return spell;
+			break;
+		case SpellType::HITSCAN:
+			spell = UHitscanSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
-		case SpellType::PROJECTILE_AOE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<UAOEProjectileSpell>();
-			spell->Init(spellData, owner);
+			break;
+		case SpellType::BEAM:
+			spell = UBeamSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
-			return spell;
+			break;
+		case SpellType::SELF:
+			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
-		case SpellType::LOCAL_AOE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<ULocalAOESpell>();
-			spell->Init(spellData, owner);
+			break;
+		case SpellType::SCATTER:
+			spell = UScatterSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
-			return spell;
-
-		case SpellType::HITSCAN_AOE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<UAOEHitscanSpell>();
-			spell->Init(spellData, owner);
-
-			return spell;
-
-		case SpellType::TRAIL_PROJECTILE_AOE:
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
-			spell = NewObject<UTrailAOEProjectileSpell>();
-			spell->Init(spellData, owner);
-
-			return spell;
+			break;
 	}
 
-	return nullptr;
+	if (spell == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("FAILED TO CREATE SPELL")));
+		return nullptr;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+
+	//Applies any additional Decorators to the spell if necessary.
+
+	//Decorators that modify the creation of a projectile
+	if (spellData->type == SpellType::PROJECTILE && spellData->hasTrail == true)
+	{
+		spell = UTrailSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+	if ((spellData->type == SpellType::PROJECTILE || (spellData->type == SpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
+	{
+		spell = UPenetrateSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+
+	//OnHit Decorators. Anything wanted to be affected by AOE decorate beforehand (such as knockback). 
+	if (spellData->type != SpellType::SELF && spellData->applyKnockback == true)
+	{
+		spell = UKnockbackSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+	if (spellData->isAOE == true)
+	{
+		spell = UAOESpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+	if (spellData->spawnAOEEffect == true)
+	{
+		spell = UAOEEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+
+	//Decorators that apply to the caster
+	if (spellData->applyCasterEffect == true)
+	{
+		spell = UCasterEffectSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
+	}
+
+	return spell.GetInterface();
 }
 
 

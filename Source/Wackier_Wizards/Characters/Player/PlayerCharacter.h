@@ -3,86 +3,70 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "../../Interfaces/Effectable.h"
-#include "../../Interfaces/Damageable.h"
-#include "../../Interfaces/SpellCaster.h"
-#include "../../Interfaces/Health.h"
-#include "../../Spells/SpellType.h"
+#include "../BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
 
 class UCameraComponent;
 class AWWPlayerController;
-class UStaticMeshComponent;
-class UHealthComponent;
-class USpellData;
-class USpellBase;
-class UEffectsComponent;
+class USpellCasterComponent;
 
 UCLASS()
-class WACKIER_WIZARDS_API APlayerCharacter : public ACharacter, public IEffectable, public IDamageable, public ISpellCaster, public IHealth
+class WACKIER_WIZARDS_API APlayerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
+//Base PlayerCharacter class. BaseCharacter with additional SpellCaster component as well as player-unique logic. 
 public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
-	void SetController(AWWPlayerController* controller);
-	void TakeDamage(int amount, FString source) override;
-	void Heal(int amount) override;
-	void AdjustMaxHealth(int amount) override;
-	void Kill() override;
-	void Respawn() override;
-	void AddEffect(UEffectData* effect) override;
+	//---- IHEALTH OVERRIDES ----
+	void Respawn(bool isDead) override;
+
+	//---- SPELL FUNCTIONS ----
 	void CastSpell();
+	UFUNCTION(BlueprintCallable)
 	void ChangeSpell(int slot);
+	virtual void CycleSpell();
+
 
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;
 	float GetHorizontalSensitivity() const noexcept;
 	float GetVerticalSensitivity() const noexcept;
-	IDamageable* GetDamageableAccess() override;
-	IHealth* GetHealthAccess() override;
-	AActor* GetSpellOwner() noexcept override;
-	const FVector GetSpellOwnerLocation() noexcept override;
-	const FVector GetSpellOwnerForward() noexcept override;
-	const FVector GetCastStartLocation() noexcept override;
-	const int GetHealth(bool getPercent) noexcept override;
-	const int GetMaxHealth() noexcept override;
-	bool HasEffect(FString effectName) override;
+	virtual const FVector GetCastStartLocation();
+	virtual const FVector GetCastStartForward();
+	void SetController(AWWPlayerController* controller);
+
+	//---- TEST ----
+	//Test function for Toggling AI seeking. Currently not in use and doesn't affect anything. 
+	void ToggleSeek();
+	//Returns the actor location if seeking is active. Returns a zero vector if not. Currently not used.
+	const FVector GetSeekLocation() const noexcept;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-private:
-	UPROPERTY(EditAnywhere, Category = "Test")
-	TArray<TObjectPtr<USpellData>> spellData;
-	UPROPERTY()
-	TObjectPtr<USpellBase> spell;
-	SpellType spellType;
-
+	void BindDelegates() override;
+protected:
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
-	float _horizontalSensitivity;
+	float horizontalSensitivity;
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
-	float _verticalSensitivity;
+	float verticalSensitivity;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UCameraComponent> _camera;
+	TObjectPtr<UCameraComponent> camera;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UStaticMeshComponent> _staticMesh;
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TObjectPtr<UHealthComponent> _healthComponent;
-	TObjectPtr<UEffectsComponent> _effectComponent;
+	TObjectPtr<USpellCasterComponent> spellCasterComponent;
 
 	UPROPERTY()
-	TObjectPtr<AWWPlayerController> _playerController;
+	TObjectPtr<AWWPlayerController> playerController;
 
-	FVector _lastValidPosition;
-	float _validUpdateTimer;
+	FVector lastValidPosition;
+	float validUpdateTimer;
+
+	bool seek;
 };

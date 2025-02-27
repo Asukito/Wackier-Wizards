@@ -26,9 +26,10 @@ APracticeDummy::APracticeDummy()
 	checkf(_effectComponent, TEXT("Practice Dummy EffectsComponent failed to initialise"));
 }
 
-void APracticeDummy::TakeDamage(int amount, FString source)
+bool APracticeDummy::TakeDamage(int amount, FString source)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
+	return false;
 }
 
 void APracticeDummy::AddEffect(UEffectData* effect)
@@ -44,6 +45,10 @@ IDamageable* APracticeDummy::GetDamageableAccess()
 IHealth* APracticeDummy::GetHealthAccess()
 {
 	return nullptr;
+}
+
+void APracticeDummy::AdjustWalkSpeed(float percent)
+{
 }
 
 bool APracticeDummy::HasEffect(FString effectName)

@@ -12,16 +12,23 @@ class WACKIER_WIZARDS_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+//A componet that handles an actors health
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+	//Adjust health based on a flat value
 	void AdjustHealth(float amount);
+	//Adjust health based on a percentage of the max health
 	void AdjustHealthPercentage(float percentage);
+	//Sets the health to the amount
 	void SetHealth(float amount);
 	void AdjustMaxHealth(int amount);
+	//Return health 
 	int GetHealth() const;
+	//Return health as a percentage of the max health
 	int GetHealthPercent() const;
+	int GetBaseHealth() const;
 	int GetMaxHealth() const;
 
 public:

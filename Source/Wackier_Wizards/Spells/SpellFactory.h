@@ -9,12 +9,14 @@
 class USpellBase;
 class USpellData;
 class ISpellCaster;
+class ISpell;
 
 UCLASS()
 class WACKIER_WIZARDS_API USpellFactory : public UObject
 {
 	GENERATED_BODY()
 
+//Used to create spells. 
 public:
-	USpellBase* CreateSpell(USpellData* spellData, ISpellCaster* owner);
+	ISpell* CreateSpell(USpellData* spellData, ISpellCaster* owner);
 };

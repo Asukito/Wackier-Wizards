@@ -3,31 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputMappingContext.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "PlayerCharacter.h"
 #include "VRCharacter.generated.h"
 
-
 UCLASS()
-class WACKIER_WIZARDS_API AVRCharacter : public ACharacter
+class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 {
 	GENERATED_BODY()
 
+//VR PlayerCharacter class. Currently overrides the GetCastStartForward as the spells will be spawned at the player's hand.
 public:
-	// Sets default values for this character's properties
+	//Sets default values for this character's properties
 	AVRCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	const FVector GetCastStartForward() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	//Location of right hand to spawn spell
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
+	FVector rightHandLocation;
 };

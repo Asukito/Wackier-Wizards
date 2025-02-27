@@ -5,11 +5,13 @@
 #include "Components/StaticMeshComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraEmitter.h"
-#include "../Spells/ProjectileSpell.h"
-#include "../Objects/AOEActor.h"
+#include "AOEEffectActor.h"
 #include "Engine/StaticMesh.h"
 #include "../Effects/EffectData.h"
+#include "../Effects/Auras/ShieldAuraEffect.h"
+#include "../Spells/SpellData.h"
+#include "../Interfaces/SpellCaster.h"
+#include "GameFramework/Character.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -28,39 +30,44 @@ AProjectile::AProjectile()
 		_staticMesh->SetStaticMesh(mesh.Object);
 	}
 
-	_staticMesh->Mobility = EComponentMobility::Movable;
-	_staticMesh->CanCharacterStepUpOn = ECB_No;
 	_staticMesh->SetSimulatePhysics(true);
-	_staticMesh->SetVisibility(true);
+	_staticMesh->SetVisibility(false);
 	_staticMesh->SetCollisionProfileName(FName("Projectile"));
 	SetRootComponent(_staticMesh);
 
 	_niagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
 	checkf(_niagara, TEXT("Projectile Niagara Component failed to initialise"));
 	_niagara->SetupAttachment(_staticMesh);
+	_niagara->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AProjectile::InitTrail(UEffectData* trailEffect)
+//Initialises functionality for creating an effect trail
+void AProjectile::InitTrail()
 {
-	_trailEffect = trailEffect;
-	_trailInterval = _trailEffect->bonusRange / 2;
+	_trailEffect = _spellData->trailEffect;
+	_trailInterval = _spellData->trailSize / 2;
 	_lastLocation = GetActorLocation();
 
 	_hasTrail = true;
 }
 
-void AProjectile::InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara)
+void AProjectile::InitPenetrate()
 {
-	if (collisionNiagara != nullptr)
-	{
-		_collisionEffect = collisionNiagara;
-	}
+	_canPenetrate = true;
+	_maxPenetrateAmount = _spellData->penetrateLimit;
+	_penetrateAmount = _maxPenetrateAmount;
+	_damageLossPerIndex = _spellData->damageLossPerHit;
+}
+
+void AProjectile::InitNiagara(UNiagaraSystem* niagara)
+{
 	_niagara->SetAsset(niagara);
 	_niagara->Activate();
 }
-void AProjectile::AddOwnerSpell(UProjectileSpell* spell)
+void AProjectile::AddOwnerSpell(ISpell* spell)
 {
-	_spell = spell;
+	_spell = spell->_getUObject();
+	_spellData = _spell->GetSpellData();
 }
 void AProjectile::AddIgnoreActor(AActor* actor)
 {
@@ -83,10 +90,12 @@ void AProjectile::ApplyForce(bool gravity, FVector unitDirection, float speed)
 {
 	_startPos = GetActorLocation();
 
-	_staticMesh->SetRelativeScale3D(FVector(0.05f));
+	_staticMesh->SetRelativeScale3D(FVector(1.0f));
 	_staticMesh->SetEnableGravity(gravity);
-	FVector force = unitDirection * speed;
-	_staticMesh->SetPhysicsLinearVelocity(force);
+
+	_velocity = unitDirection * speed;
+	_staticMesh->SetPhysicsLinearVelocity(_velocity);
+	_niagara->SetRelativeRotation(unitDirection.Rotation());
 }
 UStaticMeshComponent* AProjectile::GetStaticMesh()
 {
@@ -99,18 +108,31 @@ void AProjectile::BeginInteractOverlap(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
-	if (_collisionEffect != nullptr)
+	if (_spell == nullptr)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), _collisionEffect, GetActorLocation(), FRotator::ZeroRotator);
+		Destroy();
 	}
 
-	if (_spell != nullptr)
+	if (_canPenetrate == false || Cast<ACharacter>(OtherActor) == nullptr)
 	{
-		_spell->ProcessHit(OtherActor, GetActorLocation());
+		_spell->ProcessHit(OtherActor, GetActorLocation(), 0);
 		_spell = nullptr;
+		Destroy();
+
+		return;
 	}
 
-	Destroy();
+	int damageAdjustment = (_maxPenetrateAmount - _penetrateAmount) * -(_damageLossPerIndex);
+	_spell->ProcessHit(OtherActor, GetActorLocation(), damageAdjustment);
+
+	if (_penetrateAmount <= 0)
+	{
+		_spell = nullptr;
+		Destroy();
+		return;
+	}
+
+	_penetrateAmount -= 1;
 }
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
@@ -120,6 +142,7 @@ void AProjectile::BeginPlay()
 	_staticMesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::BeginInteractOverlap);
 }
 
+//Destroys the projectile if the distance travelled exceeds the maxDistance.
 void AProjectile::CheckDistanceTravelled()
 {
 	if (_start == FVector::Zero())
@@ -135,14 +158,17 @@ void AProjectile::CheckDistanceTravelled()
 	}
 }
 
+//Spawns an AOE actor
 void AProjectile::PlaceAOE()
 {
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	TObjectPtr<AAOEActor> actor = GetWorld()->SpawnActor<AAOEActor>(AAOEActor::StaticClass(), GetActorLocation(), FRotator::ZeroRotator, params);
+	TObjectPtr<AAOEEffectActor> actor = GetWorld()->SpawnActor<AAOEEffectActor>(AAOEEffectActor::StaticClass(), GetActorLocation(), FRotator::ZeroRotator, params);
 	AddIgnoreActor(actor);
-	actor->Init(_trailEffect);
+	actor->AddIgnoredActor(_spell->GetSpellOwner()->GetSpellOwner());
+
+	actor->Init(_trailEffect, _spellData->trailLifetime, _spellData->trailSize, _spellData->doPullEffect);
 }
 
 // Called every frame
@@ -155,6 +181,11 @@ void AProjectile::Tick(float DeltaTime)
 		return;
 	}
 
+	if (_staticMesh->GetPhysicsLinearVelocity() == FVector::Zero())
+	{
+		_staticMesh->SetPhysicsLinearVelocity(_velocity);
+	}
+
 	CheckDistanceTravelled();
 
 	if (_hasTrail == false)
@@ -162,6 +193,7 @@ void AProjectile::Tick(float DeltaTime)
 		return;
 	}
 
+	//If the distance between the lastLocation and currentLocation is greater than the trailInterval. Execute PlaceAOE().
 	FVector location = GetActorLocation();
 
 	if ((location - _lastLocation).Length() >= _trailInterval)

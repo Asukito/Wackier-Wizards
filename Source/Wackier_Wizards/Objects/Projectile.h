@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interfaces/Spell.h"
 #include "Projectile.generated.h"
 
 class UStaticMeshComponent;
@@ -12,19 +13,22 @@ class UNiagaraSystem;
 class UNiagaraEmitter;
 class UProjectileSpell;
 class UEffectData;
+class USpellData;
 
 UCLASS()
 class WACKIER_WIZARDS_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 	
+//Projectile class spawned by Projectile Spells
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();
 
-	void InitTrail(UEffectData* trialEffect);
-	void InitNiagara(UNiagaraSystem* niagara, UNiagaraSystem* collisionNiagara = nullptr);
-	void AddOwnerSpell(UProjectileSpell* spell);
+	void InitTrail();
+	void InitPenetrate();
+	void InitNiagara(UNiagaraSystem* niagara);
+	void AddOwnerSpell(ISpell* spell);
 	void AddIgnoreActor(AActor* actor);
 	void SetIsActive(bool isactive);
 	void SetRange(float range);
@@ -53,8 +57,11 @@ private:
 	TObjectPtr<UNiagaraComponent> _niagara;
 	UPROPERTY()
 	TObjectPtr<UNiagaraSystem> _collisionEffect;
+
 	UPROPERTY()
-	TObjectPtr<UProjectileSpell> _spell;
+	TScriptInterface<ISpell> _spell;
+	UPROPERTY()
+	TObjectPtr<USpellData> _spellData;
 
 	TArray<TWeakObjectPtr<AActor>> _ignore;
 
@@ -65,6 +72,12 @@ private:
 	float _trailInterval;
 	bool _hasTrail = false;
 
+	bool _canPenetrate;
+	int _penetrateAmount;
+	int _maxPenetrateAmount;
+	int _damageLossPerIndex;
+
+	FVector _velocity;
 	FVector _start;
 	float _maxDistance;
 	bool _isActive;

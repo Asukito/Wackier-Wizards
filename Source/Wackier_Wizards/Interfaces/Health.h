@@ -19,10 +19,12 @@ class WACKIER_WIZARDS_API IHealth
 {
 	GENERATED_BODY()
 
+//Actors that implement the IHealth interface have a health value
 public:
 	virtual void Heal(int amount) {};
 	virtual void AdjustMaxHealth(int amount) {};
 	virtual const int GetHealth(bool getPercent) noexcept { return 0; };
+	virtual const int GetBaseHealth() noexcept { return 0; };
 	virtual const int GetMaxHealth() noexcept { return 0; };
-	virtual void Respawn() {};
+	virtual void Respawn(bool isDead) {};
 };
