@@ -41,6 +41,12 @@ void UEffectsComponent::CreateAndAddEffect(UEffectData* effectData)
 		data = effectData;
 	}
 
+	//Empty is used to negate effects when a result of a ResultantEffect. 
+	if (data->type == EffectType::EMPTY)
+	{
+		return;
+	}
+
 	//If stackable, check if the cap is hit before any creation.
 	if (data->stackable == true)
 	{

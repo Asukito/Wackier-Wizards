@@ -45,6 +45,11 @@ void APlayerCharacter::Respawn(bool isDead)
 #pragma region "Spell Casting"
 void APlayerCharacter::CastSpell()
 {
+	if (canAttack == false)
+	{
+		return;
+	}
+
 	spellCasterComponent->CastSpell();
 }
 

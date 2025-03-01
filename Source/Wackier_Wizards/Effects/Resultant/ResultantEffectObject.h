@@ -25,4 +25,7 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UEffectData> _resultantEffect;
+
+	bool _isRandom;
+	float _chance;
 };

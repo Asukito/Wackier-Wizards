@@ -43,7 +43,7 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 		return nullptr;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 
 	//Applies any additional Decorators to the spell if necessary.
 

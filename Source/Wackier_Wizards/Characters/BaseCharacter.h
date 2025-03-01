@@ -29,10 +29,11 @@ public:
 	void AddEffect(UEffectData* effect) override;
 	bool HasEffect(FString effectName) override;
 	UAuraEffect* GetAura() override;
+	virtual void SetCanAct(bool val) override;
 
 	//---- IDAMAGEABLE OVERRIDES ----
-	void Kill() override;
-	bool TakeDamage(int amount, FString source) override;
+	virtual void Kill() override;
+	bool DealDamage(int amount, FString source) override;
 
 	//---- IHEALTH OVERRIDES ----
 	void Heal(int amount) override;
@@ -53,6 +54,8 @@ protected:
 	TObjectPtr<UHealthComponent> healthComponent;
 	UPROPERTY()
 	TObjectPtr<UEffectsComponent> effectComponent;
+
+	bool canAttack;
 
 	float maxWalkSpeed;
 	FVector spawnLocation;

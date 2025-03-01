@@ -23,6 +23,8 @@ class WACKIER_WIZARDS_API USpellCasterComponent : public UActorComponent, public
 public:
 	USpellCasterComponent();
 
+	UFUNCTION(BlueprintCallable)
+	void PopulateSpells(TArray<USpellData*> spells);
 	//Creates the spells from the contained spellData
 	void InitSpells();
 	void CastSpell();
