@@ -133,7 +133,7 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 	inputComponent->BindAction(actionLook, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleLook);
 
 	checkf(actionMove, TEXT("Missing 'Move' Action"));
-	inputComponent->BindAction(actionMove, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleMove);
+	inputComponent->BindAction(actionMove, ETriggerEvent::Started, this, &AWWPlayerController::HandleMove);
 
 	checkf(actionJump, TEXT("Missing 'Jump' Action"));
 	inputComponent->BindAction(actionJump, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleJump);
