@@ -14,6 +14,11 @@ USpellCasterComponent::USpellCasterComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void USpellCasterComponent::PopulateSpells(TArray<USpellData*> spells)
+{
+	_spellData = spells;
+}
+
 //Creates the spells from the contained spellData and then sets the active sell to the first
 void USpellCasterComponent::InitSpells()
 {
@@ -64,6 +69,7 @@ void USpellCasterComponent::CycleSpell()
 
 	ChangeSpell(_currentSpellIndex);
 }
+
 
 void USpellCasterComponent::BindCastStartLocation(TFunction<const FVector()> func)
 {

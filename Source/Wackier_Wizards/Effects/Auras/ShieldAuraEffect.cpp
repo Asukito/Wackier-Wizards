@@ -19,7 +19,7 @@ void UShieldAuraEffect::DamageShield(int amount, FString source)
 	}
 }
 
-bool UShieldAuraEffect::TakeDamage(int amount, FString source)
+bool UShieldAuraEffect::DealDamage(int amount, FString source)
 {
 	return false;
 }

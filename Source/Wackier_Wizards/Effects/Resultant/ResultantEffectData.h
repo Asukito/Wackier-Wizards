@@ -22,4 +22,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UEffectData> resultantEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool isRandom;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "isRandom == true", EditConditionHides))
+	float chance;
 };

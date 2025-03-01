@@ -33,7 +33,7 @@ void UDamageOnOverlapComponent::BeginOverlap(UPrimitiveComponent* OverlappedComp
 
 			if (percentage > 15)
 			{
-				damageable->DamageTake((target->GetHealth(false) * (_damagePercent / 100)), GetOwner()->GetName());
+				damageable->DealDamage((target->GetHealth(false) * (_damagePercent / 100)), GetOwner()->GetName());
 				target->Respawn(false);
 			}
 			else

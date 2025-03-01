@@ -76,6 +76,21 @@ const FVector ABaseEnemy::GetCurrentDestination()
 	return _controller->GetCurrentDestination();
 }
 
+void ABaseEnemy::Kill()
+{
+	if (_onDeathDelegate.IsBound() == true)
+	{
+		_onDeathDelegate.Execute();
+	}
+
+	Destroy();
+}
+
+void ABaseEnemy::BindOnDeathDelegate(TFunction<void()> delegate)
+{
+	_onDeathDelegate.BindLambda(delegate);
+}
+
 // Called when the game starts or when spawned
 void ABaseEnemy::BeginPlay()
 {

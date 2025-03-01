@@ -23,17 +23,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EffectType type = EffectType::OVERTIME;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::SHIELD", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::SHIELD && type != EffectType::EMPTY", EditConditionHides))
 	EffectDoes does = EffectDoes::DAMAGE;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::EMPTY", EditConditionHides))
 	int strength = 10;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::EMPTY", EditConditionHides))
 	TObjectPtr<UNiagaraSystem> effectNiagara;
 
 	//---- NOT INSTANT ----
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::INSTANT", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::SHIELD && type != EffectType::EMPTY", EditConditionHides))
 	float duration = 10.0f;
 
 	//---- OVERTIME ----
@@ -41,9 +41,9 @@ public:
 	float effectInterval = 1.0f;
 
 	//---- NON AURA ----
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD && type != EffectType::EMPTY", EditConditionHides))
 	bool stackable = false;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD && type != EffectType::EMPTY", EditConditionHides))
 	int stackCap = 2;
 
 	//---- AURA ----
@@ -53,7 +53,7 @@ public:
 	bool isPerTick = false;
 
 	//---- BONUS ----
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD", EditConditionHides))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != EffectType::AURA && type != EffectType::SHIELD && type != EffectType::EMPTY", EditConditionHides))
 	EffectBonusType bonus = EffectBonusType::NONE;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "bonus != EffectBonusType::NONE", EditConditionHides))
 	float bonusRange;

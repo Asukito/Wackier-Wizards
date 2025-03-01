@@ -22,6 +22,7 @@ void ABaseCharacter::BeginPlay()
 
 	spawnLocation = GetActorLocation();
 	maxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	canAttack = true;
 
 	BindDelegates();
 }
@@ -55,6 +56,12 @@ UAuraEffect* ABaseCharacter::GetAura()
 	return effectComponent->GetAura();
 }
 
+void ABaseCharacter::SetCanAct(bool val)
+{
+	//Disable movement
+	canAttack = val;
+}
+
 bool ABaseCharacter::HasMovementComponent()
 {
 	return true;
@@ -75,7 +82,7 @@ void ABaseCharacter::AdjustWalkSpeed(float percent)
 #pragma endregion
 
 #pragma region "IDamageable"
-bool ABaseCharacter::DamageTake(int amount, FString source)
+bool ABaseCharacter::DealDamage(int amount, FString source)
 {
 	healthComponent->AdjustHealth(amount * -1);
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));

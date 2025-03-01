@@ -11,6 +11,8 @@ class APlayerCharacter;
 class USeekerComponent;
 class UBoxComponent;
 
+DECLARE_DELEGATE(FOnDeath);
+
 UCLASS()
 class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
 {
@@ -34,6 +36,11 @@ public:
 	bool HasPath();
 	const FVector GetCurrentDestination();
 
+	//---- IDAMAGEABLE OVERRIDES ----
+	void Kill() override;
+
+	void BindOnDeathDelegate(TFunction<void()> delegate);
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 protected:
@@ -52,4 +59,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UBoxComponent> _sightCollider;
+
+	FOnDeath _onDeathDelegate;
 };

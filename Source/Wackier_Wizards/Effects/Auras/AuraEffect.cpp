@@ -111,7 +111,7 @@ void UAuraEffect::SetUpAura(AActor* actor)
 	niagara = UNiagaraFunctionLibrary::SpawnSystemAtLocation(actor->GetWorld(), effectData->effectNiagara, actor->GetActorLocation(), FRotator::ZeroRotator);
 	niagara->AttachToComponent(actor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	niagara->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	niagara->SetRelativeScale3D(FVector(effectData->auraSize / 20));
+	niagara->SetRelativeScale3D(FVector(effectData->auraSize / 50));
 }
 
 void UAuraEffect::HandleOverlap()

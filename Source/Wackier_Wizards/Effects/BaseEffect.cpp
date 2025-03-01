@@ -84,7 +84,7 @@ bool UBaseEffect::ProcessEffect(IEffectable* effectable)
 		case EffectDoes::DAMAGE:
 			if (IDamageable* target = effectable->GetDamageableAccess())
 			{
-				return !target->DamageTake(effectData->strength, effectData->name);
+				return !target->DealDamage(effectData->strength, effectData->name);
 			}
 
 			break;
@@ -96,7 +96,7 @@ bool UBaseEffect::ProcessEffect(IEffectable* effectable)
 					float maxHealth = target->GetMaxHealth();
 					float amount =  FMath::RoundToFloat(((maxHealth * ((float)(effectData->strength) / 100))));
 
-					return !damageable->DamageTake(amount, effectData->name);;
+					return !damageable->DealDamage(amount, effectData->name);;
 				}
 			}
 
@@ -164,6 +164,12 @@ bool UBaseEffect::ProcessEffect(IEffectable* effectable)
 			}
 
 			break;
+
+		case EffectDoes::DISABLE_ACTIONS:
+
+			effectable->SetCanAct(false);
+
+			return true;
 	}
 
 	return false;
@@ -214,6 +220,12 @@ void UBaseEffect::ProcessEffectRemoval(IEffectable* effectable)
 		}
 
 		effectable->AdjustWalkSpeed(effectData->strength);
+		break;
+
+	case EffectDoes::DISABLE_ACTIONS:
+
+		effectable->SetCanAct(true);
+
 		break;
 	}
 }
