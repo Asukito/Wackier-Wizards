@@ -32,7 +32,7 @@ public:
 	virtual void SetCanAct(bool val) override;
 
 	//---- IDAMAGEABLE OVERRIDES ----
-	void Kill() override;
+	virtual void Kill() override;
 	bool DealDamage(int amount, FString source) override;
 
 	//---- IHEALTH OVERRIDES ----
