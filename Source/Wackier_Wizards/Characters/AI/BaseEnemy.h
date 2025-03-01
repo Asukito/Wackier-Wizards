@@ -35,6 +35,7 @@ public:
 	void ClearFocus();
 	bool HasPath();
 	const FVector GetCurrentDestination();
+	void SetIsAIPaused(bool isPaused);
 
 	//---- IDAMAGEABLE OVERRIDES ----
 	void Kill() override;

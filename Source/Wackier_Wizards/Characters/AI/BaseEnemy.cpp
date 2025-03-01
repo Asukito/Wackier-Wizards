@@ -76,14 +76,21 @@ const FVector ABaseEnemy::GetCurrentDestination()
 	return _controller->GetCurrentDestination();
 }
 
+void ABaseEnemy::SetIsAIPaused(bool isPaused)
+{
+
+}
+
 void ABaseEnemy::Kill()
 {
 	if (_onDeathDelegate.IsBound() == true)
 	{
 		_onDeathDelegate.Execute();
 	}
-
-	Destroy();
+	else
+	{
+		Destroy();
+	}
 }
 
 void ABaseEnemy::BindOnDeathDelegate(TFunction<void()> delegate)

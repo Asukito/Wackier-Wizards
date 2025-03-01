@@ -6,6 +6,8 @@
 #include "EnemySpawnPoint.h"
 #include "../Level/WaveData.h"
 #include "../Characters/AI/MeleeEnemy.h"
+#include "../Characters/AI/RangedEnemy.h"
+#include "../Utility/ActorPool.h"
 
 AEnemySpawner::AEnemySpawner()
 { 	
@@ -74,6 +76,12 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 void AEnemySpawner::SpawnEnemy()
 {
+	if (_pool == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("ENEMY SPAWNER HAS NO POOL")));
+		return;
+	}
+
 	if (_spawnPoints.Num() == 0)
 	{
 		return;
@@ -94,21 +102,23 @@ void AEnemySpawner::SpawnEnemy()
 		return;
 	}
 
-	AEnemySpawnPoint* sp = activePoints[FMath::RandRange(0, activePoints.Num() - 1)];
+	TObjectPtr<AEnemySpawnPoint> sp = activePoints[FMath::RandRange(0, activePoints.Num() - 1)];
 
 	const FVector location = sp->GetActorLocation();
 
-	FActorSpawnParameters params;
-	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-	TObjectPtr<AMeleeEnemy> enemy = GetWorld()->SpawnActor<AMeleeEnemy>(_defaultMeleeEnemy, location, FRotator::ZeroRotator, params);
-
-	if (enemy != nullptr)
+	if (TObjectPtr<ABaseEnemy> enemy = Cast<ABaseEnemy>(_pool->GetPoolActor(false, nullptr)))
 	{
-		enemy->BindOnDeathDelegate([this, enemy]() { _enemies.Remove(enemy); });
+		enemy->SetActorLocation(location);
+		enemy->SetActorHiddenInGame(false);
+
+		enemy->BindOnDeathDelegate([this, enemy]() { KillEnemy(enemy); });
 		_enemies.Add(enemy);
 		_toSpawn -= 1;
 		_spawnTimer = 2.0f;
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("ENEMY SPAWNER HAS NON-ENEMY OBJECT IN POOL")));
 	}
 }
 
@@ -116,6 +126,11 @@ void AEnemySpawner::GetNextWave()
 {
 	if (_nextWave.IsBound() == false)
 	{
+		if (_pool != nullptr)
+		{
+			_pool->Release();
+		}
+
 		return;
 	}
 
@@ -123,17 +138,61 @@ void AEnemySpawner::GetNextWave()
 
 	if (data == nullptr)
 	{
+		if (_pool != nullptr)
+		{
+			_pool->Release();
+		}
+
 		//Stage complete logic
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("STAGE COMPLETE")));
 		_completeDelegate.ExecuteIfBound();
 
 		return;
 	}
+	_toSpawn = 0;
 
-	_meleeEnemies = data->meleeEnemies;
-	_rangedEnemies = 0;
+	FActorSpawnParameters params;
+	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	_toSpawn = _meleeEnemies + _rangedEnemies;
+	TArray<TObjectPtr<AActor>> toPool;
+
+	if (_defaultMeleeEnemy != nullptr)
+	{
+		for (int i = 0; i < data->meleeEnemies; i++)
+		{
+			toPool.Push(GetWorld()->SpawnActor<AMeleeEnemy>(_defaultMeleeEnemy, FVector::ZeroVector, FRotator::ZeroRotator, params));
+			_toSpawn += 1;
+		}
+	}
+
+	if (_defaultRangedEnemy != nullptr)
+	{
+		for (int i = 0; i < data->rangedEnemies; i++)
+		{
+			toPool.Push(GetWorld()->SpawnActor<ARangedEnemy>(_defaultRangedEnemy, FVector::ZeroVector, FRotator::ZeroRotator, params));
+			_toSpawn += 1;
+		}
+	}
+
+	//Do other enemies
+
+	if (_pool == nullptr)
+	{
+		_pool = NewObject<UActorPool>();
+	}
+	else
+	{
+		_pool->Empty();
+	}
+
+	_pool->Populate(toPool);
+	_pool->ShufflePool(1);
 
 	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("NEXT WAVE")));
+}
+
+void AEnemySpawner::KillEnemy(ABaseEnemy* enemy)
+{
+	_enemies.Remove(enemy);
+	enemy->Destroy();
 }
