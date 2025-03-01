@@ -10,6 +10,8 @@ struct FWaveData;
 class AEnemySpawnPoint;
 class ABaseEnemy;
 class AMeleeEnemy;
+class ARangedEnemy;
+class UActorPool;
 
 DECLARE_DELEGATE_RetVal(FWaveData*, FNextWave);
 DECLARE_DELEGATE(FOnComplete);
@@ -29,10 +31,16 @@ public:
 private:
 	void SpawnEnemy();
 	void GetNextWave();
-
+	
+	void KillEnemy(ABaseEnemy* enemy);
 private:
+	UPROPERTY()
+	TObjectPtr<UActorPool> _pool;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AMeleeEnemy> _defaultMeleeEnemy;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ARangedEnemy> _defaultRangedEnemy;
 
 	UPROPERTY()
 	TArray<TObjectPtr<ABaseEnemy>> _enemies;
@@ -43,9 +51,6 @@ private:
 	FOnComplete _completeDelegate;
 
 	int _toSpawn;
-
-	int _meleeEnemies;
-	int _rangedEnemies;
 
 	float _spawnTimer;
 	float _spawnDelay;

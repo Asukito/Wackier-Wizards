@@ -12,4 +12,6 @@ struct FWaveData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int meleeEnemies;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int rangedEnemies;
 };

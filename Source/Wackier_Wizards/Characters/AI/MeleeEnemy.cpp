@@ -29,13 +29,15 @@ void AMeleeEnemy::BeginPlay()
 	}
 
 	SetSeekTarget(player.Get());
+
+	SetActorHiddenInGame(true);
 }
 
 void AMeleeEnemy::Tick(float DeltaTime)
 {
 	ABaseEnemy::Tick(DeltaTime);
 
-	if (player == nullptr)
+	if (player == nullptr || IsHidden() == true)
 	{
 		return;
 	}
