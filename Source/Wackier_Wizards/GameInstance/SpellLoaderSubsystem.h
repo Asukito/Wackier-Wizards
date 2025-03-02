@@ -10,6 +10,7 @@ class USpellFactory;
 class ISpell;
 class ISpellCaster;
 class USpellData;
+struct FSpellTableData;
 
 UCLASS(Blueprintable)
 class WACKIER_WIZARDS_API USpellLoaderSubsystem : public UGameInstanceSubsystem
@@ -19,8 +20,10 @@ class WACKIER_WIZARDS_API USpellLoaderSubsystem : public UGameInstanceSubsystem
 public:
 	UFUNCTION(BlueprintCallable)
 	void LoadDataTable();
-
+	UFUNCTION(BlueprintCallable)
 	USpellData* GetSpellData(FName spellRow);
+
+	FSpellTableData* GetSpellTableData(FName spellRow);
 	ISpell* CreateSpell(USpellData* data, ISpellCaster* owner);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

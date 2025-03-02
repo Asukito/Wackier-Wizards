@@ -19,8 +19,30 @@ USpellData* USpellLoaderSubsystem::GetSpellData(FName spellRow)
 
 	if (spellData != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s data"), *spellRow.ToString()));
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s spellData"), *spellRow.ToString()));
 		return spellData->spellData;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load %s spellData"), *spellRow.ToString()));
+	return nullptr;
+}
+
+
+FSpellTableData* USpellLoaderSubsystem::GetSpellTableData(FName spellRow)
+{
+	if (_spellDataTable == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		return nullptr;
+	}
+
+	static const FString ContextString(TEXT("Spell Context String"));
+	FSpellTableData* spellData = _spellDataTable->FindRow<FSpellTableData>(spellRow, ContextString, true);
+
+	if (spellData != nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s data"), *spellRow.ToString()));
+		return spellData;
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load %s data"), *spellRow.ToString()));
