@@ -6,6 +6,7 @@
 #include "../Spells/SpellData.h"
 #include "../Spells/SpellFactory.h"
 #include "../Interfaces/Spell.h"
+#include "../GameInstance/SpellLoaderSubsystem.h"
 
 USpellCasterComponent::USpellCasterComponent()
 {	
@@ -27,14 +28,15 @@ void USpellCasterComponent::InitSpells()
 		return;
 	}
 
-	TObjectPtr<USpellFactory> factory = NewObject<USpellFactory>();
-
-	for (USpellData* data : _spellData)
+	if (TObjectPtr<USpellLoaderSubsystem> spellLoader = GetOwner()->GetGameInstance()->GetSubsystem<USpellLoaderSubsystem>())
 	{
-		_spells.Add(factory->CreateSpell(data, this)->_getUObject());
+		for (USpellData* data : _spellData)
+		{
+			_spells.Add(spellLoader->CreateSpell(data, this)->_getUObject());
+		}
+
+		ChangeSpell(1);
 	}
-	
-	ChangeSpell(1);
 }
 
 void USpellCasterComponent::CastSpell()

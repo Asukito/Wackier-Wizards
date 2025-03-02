@@ -15,23 +15,23 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	//Applies a SpellType Decorator to the SpellBase. This is the lowest level Decorator.
 	switch (spellData->type)
 	{
-		case SpellType::PROJECTILE:
+		case ESpellType::PROJECTILE:
 			spell = UProjectileSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case SpellType::HITSCAN:
+		case ESpellType::HITSCAN:
 			spell = UHitscanSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case SpellType::BEAM:
+		case ESpellType::BEAM:
 			spell = UBeamSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case SpellType::SELF:
+		case ESpellType::SELF:
 			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case SpellType::SCATTER:
+		case ESpellType::SCATTER:
 			spell = UScatterSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
@@ -48,17 +48,17 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 	//Applies any additional Decorators to the spell if necessary.
 
 	//Decorators that modify the creation of a projectile
-	if (spellData->type == SpellType::PROJECTILE && spellData->hasTrail == true)
+	if (spellData->type == ESpellType::PROJECTILE && spellData->hasTrail == true)
 	{
 		spell = UTrailSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
-	if ((spellData->type == SpellType::PROJECTILE || (spellData->type == SpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
+	if ((spellData->type == ESpellType::PROJECTILE || (spellData->type == ESpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
 	{
 		spell = UPenetrateSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
 
 	//OnHit Decorators. Anything wanted to be affected by AOE decorate beforehand (such as knockback). 
-	if (spellData->type != SpellType::SELF && spellData->applyKnockback == true)
+	if (spellData->type != ESpellType::SELF && spellData->applyKnockback == true)
 	{
 		spell = UKnockbackSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}

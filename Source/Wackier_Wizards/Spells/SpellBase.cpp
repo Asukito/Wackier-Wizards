@@ -35,7 +35,7 @@ bool USpellBase::CastSpell()
 //Spawns relevant Niagara to display a hit. In the case of SelfSpells, spawns the Niagara for the spell.
 void USpellBase::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	if (spellData->type != SpellType::SELF)
+	if (spellData->type != ESpellType::SELF)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->collisionNiagara, location, FRotator::ZeroRotator);
 	}
@@ -138,7 +138,7 @@ void USpellBase::HandleInterfaceFunctions(AActor* actor, int damageAdjustment)
 	bool isKilled = false;
 	IEffectable* effectable = Cast<IEffectable>(actor);
 
-	if (spellData->type != SpellType::SELF || (spellData->type == SpellType::SELF && actor != spellOwner->GetSpellOwner()))
+	if (spellData->type != ESpellType::SELF || (spellData->type == ESpellType::SELF && actor != spellOwner->GetSpellOwner()))
 	{
 		if (effectable != nullptr)
 		{

@@ -23,7 +23,7 @@ void AArcaneCircle::BeginPlay()
 {
 	ASpellTrapBase::BeginPlay();
 
-	if (_spell == nullptr || _spell->type != SpellType::SELF || _spell->isAOE == false)
+	if (_spell == nullptr || _spell->type != ESpellType::SELF || _spell->isAOE == false)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Black, FString::Printf(TEXT("ARCANE CIRCLE HAS INVALID SPELL TYPE")));
 		return;
