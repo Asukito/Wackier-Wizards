@@ -28,7 +28,18 @@ USpellData* USpellLoaderSubsystem::GetSpellData(FName spellRow)
 }
 
 
-FSpellTableData* USpellLoaderSubsystem::GetSpellTableData(FName spellRow)
+TArray<FName> USpellLoaderSubsystem::GetRowNames()
+{
+	if (_spellDataTable == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		return TArray<FName>();
+	}
+
+	return _spellDataTable->GetRowNames();
+}
+
+UTexture* USpellLoaderSubsystem::GetSpellIcon(FName spellRow)
 {
 	if (_spellDataTable == nullptr)
 	{
@@ -41,12 +52,33 @@ FSpellTableData* USpellLoaderSubsystem::GetSpellTableData(FName spellRow)
 
 	if (spellData != nullptr)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s spellIcon"), *spellRow.ToString()));
+		return spellData->spellIcon;
+	}
+
+	return nullptr;
+}
+
+bool USpellLoaderSubsystem::GetSpellTableData(FName spellRow, FSpellTableData& OutData)
+{
+	if (_spellDataTable == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		return false;
+	}
+
+	static const FString ContextString(TEXT("Spell Context String"));
+	FSpellTableData* spellData = _spellDataTable->FindRow<FSpellTableData>(spellRow, ContextString, true);
+
+	if (spellData != nullptr)
+	{
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s data"), *spellRow.ToString()));
-		return spellData;
+		OutData = *spellData;
+		return true;
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load %s data"), *spellRow.ToString()));
-	return nullptr;
+	return false;
 }
 
 ISpell* USpellLoaderSubsystem::CreateSpell(USpellData* data, ISpellCaster* owner)

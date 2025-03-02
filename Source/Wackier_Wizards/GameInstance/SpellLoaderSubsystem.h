@@ -10,6 +10,7 @@ class USpellFactory;
 class ISpell;
 class ISpellCaster;
 class USpellData;
+class UTexture;
 struct FSpellTableData;
 
 UCLASS(Blueprintable)
@@ -23,7 +24,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	USpellData* GetSpellData(FName spellRow);
 
-	FSpellTableData* GetSpellTableData(FName spellRow);
+	UFUNCTION(BlueprintCallable)
+	TArray<FName> GetRowNames();
+	UFUNCTION(BlueprintCallable)
+	UTexture* GetSpellIcon(FName spellRow);
+	UFUNCTION(BlueprintCallable)
+	bool GetSpellTableData(FName spellRow, FSpellTableData& OutData);
+
 	ISpell* CreateSpell(USpellData* data, ISpellCaster* owner);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
