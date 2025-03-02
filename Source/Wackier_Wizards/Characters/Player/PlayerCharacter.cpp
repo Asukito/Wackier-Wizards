@@ -62,6 +62,10 @@ void APlayerCharacter::CycleSpell()
 {
 	spellCasterComponent->CycleSpell();
 }
+void APlayerCharacter::InitSpells()
+{
+	spellCasterComponent->InitSpells();
+}
 #pragma endregion
 
 void APlayerCharacter::BindDelegates()
@@ -78,7 +82,7 @@ void APlayerCharacter::BeginPlay()
 	ABaseCharacter::BeginPlay();
 
 	lastValidPosition = GetActorLocation();
-	spellCasterComponent->InitSpells();
+	//spellCasterComponent->InitSpells();
 }
 
 // Called every frame
