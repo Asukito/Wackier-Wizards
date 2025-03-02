@@ -35,6 +35,7 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AEnemySpawner> _enemySpawner;
+
 	UPROPERTY(EditDefaultsOnly)
 	FName _hubLevelName;
 

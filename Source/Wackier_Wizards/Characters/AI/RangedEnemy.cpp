@@ -49,6 +49,13 @@ const FVector ARangedEnemy::GetCastStartForward()
 	return GetActorForwardVector();
 }
 
+void ARangedEnemy::Tick(float DeltaTime)
+{
+	ABaseEnemy::Tick(DeltaTime);
+
+	_agent->SetPauseAgent(IsHidden());
+}
+
 void ARangedEnemy::BeginPlay()
 {
 	ABaseEnemy::BeginPlay();
