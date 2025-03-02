@@ -28,7 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeSpell(int slot);
 	virtual void CycleSpell();
-
+	UFUNCTION(BlueprintCallable)
+	void InitSpells();
 
 	//---- HELPERS ----
 	UCameraComponent* GetCamera() const noexcept;

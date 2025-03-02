@@ -79,6 +79,11 @@ void UStageLoaderSubsystem::ResetStage()
 	UGameplayStatics::OpenLevel(GetWorld(), _currentStageData->levelName);
 }
 
+void UStageLoaderSubsystem::SetHubLevel(FName name)
+{
+	_hubLevelName = name;
+}
+
 void UStageLoaderSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);

@@ -4,16 +4,22 @@
 #include "StageGameMode.h"
 #include "../Level/WaveManager.h"
 #include "../GameInstance/StageLoaderSubsystem.h"
+#include "../Characters/Player/PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 void AStageGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (TObjectPtr<APlayerCharacter> player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	{
+		player->InitSpells();
+	}
+
 	if (TObjectPtr<UStageLoaderSubsystem> stageLoader = GetGameInstance()->GetSubsystem<UStageLoaderSubsystem>())
 	{
 		InitWaves(stageLoader->GetStageData());
 	}
-
 }
 
 void AStageGameMode::InitWaves(FStageData* data)
