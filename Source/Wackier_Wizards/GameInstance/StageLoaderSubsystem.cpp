@@ -35,6 +35,11 @@ void UStageLoaderSubsystem::LoadStage(int stage)
 
 void UStageLoaderSubsystem::LoadDataTable()
 {
+	if (_stageDataTable != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StageLoader has already loaded the StageDataTable"));
+		return;
+	}
 	FSoftObjectPath path(TEXT("/Script/Engine.DataTable'/Game/1WWDEV/Ben-H/StageData/DT_StageData.DT_StageData'"));
 	UObject* pathObject = path.ResolveObject();
 

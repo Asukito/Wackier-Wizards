@@ -8,6 +8,7 @@
 #include "WWPlayerController.h"
 #include "../../Components/SpellCasterComponent.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
+#include "../../GameInstance/PlayerDataSubsystem.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : ABaseCharacter()
@@ -64,6 +65,24 @@ void APlayerCharacter::CycleSpell()
 }
 void APlayerCharacter::InitSpells()
 {
+	if (TObjectPtr<UPlayerDataSubsystem> playerData = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>())
+	{
+		TArray<USpellData*> data = playerData->GetSpellsAsData();
+
+		if (data.Num() != 0)
+		{
+			spellCasterComponent->PopulateSpells(data);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PlayerDataSubsystem has no spell data"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player failed to find PlayerDataSubsystem"));
+	}
+
 	spellCasterComponent->InitSpells();
 }
 #pragma endregion

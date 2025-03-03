@@ -22,14 +22,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadDataTable();
 	UFUNCTION(BlueprintCallable)
-	USpellData* GetSpellData(FName spellRow);
+	USpellData* GetSpellData(int id);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FName> GetRowNames();
+	TArray<int> GetSpellIDs();
 	UFUNCTION(BlueprintCallable)
-	UTexture* GetSpellIcon(FName spellRow);
+	UTexture* GetSpellIcon(int id);
 	UFUNCTION(BlueprintCallable)
-	bool GetSpellTableData(FName spellRow, FSpellTableData& OutData);
+	bool GetSpellTableData(int id, FSpellTableData& OutData);
 
 	ISpell* CreateSpell(USpellData* data, ISpellCaster* owner);
 
@@ -40,6 +40,8 @@ public:
 private:
 	UPROPERTY()
 	TObjectPtr<UDataTable> _spellDataTable;
+
+	TMap<int, FSpellTableData*> _spellMap;
 
 	UPROPERTY()
 	TObjectPtr<USpellFactory> _spellFactory;

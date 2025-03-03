@@ -32,6 +32,12 @@ void USpellCasterComponent::InitSpells()
 	{
 		for (USpellData* data : _spellData)
 		{
+			if (data == nullptr)
+			{
+				_spells.Add(nullptr);
+				continue;
+			}
+
 			_spells.Add(spellLoader->CreateSpell(data, this)->_getUObject());
 		}
 
@@ -57,6 +63,13 @@ void USpellCasterComponent::ChangeSpell(int slot)
 	}
 
 	_spell = _spells[slot - 1];
+
+	if (_spell == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: NONE")));
+		return;
+	}
+
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: %s"), *_spell->GetSpellName()));
 }
 
@@ -94,6 +107,11 @@ void USpellCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	for (TScriptInterface<ISpell> spell : _spells)
 	{
+		if (spell == nullptr)
+		{
+			continue;
+		}
+
 		spell->Update(DeltaTime);
 	}
 }

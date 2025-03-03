@@ -6,79 +6,71 @@
 #include "../Spells/SpellFactory.h"
 #include "../Interfaces/Spell.h"
 
-USpellData* USpellLoaderSubsystem::GetSpellData(FName spellRow)
+USpellData* USpellLoaderSubsystem::GetSpellData(int id)
 {
-	if (_spellDataTable == nullptr)
+	if (_spellMap.Num() == 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
 		return nullptr;
 	}
 
-	static const FString ContextString(TEXT("Spell Context String"));
-	FSpellTableData* spellData = _spellDataTable->FindRow<FSpellTableData>(spellRow, ContextString, true);
-
-	if (spellData != nullptr)
+	if (_spellMap.Contains(id) == false)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s spellData"), *spellRow.ToString()));
-		return spellData->spellData;
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load %s spellData"), *spellRow.ToString()));
-	return nullptr;
-}
-
-
-TArray<FName> USpellLoaderSubsystem::GetRowNames()
-{
-	if (_spellDataTable == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
-		return TArray<FName>();
-	}
-
-	return _spellDataTable->GetRowNames();
-}
-
-UTexture* USpellLoaderSubsystem::GetSpellIcon(FName spellRow)
-{
-	if (_spellDataTable == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
 		return nullptr;
 	}
 
-	static const FString ContextString(TEXT("Spell Context String"));
-	FSpellTableData* spellData = _spellDataTable->FindRow<FSpellTableData>(spellRow, ContextString, true);
-
-	if (spellData != nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s spellIcon"), *spellRow.ToString()));
-		return spellData->spellIcon;
-	}
-
-	return nullptr;
+	return _spellMap[id]->spellData;
 }
 
-bool USpellLoaderSubsystem::GetSpellTableData(FName spellRow, FSpellTableData& OutData)
+
+TArray<int> USpellLoaderSubsystem::GetSpellIDs()
 {
-	if (_spellDataTable == nullptr)
+	if (_spellMap.Num() == 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load SpellData")));
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
+		return TArray<int>();
+	}
+
+	TArray<int> ids;
+	_spellMap.GetKeys(ids);
+
+	return ids;
+}
+
+UTexture* USpellLoaderSubsystem::GetSpellIcon(int id)
+{
+	if (_spellMap.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
+		return nullptr;
+	}
+
+	if (_spellMap.Contains(id) == false)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
+		return nullptr;
+	}
+
+	return _spellMap[id]->spellIcon;
+}
+
+bool USpellLoaderSubsystem::GetSpellTableData(int id, FSpellTableData& OutData)
+{
+	if (_spellMap.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
 		return false;
 	}
 
-	static const FString ContextString(TEXT("Spell Context String"));
-	FSpellTableData* spellData = _spellDataTable->FindRow<FSpellTableData>(spellRow, ContextString, true);
-
-	if (spellData != nullptr)
+	if (_spellMap.Contains(id) == false)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Loaded %s data"), *spellRow.ToString()));
-		OutData = *spellData;
-		return true;
+		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
+		return false;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("Failed to load %s data"), *spellRow.ToString()));
-	return false;
+	OutData = *_spellMap[id];
+	return true;
 }
 
 ISpell* USpellLoaderSubsystem::CreateSpell(USpellData* data, ISpellCaster* owner)
@@ -98,6 +90,12 @@ ISpell* USpellLoaderSubsystem::CreateSpell(USpellData* data, ISpellCaster* owner
 
 void USpellLoaderSubsystem::LoadDataTable()
 {
+	if (_spellDataTable != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpellLoader has already loaded the SpellDataTable"));
+		return;
+	}
+
 	FSoftObjectPath path(TEXT("/Script/Engine.DataTable'/Game/1WWDEV/Ben-H/SpellData/DT_SpellData.DT_SpellData'"));
 	UObject* pathObject = path.ResolveObject();
 
@@ -109,11 +107,29 @@ void USpellLoaderSubsystem::LoadDataTable()
 	if (pathObject != nullptr)
 	{
 		_spellDataTable = Cast<UDataTable>(pathObject);
+
+		static const FString ContextString(TEXT("Spell Context String"));
+
+		TArray<FSpellTableData*> spellStructs;
+		_spellDataTable->GetAllRows(ContextString, spellStructs);
+
+		for (FSpellTableData* data : spellStructs)
+		{
+			if (_spellMap.Contains(data->spellID) == true)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, FString::Printf(TEXT("Spell ID %i is repeated"), data->spellID));
+				UE_LOG(LogTemp, Error, TEXT("Spell ID %i is repeated"), data->spellID);
+				continue;
+			}
+
+			_spellMap.Add(data->spellID, data);
+		}
+
 		UE_LOG(LogTemp, Warning, TEXT("Stage Loader Succeeded"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Stage Loader Failed"));
+		UE_LOG(LogTemp, Error, TEXT("Stage Loader Failed"));
 	}
 }
 

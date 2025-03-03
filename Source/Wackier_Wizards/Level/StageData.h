@@ -25,6 +25,8 @@ struct FSpellTableData : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int spellID;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName spellName;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString spellDescription;
