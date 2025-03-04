@@ -9,6 +9,11 @@ void UPlayerDataSubsystem::SetSpells(TArray<int> spellIDs)
 	_spells = spellIDs;
 }
 
+TArray<int> UPlayerDataSubsystem::GetSavedSpellIDs()
+{
+	return _spells;
+}
+
 TArray<USpellData*> UPlayerDataSubsystem::GetSpellsAsData()
 {
 	TObjectPtr<USpellLoaderSubsystem> spellLoader = GetGameInstance()->GetSubsystem<USpellLoaderSubsystem>();

@@ -14,7 +14,11 @@ class WACKIER_WIZARDS_API UPlayerDataSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable)
 	void SetSpells(TArray<int> spellIDs);
+	UFUNCTION(BlueprintCallable)
+	TArray<int> GetSavedSpellIDs();
+
 	TArray<USpellData*> GetSpellsAsData();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
