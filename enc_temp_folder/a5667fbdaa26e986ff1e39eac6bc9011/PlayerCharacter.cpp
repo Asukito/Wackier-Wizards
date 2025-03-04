@@ -71,7 +71,6 @@ void APlayerCharacter::InitSpells()
 
 		if (data.Num() != 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Red, FString::Printf(TEXT("LOADED %i SPELLS")));
 			spellCasterComponent->PopulateSpells(data);
 		}
 		else
