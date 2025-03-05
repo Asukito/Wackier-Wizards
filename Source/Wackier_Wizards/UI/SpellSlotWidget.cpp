@@ -5,20 +5,44 @@
 #include "Components/TextBlock.h"
 #include "DragWidget.h"
 #include "../GameInstance/SpellLoaderSubsystem.h"
+#include "Components/Border.h"
+#include "Components/Image.h"
+#include "SpellSlotPreview.h"
+#include "Components/Button.h"
+#include "GrimoireWidget.h"
 
-void USpellSlotWidget::Init(int id, USpellLoaderSubsystem* spellLoader)
+void USpellSlotWidget::Init(int id, USpellLoaderSubsystem* spellLoader, UGrimoireWidget* grimoire)
 {
-	if (spellLoader == nullptr)
+	if (spellLoader == nullptr || grimoire == nullptr)
 	{
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, FString::Printf(TEXT("DESTINATION ID %i, NEW ID %i"), _spellID, id));
+	_selectButton->OnClicked.AddDynamic(this, &USpellSlotWidget::UpdateDisplayedSpell);
 
+	_grimoire = grimoire;
 	_spellLoader = spellLoader;
 
+	ChangeID(id);
+}
+
+void USpellSlotWidget::ChangeID(int id)
+{
 	_spellID = id;
 	_spellName->SetText(FText::FromString(_spellLoader->GetSpellName(id)));
+
+	TObjectPtr<UTexture2D> icon = _spellLoader->GetSpellIcon(id);
+
+	if (icon != nullptr)
+	{
+		_spellIcon->SetBrushFromTexture(icon);
+	}
+	else
+	{
+		_spellIcon->SetBrushFromMaterial(_emptyIcon);
+	}
+
+	_spellIcon->SetDesiredSizeOverride(_imageSize);
 }
 
 int USpellSlotWidget::GetID()
@@ -26,6 +50,10 @@ int USpellSlotWidget::GetID()
 	return _spellID;
 }
 
+void USpellSlotWidget::UpdateDisplayedSpell()
+{
+	_grimoire->UpdateDisplayedSpell(_spellID);
+}
 
 FReply USpellSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
@@ -49,17 +77,14 @@ void USpellSlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const F
 	TObjectPtr<UDragWidget> DragDropOperation = NewObject<UDragWidget>();
 	DragDropOperation->widgetReference = this;
 	DragDropOperation->dragOffset = InGeometry.AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
-	DragDropOperation->DefaultDragVisual = this;
+
+	TObjectPtr<USpellSlotPreview> preview = CreateWidget<USpellSlotPreview>(this, _previewDefault);
+	preview->Init(_spellName->GetText());
+
+	DragDropOperation->DefaultDragVisual = preview;
 	DragDropOperation->Pivot = EDragPivot::MouseDown;
 
 	OutOperation = DragDropOperation;
-}
-
-void USpellSlotWidget::NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
-{
-	Super::NativeOnDragLeave(InDragDropEvent, InOperation);
-
-	//RemoveFromParent();
 }
 
 bool USpellSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -72,8 +97,8 @@ bool USpellSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 
 			if (destinationID != _spellID)
 			{
-				spellSlot->Init(_spellID, _spellLoader);
-				Init(destinationID, _spellLoader);
+				spellSlot->ChangeID(_spellID);
+				ChangeID(destinationID);
 			}
 
 			return true;
@@ -102,8 +127,4 @@ FReply USpellSlotWidget::CustomDetectDrag(const FPointerEvent& InMouseEvent, UWi
 	}
 
 	return FReply::Unhandled();
-}
-
-void USpellSlotWidget::NativeOnInitialized()
-{
 }

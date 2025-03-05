@@ -6,6 +6,18 @@
 #include "../GameInstance/SpellLoaderSubsystem.h"
 #include "../GameInstance/PlayerDataSubsystem.h"
 #include "Components/WrapBox.h"
+#include "Components/TextBlock.h"
+
+void UGrimoireWidget::UpdateDisplayedSpell(int id)
+{
+	if (_selectedSpell == id)
+	{
+		return;
+	}
+
+	_selectedSpell = id;
+	UpdateSelectedSpell();
+}
 
 void UGrimoireWidget::NativePreConstruct()
 {
@@ -34,11 +46,10 @@ void UGrimoireWidget::NativeConstruct()
 		{
 			_selectionIDs.Add(0);
 		}
-
-		spellSlot->Init(_selectionIDs[i], _spellLoader);
-
 		_selectionSlots.Add(spellSlot);
 		_selectionGrid->AddChildToWrapBox(spellSlot);
+
+		spellSlot->Init(_selectionIDs[i], _spellLoader, this);
 	}
 
 	for (int i = 0; i < _selectedSlotsMax; i++)
@@ -50,10 +61,10 @@ void UGrimoireWidget::NativeConstruct()
 			_selectedIDs.Add(0);
 		}
 
-		spellSlot->Init(_selectedIDs[i], _spellLoader);
-
 		_selectedSlots.Add(spellSlot);
 		_selectedGrid->AddChildToWrapBox(spellSlot);
+
+		spellSlot->Init(_selectedIDs[i], _spellLoader, this);
 	}
 }
 
@@ -82,6 +93,7 @@ void UGrimoireWidget::NativeOnInitialized()
 	{
 		_playerData = playerData;
 	}
+
 }
 
 void UGrimoireWidget::SortIDs()
@@ -111,4 +123,10 @@ void UGrimoireWidget::SortIDs()
 			}
 		}
 	}
+}
+
+void UGrimoireWidget::UpdateSelectedSpell()
+{
+	_selectedSpellName->SetText(FText::FromString(_spellLoader->GetSpellName(_selectedSpell)));
+	_selectedSpellDescription->SetText(FText::FromString(_spellLoader->GetSpellDescription(_selectedSpell)));
 }

@@ -43,7 +43,7 @@ TArray<int> USpellLoaderSubsystem::GetSpellIDs()
 	return ids;
 }
 
-UTexture* USpellLoaderSubsystem::GetSpellIcon(int id)
+UTexture2D* USpellLoaderSubsystem::GetSpellIcon(int id)
 {
 	if (_spellMap.Num() == 0)
 	{
@@ -108,6 +108,28 @@ FString USpellLoaderSubsystem::GetSpellName(int id)
 	}
 
 	return _spellMap[id]->spellName.ToString();
+}
+
+FString USpellLoaderSubsystem::GetSpellDescription(int id)
+{
+	if (_spellMap.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
+		return FString(" ");
+	}
+
+	if (id == 0)
+	{
+		return FString(" ");
+	}
+
+	if (_spellMap.Contains(id) == false)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
+		return FString(" ");
+	}
+
+	return _spellMap[id]->spellDescription;
 }
 
 ISpell* USpellLoaderSubsystem::CreateSpell(USpellData* data, ISpellCaster* owner)

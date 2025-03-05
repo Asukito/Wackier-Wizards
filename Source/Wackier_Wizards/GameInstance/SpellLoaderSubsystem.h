@@ -11,6 +11,7 @@ class ISpell;
 class ISpellCaster;
 class USpellData;
 class UTexture;
+class UImage;
 struct FSpellTableData;
 
 UCLASS(Blueprintable)
@@ -27,11 +28,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<int> GetSpellIDs();
 	UFUNCTION(BlueprintCallable)
-	UTexture* GetSpellIcon(int id);
+	UTexture2D* GetSpellIcon(int id);
 	UFUNCTION(BlueprintCallable)
 	bool GetSpellTableData(int id, FSpellTableData& OutData);
 
 	FString GetSpellName(int id);
+	FString GetSpellDescription(int id);
 	ISpell* CreateSpell(USpellData* data, ISpellCaster* owner);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

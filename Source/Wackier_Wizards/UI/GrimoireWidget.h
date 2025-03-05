@@ -10,6 +10,7 @@ class UWrapBox;
 class USpellSlotWidget;
 class USpellLoaderSubsystem;
 class UPlayerDataSubsystem;
+class UTextBlock;
 
 UCLASS()
 class WACKIER_WIZARDS_API UGrimoireWidget : public UUserWidget
@@ -17,6 +18,8 @@ class WACKIER_WIZARDS_API UGrimoireWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	void UpdateDisplayedSpell(int id);
+
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
@@ -24,6 +27,7 @@ public:
 	virtual void NativeOnInitialized() override;
 private:
 	void SortIDs();
+	void UpdateSelectedSpell();
 
 private:
 	UPROPERTY()
@@ -43,6 +47,12 @@ private:
 	TObjectPtr<UWrapBox> _selectionGrid;
 	UPROPERTY()
 	TArray<TObjectPtr<USpellSlotWidget>> _selectionSlots;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UTextBlock> _selectedSpellName;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UTextBlock> _selectedSpellDescription;
+	int _selectedSpell;
 
 	int _spellSlots;
 	UPROPERTY(EditDefaultsOnly)

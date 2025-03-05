@@ -33,5 +33,5 @@ struct FSpellTableData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class USpellData> spellData;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UTexture> spellIcon;
+	TObjectPtr<UTexture2D> spellIcon;
 };
