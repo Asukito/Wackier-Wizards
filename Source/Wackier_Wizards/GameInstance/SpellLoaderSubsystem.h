@@ -31,6 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetSpellTableData(int id, FSpellTableData& OutData);
 
+	FString GetSpellName(int id);
 	ISpell* CreateSpell(USpellData* data, ISpellCaster* owner);
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

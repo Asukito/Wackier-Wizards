@@ -14,6 +14,11 @@ USpellData* USpellLoaderSubsystem::GetSpellData(int id)
 		return nullptr;
 	}
 
+	if (id == 0)
+	{
+		return nullptr;
+	}
+
 	if (_spellMap.Contains(id) == false)
 	{
 		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
@@ -46,6 +51,11 @@ UTexture* USpellLoaderSubsystem::GetSpellIcon(int id)
 		return nullptr;
 	}
 
+	if (id == 0)
+	{
+		return nullptr;
+	}
+
 	if (_spellMap.Contains(id) == false)
 	{
 		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
@@ -63,6 +73,11 @@ bool USpellLoaderSubsystem::GetSpellTableData(int id, FSpellTableData& OutData)
 		return false;
 	}
 
+	if (id == 0)
+	{
+		return false;
+	}
+
 	if (_spellMap.Contains(id) == false)
 	{
 		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
@@ -71,6 +86,28 @@ bool USpellLoaderSubsystem::GetSpellTableData(int id, FSpellTableData& OutData)
 
 	OutData = *_spellMap[id];
 	return true;
+}
+
+FString USpellLoaderSubsystem::GetSpellName(int id)
+{
+	if (_spellMap.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap is empty"));
+		return FString(" ");
+	}
+
+	if (id == 0)
+	{
+		return FString(" ");
+	}
+
+	if (_spellMap.Contains(id) == false)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SpellMap doesn't contain ID %i"), id);
+		return FString(" ");
+	}
+
+	return _spellMap[id]->spellName.ToString();
 }
 
 ISpell* USpellLoaderSubsystem::CreateSpell(USpellData* data, ISpellCaster* owner)
@@ -125,11 +162,11 @@ void USpellLoaderSubsystem::LoadDataTable()
 			_spellMap.Add(data->spellID, data);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Stage Loader Succeeded"));
+		UE_LOG(LogTemp, Warning, TEXT("Spell Loader Succeeded"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Stage Loader Failed"));
+		UE_LOG(LogTemp, Error, TEXT("Spell Loader Failed"));
 	}
 }
 
