@@ -24,7 +24,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetStage();
 
-	void SetStageData(int i);
 	void SetHubLevel(FName name);
 
 	FStageData* GetStageData();

@@ -6,14 +6,20 @@
 #include "../GameInstance/StageLoaderSubsystem.h"
 #include "../Characters/Player/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GameInstance/SpellLoaderSubsystem.h"
 
 void AStageGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (TObjectPtr<APlayerCharacter> player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	if (TObjectPtr<USpellLoaderSubsystem> spellLoader = GetGameInstance()->GetSubsystem<USpellLoaderSubsystem>())
 	{
-		player->InitSpells();
+		spellLoader->LoadDataTable();
+
+		if (TObjectPtr<APlayerCharacter> player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+		{
+			player->InitSpells();
+		}
 	}
 
 	if (TObjectPtr<UStageLoaderSubsystem> stageLoader = GetGameInstance()->GetSubsystem<UStageLoaderSubsystem>())

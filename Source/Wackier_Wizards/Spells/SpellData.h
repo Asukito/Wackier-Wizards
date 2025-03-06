@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UNiagaraSystem> spellNiagara;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	SpellType type = SpellType::HITSCAN;
+	ESpellType type = ESpellType::HITSCAN;
 
 	///---- NON-BEAM ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type != SpellType::BEAM", EditConditionHides))
