@@ -11,6 +11,7 @@ class UEnhancedInputComponent;
 class UInputAction;
 class UCharacterMovementComponent;
 class APlayerCharacter;
+class UUIManagerSubsystem;
 
 UCLASS()
 class WACKIER_WIZARDS_API AWWPlayerController : public APlayerController
@@ -34,6 +35,8 @@ protected:
 	void HandleSpellFive();
 	void HandleSpellSix();
 	void HandleChangeSpell();
+	void HandleToggleSpellSelection();
+	void HandleTogglePauseMenu();
 
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
@@ -94,7 +97,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
 	TObjectPtr<UInputAction> actionChangeSpell;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
+	TObjectPtr<UInputAction> actionToggleSpellSelection;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
+	TObjectPtr<UInputAction> actionTogglePauseMenu;
 private:
+	UPROPERTY()
+	TObjectPtr<UUIManagerSubsystem> _uiManager;
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputComponent> _enhancedInputComponent;
 

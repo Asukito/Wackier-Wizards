@@ -9,6 +9,8 @@
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.h"
 #include "VRCharacter.h"
+#include "../../Gamemodes/HubGameMode.h"
+#include "../../GameInstance/UIManagerSubsystem.h"
 
 #pragma region "Input Handlers"
 void AWWPlayerController::UpdateSensitivity(float horizontal, float vertical)
@@ -74,11 +76,41 @@ void AWWPlayerController::HandleChangeSpell()
 {
 	_playerCharacter->CycleSpell();
 }
+void AWWPlayerController::HandleToggleSpellSelection()
+{
+	if (_uiManager == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller failed to initialise uiManager"));
+		return;
+	}
+
+	if (Cast<AHubGameMode>(GetWorld()->GetAuthGameMode()) != nullptr)
+	{
+		_uiManager->ToggleWidget(EWidgetType::GRIMOIRE, this);
+		return;
+	}
+}
+void AWWPlayerController::HandleTogglePauseMenu()
+{
+	if (_uiManager == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller failed to initialise uiManager"));
+		return;
+	}
+
+	_uiManager->ToggleWidget(EWidgetType::PAUSE_MENU, this);
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
+
+	if (TObjectPtr<UUIManagerSubsystem> uiManager = GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
+	{
+		_uiManager = uiManager;
+		_uiManager->CreateWidgets(this);
+	}
 
 	if (AVRCharacter* vr = Cast<AVRCharacter>(aPawn))
 	{
@@ -161,6 +193,12 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(actionSpellSix, TEXT("Missing 'SpellSix' Action"));
 	inputComponent->BindAction(actionSpellSix, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellSix);
+
+	checkf(actionToggleSpellSelection, TEXT("Missing 'ToggleSpellSelection' Action"));
+	inputComponent->BindAction(actionToggleSpellSelection, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleToggleSpellSelection);
+
+	checkf(actionTogglePauseMenu, TEXT("Missing 'TogglePauseMenu' Action"));
+	inputComponent->BindAction(actionTogglePauseMenu, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTogglePauseMenu);
 }
 
 void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)

@@ -59,6 +59,16 @@ void UStageLoaderSubsystem::LoadDataTable()
 	}
 }
 
+int UStageLoaderSubsystem::GetStageLevel()
+{
+	if (_currentStageData == nullptr)
+	{
+		return 0;
+	}
+
+	return _currentStageData->stage;
+}
+
 FStageData* UStageLoaderSubsystem::GetStageData()
 {
 	return _currentStageData;

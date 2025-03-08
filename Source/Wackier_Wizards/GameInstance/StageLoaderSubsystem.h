@@ -26,6 +26,7 @@ public:
 
 	void SetHubLevel(FName name);
 
+	int GetStageLevel();
 	FStageData* GetStageData();
 	TSubclassOf<AEnemySpawner> GetSpawnerDefault();
 

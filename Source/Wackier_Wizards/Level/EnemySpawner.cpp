@@ -8,6 +8,7 @@
 #include "../Characters/AI/MeleeEnemy.h"
 #include "../Characters/AI/RangedEnemy.h"
 #include "../Utility/ActorPool.h"
+#include "../GameInstance/UIManagerSubsystem.h"
 
 AEnemySpawner::AEnemySpawner()
 { 	
@@ -173,8 +174,6 @@ void AEnemySpawner::GetNextWave()
 			_toSpawn += 1;
 		}
 	}
-
-	//Do other enemies
 
 	if (_pool == nullptr)
 	{

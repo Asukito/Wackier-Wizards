@@ -28,6 +28,7 @@ public:
 private:
 	void SortIDs();
 	void UpdateSelectedSpell();
+	void DestroySpellSlots();
 
 private:
 	UPROPERTY()

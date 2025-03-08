@@ -38,6 +38,8 @@ void UGrimoireWidget::NativeConstruct()
 
 	SortIDs();
 
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("% i"), _spellSlots));
+
 	for (int i = 0; i < _spellSlots; i++)
 	{
 		TObjectPtr<USpellSlotWidget> spellSlot = CreateWidget<USpellSlotWidget>(this, _spellSlotDefault);
@@ -78,6 +80,7 @@ void UGrimoireWidget::NativeDestruct()
 	}
 
 	_playerData->SetSpells(toSet);
+	DestroySpellSlots();
 }
 
 void UGrimoireWidget::NativeOnInitialized()
@@ -93,7 +96,6 @@ void UGrimoireWidget::NativeOnInitialized()
 	{
 		_playerData = playerData;
 	}
-
 }
 
 void UGrimoireWidget::SortIDs()
@@ -123,10 +125,31 @@ void UGrimoireWidget::SortIDs()
 			}
 		}
 	}
+
+	DestroySpellSlots();
 }
 
 void UGrimoireWidget::UpdateSelectedSpell()
 {
 	_selectedSpellName->SetText(FText::FromString(_spellLoader->GetSpellName(_selectedSpell)));
 	_selectedSpellDescription->SetText(FText::FromString(_spellLoader->GetSpellDescription(_selectedSpell)));
+}
+
+void UGrimoireWidget::DestroySpellSlots()
+{
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectionSlots)
+	{
+		spellSlot->RemoveFromParent();
+		spellSlot->MarkAsGarbage();
+	}
+
+	_selectionSlots.Empty();
+
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectedSlots)
+	{
+		spellSlot->RemoveFromParent();
+		spellSlot->MarkAsGarbage();
+	}
+
+	_selectedSlots.Empty();
 }
