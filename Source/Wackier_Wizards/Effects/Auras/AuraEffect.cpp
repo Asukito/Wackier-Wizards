@@ -108,10 +108,11 @@ void UAuraEffect::SetUpAura(AActor* actor)
 	aura->OnComponentBeginOverlap.AddDynamic(this, &UAuraEffect::BeginOverlap);
 	aura->OnComponentEndOverlap.AddDynamic(this, &UAuraEffect::EndOverlap);
 
-	niagara = UNiagaraFunctionLibrary::SpawnSystemAtLocation(actor->GetWorld(), effectData->effectNiagara, actor->GetActorLocation(), FRotator::ZeroRotator);
-	niagara->AttachToComponent(actor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	niagara->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	niagara->SetRelativeScale3D(FVector(effectData->auraSize / 50));
+	FVector location = actor->GetActorLocation();
+	FRotator rotation = actor->GetActorRotation();
+
+	niagara = UNiagaraFunctionLibrary::SpawnSystemAttached(effectData->effectNiagara, actor->GetRootComponent(), "", location, rotation, EAttachLocation::KeepWorldPosition, true, true, ENCPoolMethod::AutoRelease, true);
+	niagara->SetRelativeScale3D(FVector((effectData->auraSize / 50) * 0.75));
 }
 
 void UAuraEffect::HandleOverlap()
