@@ -117,7 +117,7 @@ void UGOAP_Agent::CalculateActionPlan()
 	}
 }
 
-//Resets the ancient if any errors occur. Known memory management(?) bug that needs to be handled in future. Current fix causes no noticeable issues so priority is low for now.  
+//Resets the agent if any errors occur. Known memory management(?) bug that needs to be handled in future. Current fix causes no noticeable issues so priority is low for now.  
 void UGOAP_Agent::Reset()
 {
 	_goals.Empty();
@@ -351,7 +351,7 @@ void UGOAP_Agent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Cyan, FString::Printf(TEXT("%s"), _currentAction ? *_currentAction->_name : TEXT("NO ACTION")));
+	//GEngine->AddOnScreenDebugMessage(1, 5, FColor::Cyan, FString::Printf(TEXT("%s"), _currentAction ? *_currentAction->_name : TEXT("NO ACTION")));
 
 	//If there is no action, attempt to create a plan
 	if (_currentAction == nullptr)

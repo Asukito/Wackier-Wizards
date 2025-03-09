@@ -85,7 +85,7 @@ void ABaseCharacter::AdjustWalkSpeed(float percent)
 bool ABaseCharacter::DealDamage(int amount, FString source)
 {
 	healthComponent->AdjustHealth(amount * -1);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
 
 	bool isDead = (healthComponent->GetHealth() <= 0);
 

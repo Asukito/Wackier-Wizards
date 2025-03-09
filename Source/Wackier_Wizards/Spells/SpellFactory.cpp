@@ -7,9 +7,17 @@
 //Creates a SpellBase and then applies Decorators to it. Returns the result.
 ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 {
+	if (owner == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Tried to create spell with null owner"));
+		return nullptr;
+	}
+
 	TScriptInterface<ISpell> spell = nullptr;
 	//Creates and initialises a SpellBase object.
 	TObjectPtr<USpellBase> spellBase = NewObject<USpellBase>();
+
+
 	spellBase->Init(spellData, owner);
 
 	//Applies a SpellType Decorator to the SpellBase. This is the lowest level Decorator.
@@ -39,11 +47,11 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 
 	if (spell == nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("FAILED TO CREATE SPELL")));
+		UE_LOG(LogTemp, Error, TEXT("Failed to create spell"));
 		return nullptr;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+	//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 
 	//Applies any additional Decorators to the spell if necessary.
 

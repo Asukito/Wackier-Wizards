@@ -66,11 +66,11 @@ void USpellCasterComponent::ChangeSpell(int slot)
 
 	if (_spell == nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: NONE")));
+		//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: NONE")));
 		return;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: %s"), *_spell->GetSpellName()));
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: %s"), *_spell->GetSpellName()));
 }
 
 void USpellCasterComponent::CycleSpell()

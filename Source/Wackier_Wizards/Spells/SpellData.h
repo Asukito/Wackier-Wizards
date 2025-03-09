@@ -53,7 +53,7 @@ public:
 	//---- PROJECTILE ----
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == ESpellType::PROJECTILE || (type == ESpellType::SCATTER && isHitscan == false)", EditConditionHides))
 	float speed;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == ESpellType::PROJECTILE || (type == ESpellType::SCATTER && isHitscan == false)", EditConditionHides), meta = (ClampMin = "0.0", ClampMax = "2.0"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == ESpellType::PROJECTILE || (type == ESpellType::SCATTER && isHitscan == false)", EditConditionHides), meta = (ClampMin = "0.1", ClampMax = "2.0"))
 	float projectileSize = 1.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (EditCondition = "type == ESpellType::PROJECTILE || (type == ESpellType::SCATTER && isHitscan == false)", EditConditionHides))
 	bool useGravity;

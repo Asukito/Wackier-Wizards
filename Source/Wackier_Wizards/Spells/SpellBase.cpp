@@ -26,7 +26,7 @@ bool USpellBase::CastSpell()
 		return false;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("Casting: %s"), *spellData->name));
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("Casting: %s"), *spellData->name));
 	_cooldownTimer = _cooldown;
 
 	return true;
@@ -35,14 +35,22 @@ bool USpellBase::CastSpell()
 //Spawns relevant Niagara to display a hit. In the case of SelfSpells, spawns the Niagara for the spell.
 void USpellBase::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	if (spellData->type != ESpellType::SELF)
+	if (spellOwner != nullptr)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->collisionNiagara, location, FRotator::ZeroRotator);
+		if (spellData->type != ESpellType::SELF)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->collisionNiagara, location, FRotator::ZeroRotator);
+		}
+		else
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, location, FRotator::ZeroRotator);
+		}
 	}
 	else
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(spellOwner->GetSpellOwner()->GetWorld(), spellData->spellNiagara, location, FRotator::ZeroRotator);
+		UE_LOG(LogTemp, Error, TEXT("Spell has no spellOwner - ProcessHit()"));
 	}
+
 
 	if (hit != nullptr)
 	{
