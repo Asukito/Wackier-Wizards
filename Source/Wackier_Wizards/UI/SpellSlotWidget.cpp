@@ -11,7 +11,7 @@
 #include "Components/Button.h"
 #include "GrimoireWidget.h"
 
-void USpellSlotWidget::Init(int id, USpellLoaderSubsystem* spellLoader, UGrimoireWidget* grimoire)
+void USpellSlotWidget::InitGrimoire(int id, USpellLoaderSubsystem* spellLoader, UGrimoireWidget* grimoire)
 {
 	if (spellLoader == nullptr || grimoire == nullptr)
 	{
@@ -19,8 +19,24 @@ void USpellSlotWidget::Init(int id, USpellLoaderSubsystem* spellLoader, UGrimoir
 	}
 
 	_selectButton->OnClicked.AddDynamic(this, &USpellSlotWidget::UpdateDisplayedSpell);
-
 	_grimoire = grimoire;
+
+	_spellLoader = spellLoader;
+
+	ChangeID(id);
+}
+
+void USpellSlotWidget::InitQuickSelect(int id, USpellLoaderSubsystem* spellLoader, TFunction<void(int)> func, int slot)
+{
+	if (spellLoader == nullptr)
+	{
+		return;
+	}
+
+	_quickSelectSlot = slot;
+	_onSelect.BindLambda(func);
+
+	_selectButton->OnClicked.AddDynamic(this, &USpellSlotWidget::QuickSelectCallback);
 	_spellLoader = spellLoader;
 
 	ChangeID(id);
@@ -50,6 +66,17 @@ int USpellSlotWidget::GetID()
 	return _spellID;
 }
 
+void USpellSlotWidget::IsSelected(bool val)
+{
+	if (val == true)
+	{
+		_border->SetContentColorAndOpacity(_selectedColour);
+		return;
+	}
+
+	_border->SetContentColorAndOpacity(_defaultColour);
+}
+
 void USpellSlotWidget::UpdateDisplayedSpell()
 {
 	_grimoire->UpdateDisplayedSpell(_spellID);
@@ -67,6 +94,11 @@ FReply USpellSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeome
 
 FReply USpellSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
+	if (_grimoire == nullptr)
+	{
+		return 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	}
+
 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
 	return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
@@ -127,4 +159,14 @@ FReply USpellSlotWidget::CustomDetectDrag(const FPointerEvent& InMouseEvent, UWi
 	}
 
 	return FReply::Unhandled();
+}
+
+void USpellSlotWidget::QuickSelectCallback()
+{
+	if (_onSelect.IsBound() == false || _quickSelectSlot == 0)
+	{
+		return;
+	}
+
+	_onSelect.Execute(_quickSelectSlot);
 }

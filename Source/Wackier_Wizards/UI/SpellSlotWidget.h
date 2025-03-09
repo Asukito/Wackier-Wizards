@@ -15,19 +15,23 @@ class USpellSlotPreview;
 class UImage;
 class UGrimoireWidget;
 
+DECLARE_DELEGATE_OneParam(FQuickSelectDelegate, int);
+
 UCLASS()
 class WACKIER_WIZARDS_API USpellSlotWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
-	void Init(int id, USpellLoaderSubsystem* spellLoader, UGrimoireWidget* grimoire);
+	void InitGrimoire(int id, USpellLoaderSubsystem* spellLoader, UGrimoireWidget* grimoire);
+	void InitQuickSelect(int id, USpellLoaderSubsystem* spellLoader, TFunction<void(int)> func, int slot);
 	void ChangeID(int id);
 	int GetID();
 
+	void IsSelected(bool val);
+
 	UFUNCTION()
 	void UpdateDisplayedSpell();
-
 protected:
 	virtual FReply NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
@@ -36,6 +40,9 @@ protected:
 
 	FReply CustomDetectDrag(const FPointerEvent& InMouseEvent, UWidget* WidgetDetectingDrag, FKey DragKey);
 
+private:
+	UFUNCTION()
+	void QuickSelectCallback();
 private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterial> _emptyIcon;
@@ -61,7 +68,16 @@ private:
 	UPROPERTY()
 	TObjectPtr<UGrimoireWidget> _grimoire;
 
-	int _spellID;
 	UPROPERTY(EditAnywhere)
 	FVector2D _imageSize;
+
+	UPROPERTY(EditDefaultsOnly)
+	FColor _defaultColour;
+	UPROPERTY(EditDefaultsOnly)
+	FColor _selectedColour;
+
+	int _spellID;
+
+	FQuickSelectDelegate _onSelect;
+	int _quickSelectSlot;
 };

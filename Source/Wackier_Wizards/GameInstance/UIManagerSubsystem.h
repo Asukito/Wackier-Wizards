@@ -12,6 +12,7 @@ enum class EWidgetType : uint8
 {
 	PLAYER_HUD,
 	GRIMOIRE,
+	QUICK_SELECT,
 	PAUSE_MENU,
 	OPTIONS,
 	STAGE_COMPLETE
@@ -21,6 +22,7 @@ class UGrimoireWidget;
 class UPauseMenuWidget;
 class UOptionsWidget;
 class UStageCompleteWidget;
+class UQuickSelectWidget;
 
 UCLASS(Blueprintable)
 class WACKIER_WIZARDS_API UUIManagerSubsystem : public UGameInstanceSubsystem
@@ -42,6 +44,8 @@ public:
 private:
 	void AddGrimoireToViewport(APlayerController* controller);
 
+	void AddQuickSelectToViewport(APlayerController* controller);
+
 	void AddPauseMenuToViewport(APlayerController* controller);
 	void RemovePauseMenuFromViewport(APlayerController* controller);
 
@@ -56,6 +60,11 @@ private:
 	TSubclassOf<UGrimoireWidget> _grimoireDefault;
 	UPROPERTY()
 	TObjectPtr<UGrimoireWidget> _grimoire;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UQuickSelectWidget> _quickSelectDefault;
+	UPROPERTY()
+	TObjectPtr<UQuickSelectWidget> _quickSelect;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPauseMenuWidget> _pauseMenuDefault;

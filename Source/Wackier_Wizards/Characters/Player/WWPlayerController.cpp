@@ -89,6 +89,8 @@ void AWWPlayerController::HandleToggleSpellSelection()
 		_uiManager->ToggleWidget(EWidgetType::GRIMOIRE, this);
 		return;
 	}
+
+	_uiManager->ToggleWidget(EWidgetType::QUICK_SELECT, this);
 }
 void AWWPlayerController::HandleTogglePauseMenu()
 {

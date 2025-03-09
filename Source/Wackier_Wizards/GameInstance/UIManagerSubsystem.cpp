@@ -3,9 +3,11 @@
 
 #include "UIManagerSubsystem.h"
 #include "../UI/GrimoireWidget.h"
+#include "../UI/QuickSelectWidget.h"
 #include "../UI/PauseMenuWidget.h"
 #include "../UI/OptionsWidget.h"
 #include "../UI/StageCompleteWidget.h"
+#include "../Characters/Player/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UUIManagerSubsystem::CreateWidgets(APlayerController* controller)
@@ -20,6 +22,19 @@ void UUIManagerSubsystem::CreateWidgets(APlayerController* controller)
 		_grimoire = CreateWidget<UGrimoireWidget>(controller, _grimoireDefault);
 		_widgets.Add(EWidgetType::GRIMOIRE, _grimoire);
 		_addToViewportFunctions.Add(EWidgetType::GRIMOIRE, &UUIManagerSubsystem::AddGrimoireToViewport);
+	}
+
+	if (_quickSelectDefault != nullptr)
+	{
+		_quickSelect = CreateWidget<UQuickSelectWidget>(controller, _quickSelectDefault);
+
+		if (TObjectPtr<APlayerCharacter> player = Cast<APlayerCharacter>(controller->GetCharacter()))
+		{
+			_quickSelect->SetPlayer(player);
+		}
+
+		_widgets.Add(EWidgetType::QUICK_SELECT, _quickSelect);
+		_addToViewportFunctions.Add(EWidgetType::QUICK_SELECT, &UUIManagerSubsystem::AddQuickSelectToViewport);
 	}
 
 	if (_pauseMenuDefault != nullptr)
@@ -140,6 +155,24 @@ void UUIManagerSubsystem::AddGrimoireToViewport(APlayerController* controller)
 
 	FInputModeGameAndUI inputMode;
 	inputMode.SetWidgetToFocus(_grimoire->TakeWidget());
+	controller->SetInputMode(inputMode);
+
+	controller->SetShowMouseCursor(true);
+}
+
+void UUIManagerSubsystem::AddQuickSelectToViewport(APlayerController* controller)
+{
+	if (_quickSelect == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("QuickSelect Widget hasn't been assigned"));
+
+		return;
+	}
+
+	_quickSelect->AddToViewport();
+
+	FInputModeGameAndUI inputMode;
+	inputMode.SetWidgetToFocus(_quickSelect->TakeWidget());
 	controller->SetInputMode(inputMode);
 
 	controller->SetShowMouseCursor(true);

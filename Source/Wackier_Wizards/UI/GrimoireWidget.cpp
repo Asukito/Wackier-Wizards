@@ -51,7 +51,7 @@ void UGrimoireWidget::NativeConstruct()
 		_selectionSlots.Add(spellSlot);
 		_selectionGrid->AddChildToWrapBox(spellSlot);
 
-		spellSlot->Init(_selectionIDs[i], _spellLoader, this);
+		spellSlot->InitGrimoire(_selectionIDs[i], _spellLoader, this);
 	}
 
 	for (int i = 0; i < _selectedSlotsMax; i++)
@@ -66,7 +66,7 @@ void UGrimoireWidget::NativeConstruct()
 		_selectedSlots.Add(spellSlot);
 		_selectedGrid->AddChildToWrapBox(spellSlot);
 
-		spellSlot->Init(_selectedIDs[i], _spellLoader, this);
+		spellSlot->InitGrimoire(_selectedIDs[i], _spellLoader, this);
 	}
 }
 
