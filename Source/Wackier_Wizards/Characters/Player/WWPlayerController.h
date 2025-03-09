@@ -56,8 +56,10 @@ public:
 	TObjectPtr<UInputAction> VR_actionCastSpell;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
-	TObjectPtr<UInputAction> VR_actionChangeSpell;
+	TObjectPtr<UInputAction> VR_actionToggleSpellSelection;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
+	TObjectPtr<UInputAction> VR_actionTogglePauseMenu;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Mapping Context")
 	TObjectPtr<UInputMappingContext> inputMappingContext;

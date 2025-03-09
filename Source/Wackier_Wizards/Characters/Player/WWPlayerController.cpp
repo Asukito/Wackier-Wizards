@@ -205,12 +205,15 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)
 {
-	checkf(VR_actionMove, TEXT("Missing 'Move' Action"));
+	checkf(VR_actionMove, TEXT("Missing 'VR_actionMove' Action"));
 	inputComponent->BindAction(VR_actionMove, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleMove);
 
-	checkf(VR_actionCastSpell, TEXT("Missing 'Move' Action"));
+	checkf(VR_actionCastSpell, TEXT("Missing 'VR_actionCastSpell' Action"));
 	inputComponent->BindAction(VR_actionCastSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleCastSpell);
 
-	checkf(VR_actionChangeSpell, TEXT("Missing 'Move' Action"));
-	inputComponent->BindAction(VR_actionChangeSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleChangeSpell);
+	checkf(VR_actionToggleSpellSelection, TEXT("Missing 'VR_actionToggleSpellSelection' Action"));
+	inputComponent->BindAction(VR_actionToggleSpellSelection, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleToggleSpellSelection);
+
+	checkf(VR_actionTogglePauseMenu, TEXT("Missing 'VR_actionTogglePauseMenu' Action"));
+	inputComponent->BindAction(VR_actionTogglePauseMenu, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTogglePauseMenu);
 }
