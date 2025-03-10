@@ -21,4 +21,8 @@ public:
 	//Location of right hand to spawn spell
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
 	FVector rightHandLocation;
+
+	// Right hand rotation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Spell")
+	FRotator rightHandRotation;
 };
