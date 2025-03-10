@@ -141,6 +141,9 @@ float APlayerCharacter::GetVerticalSensitivity() const noexcept
 }
 const FVector APlayerCharacter::GetCastStartLocation()
 {
+	//prints to output log the cast start location
+	FVector start = GetActorLocation() + (camera->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+	UE_LOG(LogTemp, Warning, TEXT("Start: %s"), *start.ToString());
 	return GetActorLocation() + (GetCamera()->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
 const FVector APlayerCharacter::GetCastStartForward()

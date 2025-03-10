@@ -11,7 +11,8 @@ AVRCharacter::AVRCharacter() : APlayerCharacter()
 #pragma region "Helpers"
 const FVector AVRCharacter::GetCastStartForward()
 {
-	return rightHandLocation;
+	// Get the forward vector from the right hand's rotation
+	return rightHandRotation.Vector();
 }
 
 #pragma endregion
