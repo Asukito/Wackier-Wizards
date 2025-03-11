@@ -16,6 +16,11 @@ AVRCharacter::AVRCharacter() : APlayerCharacter()
 	widgetComponent->SetDrawSize(FVector2D(1920, 1080));
 }
 
+void AVRCharacter::SetInteractionComponent(UWidgetInteractionComponent* component)
+{
+	interactionComponent = component;
+}
+
 #pragma region "Helpers"
 const FVector AVRCharacter::GetCastStartForward()
 {

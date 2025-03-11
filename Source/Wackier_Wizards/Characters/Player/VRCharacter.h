@@ -7,6 +7,7 @@
 #include "VRCharacter.generated.h"
 
 class UWidgetComponent;
+class UWidgetInteractionComponent;
 
 UCLASS()
 class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
@@ -17,6 +18,9 @@ class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 public:
 	//Sets default values for this character's properties
 	AVRCharacter();
+
+	UFUNCTION(BlueprintCallable, Category = "VR")
+	void SetInteractionComponent(UWidgetInteractionComponent* component);
 
 	const FVector GetCastStartForward() override;
 
@@ -29,6 +33,9 @@ public:
 	FRotator rightHandRotation;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UWidgetInteractionComponent> interactionComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UWidgetComponent> widgetComponent;
 };

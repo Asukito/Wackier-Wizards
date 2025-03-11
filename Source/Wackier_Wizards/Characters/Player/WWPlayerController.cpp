@@ -11,12 +11,14 @@
 #include "VRCharacter.h"
 #include "../../Gamemodes/HubGameMode.h"
 #include "../../GameInstance/UIManagerSubsystem.h"
+#include "Components/WidgetInteractionComponent.h"
 
 #pragma region "Input Handlers"
 void AWWPlayerController::UpdateSensitivity(float horizontal, float vertical)
 {
 	_horizontalSens = horizontal;
 	_verticalSens = vertical;
+
 }
 
 void AWWPlayerController::HandleLook(const FInputActionValue& value)
@@ -101,6 +103,14 @@ void AWWPlayerController::HandleTogglePauseMenu()
 	}
 
 	_uiManager->ToggleWidget(EWidgetType::PAUSE_MENU, this);
+}
+void AWWPlayerController::HandleMenuInteract()
+{
+	if (AVRCharacter* vr = Cast<AVRCharacter>(GetCharacter()))
+	{
+		vr->interactionComponent->PressPointerKey(EKeys::LeftMouseButton);
+		vr->interactionComponent->ReleasePointerKey(EKeys::LeftMouseButton);
+	}
 }
 #pragma endregion
 
@@ -226,4 +236,7 @@ void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(VR_actionTogglePauseMenu, TEXT("Missing 'VR_actionTogglePauseMenu' Action"));
 	inputComponent->BindAction(VR_actionTogglePauseMenu, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTogglePauseMenu);
+
+	checkf(VR_actionMenuInteract, TEXT("Missing 'VR_actionMenuInteract' Action"));
+	inputComponent->BindAction(VR_actionMenuInteract, ETriggerEvent::Completed, this, &AWWPlayerController::HandleMenuInteract);
 }

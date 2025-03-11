@@ -37,6 +37,7 @@ protected:
 	void HandleChangeSpell();
 	void HandleToggleSpellSelection();
 	void HandleTogglePauseMenu();
+	void HandleMenuInteract();
 
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
@@ -60,6 +61,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
 	TObjectPtr<UInputAction> VR_actionTogglePauseMenu;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
+	TObjectPtr<UInputAction> VR_actionMenuInteract;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Mapping Context")
 	TObjectPtr<UInputMappingContext> inputMappingContext;
