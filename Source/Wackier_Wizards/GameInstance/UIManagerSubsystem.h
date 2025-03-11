@@ -23,6 +23,7 @@ class UPauseMenuWidget;
 class UOptionsWidget;
 class UStageCompleteWidget;
 class UQuickSelectWidget;
+class UWidgetComponent;
 
 UCLASS(Blueprintable)
 class WACKIER_WIZARDS_API UUIManagerSubsystem : public UGameInstanceSubsystem
@@ -30,7 +31,7 @@ class WACKIER_WIZARDS_API UUIManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	void CreateWidgets(APlayerController* controller);
+	void CreateWidgets(APlayerController* controller, UWidgetComponent* vrWidget);
 
 	void ToggleWidget(EWidgetType target, APlayerController* controller);
 	void AddToViewport(EWidgetType target, APlayerController* controller);
@@ -56,6 +57,9 @@ private:
 
 	void ClearViewport(APlayerController* controller);
 private:
+	UPROPERTY()
+	TObjectPtr<UWidgetComponent> _vrWidget;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGrimoireWidget> _grimoireDefault;
 	UPROPERTY()

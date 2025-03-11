@@ -9,13 +9,16 @@
 #include "../UI/StageCompleteWidget.h"
 #include "../Characters/Player/PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
 
-void UUIManagerSubsystem::CreateWidgets(APlayerController* controller)
+void UUIManagerSubsystem::CreateWidgets(APlayerController* controller, UWidgetComponent* vrWidget)
 {
 	if (controller == nullptr)
 	{
 		return;
 	}
+
+	_vrWidget = vrWidget;
 
 	if (_grimoireDefault != nullptr)
 	{
@@ -70,6 +73,20 @@ void UUIManagerSubsystem::ToggleWidget(EWidgetType target, APlayerController* co
 		return;
 	}
 
+	if (_vrWidget != nullptr)
+	{
+		if (_vrWidget->GetWidget() == _widgets[target])
+		{
+			RemoveFromViewport(target, controller);
+		}
+		else
+		{
+			AddToViewport(target, controller);
+		}
+
+		return;
+	}
+
 	if (_widgets[target]->IsInViewport() == true)
 	{
 		RemoveFromViewport(target, controller);
@@ -88,9 +105,14 @@ void UUIManagerSubsystem::AddToViewport(EWidgetType target, APlayerController* c
 		return;
 	}
 
-	if (_widgets[target]->IsInViewport() == true)
+	if (_widgets[target]->IsInViewport() == true || (_vrWidget != nullptr && _vrWidget->GetWidget() == _widgets[target]))
 	{
 		return;
+	}
+
+	if (_vrWidget != nullptr && _vrWidget->GetWidget() != _widgets[target])
+	{
+		_vrWidget->SetWidget(nullptr);
 	}
 
 	_addToViewportFunctions[target](this, controller);
@@ -104,9 +126,16 @@ void UUIManagerSubsystem::RemoveFromViewport(EWidgetType target, APlayerControll
 		return;
 	}
 
-	if (_widgets[target]->IsInViewport() == false)
+	if (_vrWidget == nullptr && _widgets[target]->IsInViewport() == false)
 	{
 		return;
+	}
+	else
+	{
+		if (_vrWidget != nullptr && _vrWidget->GetWidget() != _widgets[target])
+		{
+			return;
+		}
 	}
 
 	if (_removeFromViewportFunctions.Contains(target) == true)
@@ -118,6 +147,12 @@ void UUIManagerSubsystem::RemoveFromViewport(EWidgetType target, APlayerControll
 	FInputModeGameOnly inputMode;
 	controller->SetInputMode(inputMode);
 	controller->SetShowMouseCursor(false);
+
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(nullptr);
+		return;
+	}
 
 	_widgets[target]->RemoveFromParent();
 }
@@ -151,7 +186,15 @@ void UUIManagerSubsystem::AddGrimoireToViewport(APlayerController* controller)
 		return;
 	}
 
-	_grimoire->AddToViewport();
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(_grimoire);
+		_vrWidget->SetRelativeScale3D(FVector(0.1f));
+	}
+	else
+	{
+		_grimoire->AddToViewport();
+	}
 
 	FInputModeGameAndUI inputMode;
 	inputMode.SetWidgetToFocus(_grimoire->TakeWidget());
@@ -169,7 +212,15 @@ void UUIManagerSubsystem::AddQuickSelectToViewport(APlayerController* controller
 		return;
 	}
 
-	_quickSelect->AddToViewport();
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(_quickSelect);
+		_vrWidget->SetRelativeScale3D(FVector(0.1f));
+	}
+	else
+	{
+		_quickSelect->AddToViewport();
+	}
 
 	FInputModeGameAndUI inputMode;
 	inputMode.SetWidgetToFocus(_quickSelect->TakeWidget());
@@ -187,9 +238,17 @@ void UUIManagerSubsystem::AddPauseMenuToViewport(APlayerController* controller)
 		return;
 	}
 
-	ClearViewport(controller);
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(_pauseMenu);
+		_vrWidget->SetRelativeScale3D(FVector(0.08f));
+	}
+	else
+	{
+		ClearViewport(controller);
+		_pauseMenu->AddToViewport();
+	}
 
-	_pauseMenu->AddToViewport();
 
 	FInputModeGameAndUI inputMode;
 	inputMode.SetWidgetToFocus(_pauseMenu->TakeWidget());
@@ -211,9 +270,15 @@ void UUIManagerSubsystem::RemovePauseMenuFromViewport(APlayerController* control
 	controller->SetInputMode(inputMode);
 	controller->SetShowMouseCursor(false);
 
-	_widgets[EWidgetType::PAUSE_MENU]->RemoveFromParent();
-
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(nullptr);
+		return;
+	}
+
+	_widgets[EWidgetType::PAUSE_MENU]->RemoveFromParent();
 }
 
 void UUIManagerSubsystem::AddOptionsToViewport(APlayerController* controller)
@@ -225,7 +290,16 @@ void UUIManagerSubsystem::AddOptionsToViewport(APlayerController* controller)
 		return;
 	}
 
-	_optionsMenu->AddToViewport();
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(nullptr);
+		_vrWidget->SetWidget(_optionsMenu);
+		_vrWidget->SetRelativeScale3D(FVector(0.06f));
+	}
+	else
+	{
+		_optionsMenu->AddToViewport();
+	}
 
 	FInputModeGameAndUI inputMode;
 	inputMode.SetWidgetToFocus(_optionsMenu->TakeWidget());
@@ -240,6 +314,12 @@ void UUIManagerSubsystem::RemoveOptionsFromViewport(APlayerController* controlle
 	inputMode.SetWidgetToFocus(_pauseMenu->TakeWidget());
 	controller->SetInputMode(inputMode);
 
+	if (_vrWidget != nullptr)
+	{
+		AddToViewport(EWidgetType::PAUSE_MENU, controller);
+		return;
+	}
+
 	_widgets[EWidgetType::OPTIONS]->RemoveFromParent();
 }
 
@@ -252,9 +332,19 @@ void UUIManagerSubsystem::AddStageCompleteToViewport(APlayerController* controll
 		return;
 	}
 
-	ClearViewport(controller);
 
-	_stageCompleteWidget->AddToViewport();
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(_stageCompleteWidget);
+		_vrWidget->SetRelativeScale3D(FVector(0.8f));
+	}
+	else
+	{
+		ClearViewport(controller);
+
+		_stageCompleteWidget->AddToViewport();
+	}
+
 
 	FInputModeUIOnly inputMode;
 	inputMode.SetWidgetToFocus(_stageCompleteWidget->TakeWidget());
@@ -267,6 +357,12 @@ void UUIManagerSubsystem::AddStageCompleteToViewport(APlayerController* controll
 
 void UUIManagerSubsystem::ClearViewport(APlayerController* controller)
 {
+	if (_vrWidget != nullptr)
+	{
+		_vrWidget->SetWidget(nullptr);
+		return;
+	}
+
 	TArray<EWidgetType> widgets;
 	_widgets.GetKeys(widgets);
 

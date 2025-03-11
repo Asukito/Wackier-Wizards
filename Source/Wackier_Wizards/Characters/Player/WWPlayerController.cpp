@@ -86,7 +86,6 @@ void AWWPlayerController::HandleToggleSpellSelection()
 
 	if (Cast<AHubGameMode>(GetWorld()->GetAuthGameMode()) != nullptr)
 	{
-		_uiManager->ToggleWidget(EWidgetType::GRIMOIRE, this);
 		return;
 	}
 
@@ -108,13 +107,23 @@ void AWWPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
+	AVRCharacter* vr = Cast<AVRCharacter>(aPawn);
+
 	if (TObjectPtr<UUIManagerSubsystem> uiManager = GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
 	{
 		_uiManager = uiManager;
-		_uiManager->CreateWidgets(this);
+
+		if (vr != nullptr)
+		{
+			_uiManager->CreateWidgets(this, vr->widgetComponent);
+		}
+		else
+		{
+			_uiManager->CreateWidgets(this, nullptr);
+		}
 	}
 
-	if (AVRCharacter* vr = Cast<AVRCharacter>(aPawn))
+	if (vr != nullptr)
 	{
 		_playerCharacter = vr;
 		_isVR = true;

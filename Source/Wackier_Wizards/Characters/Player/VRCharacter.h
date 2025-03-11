@@ -6,6 +6,8 @@
 #include "PlayerCharacter.h"
 #include "VRCharacter.generated.h"
 
+class UWidgetComponent;
+
 UCLASS()
 class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 {
@@ -25,4 +27,8 @@ public:
 	// Right hand rotation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Spell")
 	FRotator rightHandRotation;
+
+public:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UWidgetComponent> widgetComponent;
 };
