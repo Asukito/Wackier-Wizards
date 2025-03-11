@@ -79,10 +79,27 @@ void USpellSlotWidget::IsSelected(bool val)
 
 void USpellSlotWidget::UpdateDisplayedSpell()
 {
-	_grimoire->UpdateDisplayedSpell(_spellID);
+	_grimoire->UpdateDisplayedSpell(this, _spellID);
 }
 
-FReply USpellSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply USpellSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	return 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+}
+
+void USpellSlotWidget::QuickSelectCallback()
+{
+	if (_onSelect.IsBound() == false || _quickSelectSlot == 0)
+	{
+		return;
+	}
+
+	_onSelect.Execute(_quickSelectSlot);
+}
+
+//return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
+
+/*FReply USpellSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnPreviewMouseButtonDown(InGeometry, InMouseEvent);
 
@@ -90,18 +107,6 @@ FReply USpellSlotWidget::NativeOnPreviewMouseButtonDown(const FGeometry& InGeome
 	reply.NativeReply = NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
 	return reply.NativeReply;
-}
-
-FReply USpellSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	if (_grimoire == nullptr)
-	{
-		return 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	}
-
-	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-
-	return CustomDetectDrag(InMouseEvent, this, EKeys::LeftMouseButton);
 }
 
 void USpellSlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
@@ -142,7 +147,7 @@ bool USpellSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 
 FReply USpellSlotWidget::CustomDetectDrag(const FPointerEvent& InMouseEvent, UWidget* WidgetDetectingDrag, FKey DragKey)
 {
-	if (InMouseEvent.GetEffectingButton() == DragKey /*|| PointerEvent.IsTouchEvent()*/)
+	if (InMouseEvent.GetEffectingButton() == DragKey)
 	{
 		FEventReply Reply;
 		Reply.NativeReply = FReply::Handled();
@@ -159,14 +164,4 @@ FReply USpellSlotWidget::CustomDetectDrag(const FPointerEvent& InMouseEvent, UWi
 	}
 
 	return FReply::Unhandled();
-}
-
-void USpellSlotWidget::QuickSelectCallback()
-{
-	if (_onSelect.IsBound() == false || _quickSelectSlot == 0)
-	{
-		return;
-	}
-
-	_onSelect.Execute(_quickSelectSlot);
-}
+}*/

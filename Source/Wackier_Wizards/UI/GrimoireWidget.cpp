@@ -8,10 +8,11 @@
 #include "Components/WrapBox.h"
 #include "Components/TextBlock.h"
 
-void UGrimoireWidget::UpdateDisplayedSpell(int id)
+void UGrimoireWidget::UpdateDisplayedSpell(USpellSlotWidget* spellSlot, int id)
 {
 	if (_selectedSpell == id)
 	{
+		MoveSpell(spellSlot, id);
 		return;
 	}
 
@@ -152,4 +153,36 @@ void UGrimoireWidget::DestroySpellSlots()
 	}
 
 	_selectedSlots.Empty();
+}
+
+void UGrimoireWidget::MoveSpell(USpellSlotWidget* spellSlot, int id)
+{
+	if (_selectionSlots.Contains(spellSlot) == true)
+	{
+		for (int i = 0; i < _selectedSlots.Num(); i++)
+		{
+			if (_selectedSlots[i]->GetID() == 0)
+			{
+				int destinationID = _selectedSlots[i]->GetID();
+
+				_selectedSlots[i]->ChangeID(id);
+				spellSlot->ChangeID(destinationID);
+				return;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < _selectedSlots.Num(); i++)
+		{
+			if (_selectionSlots[i]->GetID() == 0)
+			{
+				int destinationID = _selectionSlots[i]->GetID();
+
+				_selectionSlots[i]->ChangeID(id);
+				spellSlot->ChangeID(destinationID);
+				return;
+			}
+		}
+	}
 }

@@ -86,6 +86,7 @@ void AWWPlayerController::HandleToggleSpellSelection()
 
 	if (Cast<AHubGameMode>(GetWorld()->GetAuthGameMode()) != nullptr)
 	{
+		_uiManager->ToggleWidget(EWidgetType::GRIMOIRE, this);
 		return;
 	}
 

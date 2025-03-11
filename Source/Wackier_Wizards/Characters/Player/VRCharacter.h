@@ -29,6 +29,6 @@ public:
 	FRotator rightHandRotation;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UWidgetComponent> widgetComponent;
 };

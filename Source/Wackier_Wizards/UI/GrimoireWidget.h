@@ -18,7 +18,7 @@ class WACKIER_WIZARDS_API UGrimoireWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void UpdateDisplayedSpell(int id);
+	void UpdateDisplayedSpell(USpellSlotWidget* spellSlot, int id);
 
 	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
@@ -29,6 +29,8 @@ private:
 	void SortIDs();
 	void UpdateSelectedSpell();
 	void DestroySpellSlots();
+
+	void MoveSpell(USpellSlotWidget* spellSlot, int id);
 
 private:
 	UPROPERTY()
