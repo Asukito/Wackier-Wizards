@@ -58,7 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (ClampMin = "0.01", ClampMax = "1.0"))
 	float verticalSensitivity;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UCameraComponent> camera;
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<USpellCasterComponent> spellCasterComponent;
