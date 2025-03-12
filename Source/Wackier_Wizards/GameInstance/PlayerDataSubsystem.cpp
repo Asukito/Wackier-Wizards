@@ -11,13 +11,7 @@ void UPlayerDataSubsystem::SetSpells(TArray<int> spellIDs)
 
 TArray<int> UPlayerDataSubsystem::GetSavedSpellIDs()
 {
-	TArray<int> spells;
-	spells.Add(1);
-	spells.Add(2);
-	spells.Add(0);
-	spells.Add(0);
-
-	return spells;
+	return _spells;
 }
 
 TArray<USpellData*> UPlayerDataSubsystem::GetSpellsAsData()

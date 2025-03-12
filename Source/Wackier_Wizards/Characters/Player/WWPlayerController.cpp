@@ -25,8 +25,8 @@ void AWWPlayerController::HandleLook(const FInputActionValue& value)
 {
 	const FVector rotationVector = value.Get<FVector>();
 
-	AddYawInput(rotationVector.X * _horizontalSens);
-	AddPitchInput(rotationVector.Y * _verticalSens);
+	AddYawInput(rotationVector.X * 10);
+	AddPitchInput(rotationVector.Y * 10);
 }
 
 void AWWPlayerController::HandleMove(const FInputActionValue& value)
@@ -111,6 +111,12 @@ void AWWPlayerController::HandleMenuInteract()
 		vr->interactionComponent->PressPointerKey(EKeys::LeftMouseButton);
 		vr->interactionComponent->ReleasePointerKey(EKeys::LeftMouseButton);
 	}
+}
+void AWWPlayerController::HandleTurn(const FInputActionValue& value)
+{
+	float val = value.Get<float>();
+
+	AddYawInput(val * _horizontalSens);
 }
 #pragma endregion
 
@@ -227,6 +233,9 @@ void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)
 {
 	checkf(VR_actionMove, TEXT("Missing 'VR_actionMove' Action"));
 	inputComponent->BindAction(VR_actionMove, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleMove);
+
+	checkf(VR_actionTurn, TEXT("Missing 'VR_actionTurn' Action"));
+	inputComponent->BindAction(VR_actionTurn, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTurn);
 
 	checkf(VR_actionCastSpell, TEXT("Missing 'VR_actionCastSpell' Action"));
 	inputComponent->BindAction(VR_actionCastSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleCastSpell);
