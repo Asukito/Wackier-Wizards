@@ -25,8 +25,8 @@ void AWWPlayerController::HandleLook(const FInputActionValue& value)
 {
 	const FVector rotationVector = value.Get<FVector>();
 
-	AddYawInput(rotationVector.X * 10);
-	AddPitchInput(rotationVector.Y * 10);
+	AddYawInput(rotationVector.X * _horizontalSens);
+	AddPitchInput(rotationVector.Y * _verticalSens);
 }
 
 void AWWPlayerController::HandleMove(const FInputActionValue& value)
