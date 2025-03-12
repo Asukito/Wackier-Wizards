@@ -22,10 +22,14 @@ void AVRCharacter::SetInteractionComponent(UWidgetInteractionComponent* componen
 }
 
 #pragma region "Helpers"
+const FVector AVRCharacter::GetCastStartLocation()
+{
+	return rightHandLocation;
+}
 const FVector AVRCharacter::GetCastStartForward()
 {
 	// Get the forward vector from the right hand's rotation
-	return rightHandRotation.Vector();
+	return rightHandCastDirection;
 }
 
 #pragma endregion

@@ -85,7 +85,7 @@ void USpellBase::FireProjectile(FVector direction)
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), FRotator::ZeroRotator, spawnParams);
+	AProjectile* projectile = owner->GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), spellOwner->GetCastStartLocation(), direction.Rotation(), spawnParams);
 	projectile->AddIgnoreActor(owner);
 
 	projectile->AddOwnerSpell(GetDecorator());
