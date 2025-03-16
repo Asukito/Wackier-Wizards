@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_DELEGATE_TwoParams(FOnHealthChanged, float, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WACKIER_WIZARDS_API UHealthComponent : public UActorComponent
@@ -16,6 +17,8 @@ class WACKIER_WIZARDS_API UHealthComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHealthComponent();
+
+	void BindOnHealthChanged(TFunction<void(float, float)> func);
 
 	//Adjust health based on a flat value
 	void AdjustHealth(float amount);
@@ -39,6 +42,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	FOnHealthChanged _onHealthChangedDelegate;
+
 	UPROPERTY(EditDefaultsOnly)
 	float _baseHealth;
 	float _maxHealth;

@@ -20,6 +20,8 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
+	void BindOnHealthChanged(TFunction<void(float, float)> func);
+
 	//---- IHEALTH OVERRIDES ----
 	void Respawn(bool isDead) override;
 

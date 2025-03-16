@@ -14,9 +14,19 @@ UHealthComponent::UHealthComponent()
 	// ...
 }
 
+void UHealthComponent::BindOnHealthChanged(TFunction<void(float, float)> func)
+{
+	_onHealthChangedDelegate.BindLambda(func);
+}
+
 void UHealthComponent::AdjustHealth(float amount)
 {
 	_health = FMath::Clamp(_health += amount, 0, _maxHealth);
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s Health Remaining: %i"), *GetOwner()->GetName(), GetHealth()));
 }
 
@@ -35,11 +45,21 @@ void UHealthComponent::AdjustHealthPercentage(float percentage)
 		adjust *= percentage / 100;
 		_health += FMath::FloorToInt(adjust);
 	}
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
 }
 
 void UHealthComponent::SetHealth(float amount)
 {
 	_health = amount;
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
 }
 
 void UHealthComponent::AdjustMaxHealth(int amount)

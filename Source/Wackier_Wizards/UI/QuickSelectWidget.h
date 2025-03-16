@@ -11,6 +11,7 @@ class UTextBlock;
 class UWrapBox;
 class APlayerCharacter;
 class UUIManagerSubsystem;
+class UProgressBar;
 
 UCLASS()
 class WACKIER_WIZARDS_API UQuickSelectWidget : public UUserWidget
@@ -21,11 +22,15 @@ public:
 	void SetPlayer(APlayerCharacter* player);
 	virtual void NativeOnInitialized() override;
 
+	void UpdateHealthBar(float currentHealth, float maxHealth);
 private:
 	UFUNCTION()
 	void ChangeSpell(int spellSlot);
 
-private:	
+private:
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UProgressBar> _healthBar;
+
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> _player;
 

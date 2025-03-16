@@ -8,6 +8,7 @@
 #include "SpellSlotWidget.h"
 #include "Components/WrapBox.h"
 #include "../Characters/Player/PlayerCharacter.h"
+#include "Components/ProgressBar.h"
 
 void UQuickSelectWidget::ChangeSpell(int spellSlot)
 {
@@ -75,4 +76,9 @@ void UQuickSelectWidget::NativeOnInitialized()
 	{
 		UE_LOG(LogTemp, Error, TEXT("QuickSelectWidget failed to initialise PlayerData"));
 	}
+}
+
+void UQuickSelectWidget::UpdateHealthBar(float currentHealth, float maxHealth)
+{
+	_healthBar->SetPercent(currentHealth / maxHealth);
 }

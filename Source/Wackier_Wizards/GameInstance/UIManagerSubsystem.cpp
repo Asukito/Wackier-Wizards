@@ -34,6 +34,7 @@ void UUIManagerSubsystem::CreateWidgets(APlayerController* controller, UWidgetCo
 		if (TObjectPtr<APlayerCharacter> player = Cast<APlayerCharacter>(controller->GetCharacter()))
 		{
 			_quickSelect->SetPlayer(player);
+			player->BindOnHealthChanged([this](float health, float maxHealth) { _quickSelect->UpdateHealthBar(health, maxHealth); });
 		}
 
 		_widgets.Add(EWidgetType::QUICK_SELECT, _quickSelect);
