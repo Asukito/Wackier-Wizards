@@ -29,6 +29,11 @@ APlayerCharacter::APlayerCharacter() : ABaseCharacter()
 	checkf(spellCasterComponent, TEXT("Player SpellCasterComponent failed to initialise"));
 }
 
+void APlayerCharacter::BindOnHealthChanged(TFunction<void(float, float)> func)
+{
+	healthComponent->BindOnHealthChanged(func);
+}
+
 #pragma region "IHealth"
 //Respawns at the spawnpoint if the player is dead. Spawns at the last valid position if not.
 void APlayerCharacter::Respawn(bool isDead)
