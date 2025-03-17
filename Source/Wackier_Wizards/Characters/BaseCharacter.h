@@ -30,6 +30,7 @@ public:
 	bool HasEffect(FString effectName) override;
 	UAuraEffect* GetAura() override;
 	virtual void SetCanAct(bool val) override;
+	
 
 	//---- IDAMAGEABLE OVERRIDES ----
 	virtual void Kill() override;
@@ -61,5 +62,7 @@ protected:
 	FVector spawnLocation;
 
 	FTimerHandle attackAnimTimer;
+	UPROPERTY(BlueprintReadOnly)
 	bool isAttacking = false;
+
 };
