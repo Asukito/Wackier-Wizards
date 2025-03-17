@@ -59,4 +59,7 @@ protected:
 
 	float maxWalkSpeed;
 	FVector spawnLocation;
+
+	FTimerHandle attackAnimTimer;
+	bool isAttacking = false;
 };
