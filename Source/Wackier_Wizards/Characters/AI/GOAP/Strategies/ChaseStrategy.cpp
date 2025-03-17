@@ -10,8 +10,16 @@ void UChaseStrategy::Start(UGOAP_Agent* agent)
 	_agent->SetSeekPlayer(true);
 }
 
+//Attempts to attack the player while chasing
 void UChaseStrategy::Update(float deltaTime)
 {
+	//If an enemy is blocking los, return.
+	if (_agent->CheckForEnemyLOS() == true)
+	{
+		return;
+	}
+
+	//Attempt to attack player
 	_agent->Attack();
 }
 

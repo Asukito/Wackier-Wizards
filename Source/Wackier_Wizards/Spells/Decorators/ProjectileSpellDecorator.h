@@ -13,6 +13,7 @@ class WACKIER_WIZARDS_API UProjectileSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 	
+//Projectile-based spell. Spawns a projectile that will hold a reference to this spell. When a collision occurs, the projectile will execute the ProcessHit function before being destroyed.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
@@ -33,5 +34,5 @@ public:
 	};
 
 	virtual bool CastSpell() override;
-	virtual void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment) override;
 };

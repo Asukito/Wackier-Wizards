@@ -6,6 +6,7 @@
 #include "../Spells/SpellData.h"
 #include "../Spells/SpellFactory.h"
 #include "../Interfaces/Spell.h"
+#include "../GameInstance/SpellLoaderSubsystem.h"
 
 USpellCasterComponent::USpellCasterComponent()
 {	
@@ -14,6 +15,12 @@ USpellCasterComponent::USpellCasterComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
+void USpellCasterComponent::PopulateSpells(TArray<USpellData*> spells)
+{
+	_spellData = spells;
+}
+
+//Creates the spells from the contained spellData and then sets the active sell to the first
 void USpellCasterComponent::InitSpells()
 {
 	if (_spellData.Num() == 0)
@@ -21,14 +28,21 @@ void USpellCasterComponent::InitSpells()
 		return;
 	}
 
-	TObjectPtr<USpellFactory> factory = NewObject<USpellFactory>();
-
-	for (USpellData* data : _spellData)
+	if (TObjectPtr<USpellLoaderSubsystem> spellLoader = GetOwner()->GetGameInstance()->GetSubsystem<USpellLoaderSubsystem>())
 	{
-		_spells.Add(factory->CreateSpell(data, this)->_getUObject());
+		for (USpellData* data : _spellData)
+		{
+			if (data == nullptr)
+			{
+				_spells.Add(nullptr);
+				continue;
+			}
+
+			_spells.Add(spellLoader->CreateSpell(data, this)->_getUObject());
+		}
+
+		ChangeSpell(1);
 	}
-	
-	ChangeSpell(1);
 }
 
 void USpellCasterComponent::CastSpell()
@@ -49,7 +63,14 @@ void USpellCasterComponent::ChangeSpell(int slot)
 	}
 
 	_spell = _spells[slot - 1];
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: %s"), *_spell->GetSpellName()));
+
+	if (_spell == nullptr)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: NONE")));
+		return;
+	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Magenta, FString::Printf(TEXT("Current Spell: %s"), *_spell->GetSpellName()));
 }
 
 void USpellCasterComponent::CycleSpell()
@@ -63,6 +84,7 @@ void USpellCasterComponent::CycleSpell()
 
 	ChangeSpell(_currentSpellIndex);
 }
+
 
 void USpellCasterComponent::BindCastStartLocation(TFunction<const FVector()> func)
 {
@@ -85,6 +107,11 @@ void USpellCasterComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	for (TScriptInterface<ISpell> spell : _spells)
 	{
+		if (spell == nullptr)
+		{
+			continue;
+		}
+
 		spell->Update(DeltaTime);
 	}
 }
@@ -106,6 +133,7 @@ const FVector USpellCasterComponent::GetSpellOwnerForward() noexcept
 
 const FVector USpellCasterComponent::GetCastStartLocation() noexcept
 {
+	//If castStartLocation isn't bound, return the spellOwner location. Else, execute the bound function.
 	if (_castStartLocation.IsBound() == false)
 	{
 		return GetSpellOwnerLocation();
@@ -116,6 +144,7 @@ const FVector USpellCasterComponent::GetCastStartLocation() noexcept
 
 const FVector USpellCasterComponent::GetCastStartForward() noexcept
 {
+	//If castStartForward isn't bound, return the spellOwner forward. Else, execute the bound function.
 	if (_castStartForward.IsBound() == false)
 	{
 		return GetSpellOwnerForward();

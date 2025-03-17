@@ -14,16 +14,27 @@ UHealthComponent::UHealthComponent()
 	// ...
 }
 
+void UHealthComponent::BindOnHealthChanged(TFunction<void(float, float)> func)
+{
+	_onHealthChangedDelegate.BindLambda(func);
+}
+
 void UHealthComponent::AdjustHealth(float amount)
 {
 	_health = FMath::Clamp(_health += amount, 0, _maxHealth);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s Health Remaining: %i"), *GetOwner()->GetName(), GetHealth()));
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s Health Remaining: %i"), *GetOwner()->GetName(), GetHealth()));
 }
 
 void UHealthComponent::AdjustHealthPercentage(float percentage)
 {
 	float adjust = _health;
 
+	//If percentage is negative, then get it's absolute multiplier and negate it from health. Else, add the multiplier to health.
 	if (percentage < 0)
 	{
 		adjust *= (FMath::Abs(percentage) / 100);
@@ -34,11 +45,21 @@ void UHealthComponent::AdjustHealthPercentage(float percentage)
 		adjust *= percentage / 100;
 		_health += FMath::FloorToInt(adjust);
 	}
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
 }
 
 void UHealthComponent::SetHealth(float amount)
 {
 	_health = amount;
+
+	if (_onHealthChangedDelegate.IsBound() == true)
+	{
+		_onHealthChangedDelegate.Execute(_health, _maxHealth);
+	}
 }
 
 void UHealthComponent::AdjustMaxHealth(int amount)
@@ -55,6 +76,11 @@ int UHealthComponent::GetHealth() const
 int UHealthComponent::GetHealthPercent() const
 {
 	return FMath::FloorToInt((_health / _maxHealth) * 100);
+}
+
+int UHealthComponent::GetBaseHealth() const
+{
+	return _baseHealth;
 }
 
 int UHealthComponent::GetMaxHealth() const

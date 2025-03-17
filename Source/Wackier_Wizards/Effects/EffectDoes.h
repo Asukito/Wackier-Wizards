@@ -16,5 +16,6 @@ enum class EffectDoes : uint8
 	 INC_MAXHP UMETA(DisplayName = "Increase Max Health (%)"),
 	 DEC_MAXHP UMETA(DisplayName = "Decrease Max Health (%)"),
 	 INC_SPEED UMETA(DisplayName = "Increase Speed (%)"),
-	 DEC_SPEED UMETA(DisplayName = "Decrease Speed (%)")
+	 DEC_SPEED UMETA(DisplayName = "Decrease Speed (%)"),
+	 DISABLE_ACTIONS UMETA(DisplayName = "Disable actions (stun, freeze, etc)")
 };

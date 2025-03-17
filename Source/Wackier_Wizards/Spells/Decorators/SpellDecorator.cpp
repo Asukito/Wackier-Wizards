@@ -3,6 +3,8 @@
 
 #include "SpellDecorator.h"
 #include "../../Interfaces/SpellCaster.h"
+#include "../SpellData.h"
+#include "../SpellBase.h"
 
 void USpellDecorator::Decorate(ISpell* decorate)
 {
@@ -31,9 +33,9 @@ void USpellDecorator::Update(float deltaTime)
 	spell->Update(deltaTime);
 }
 
-void USpellDecorator::ProcessHit(AActor* hit, FVector location)
+void USpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdjustment)
 {
-	spell->ProcessHit(hit, location);
+	spell->ProcessHit(hit, location, damageAdjustment);
 }
 
 const FString USpellDecorator::GetSpellName()
@@ -76,17 +78,22 @@ ISpell* USpellDecorator::GetDecorator()
 	return ownerSpell->GetDecorator();
 }
 
+void USpellDecorator::FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd)
+{
+	spell->FireLineTrace(owner, start, end, OutEnd);
+}
+
+void USpellDecorator::FireProjectile(FVector direction)
+{
+	spell->FireProjectile(direction);
+}
+
 bool USpellDecorator::IsOnCooldown()
 {
 	return spell->IsOnCooldown();
 }
 
-void USpellDecorator::HandleEffects(IEffectable* target)
+int USpellDecorator::GetSpellDamage()
 {
-	spell->HandleEffects(target);
-}
-
-void USpellDecorator::HandleInterfaceFunctions(AActor* actor)
-{
-	spell->HandleInterfaceFunctions(actor);
+	return spell->GetSpellDamage();
 }

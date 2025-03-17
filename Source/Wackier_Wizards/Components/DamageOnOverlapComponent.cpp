@@ -23,7 +23,7 @@ void UDamageOnOverlapComponent::Init()
 	_collider->SetupAttachment(GetOwner()->GetRootComponent());
 }
 
-void UDamageOnOverlapComponent::BeginInteractOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UDamageOnOverlapComponent::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (IHealth* target = Cast<IHealth>(OtherActor))
 	{
@@ -33,7 +33,7 @@ void UDamageOnOverlapComponent::BeginInteractOverlap(UPrimitiveComponent* Overla
 
 			if (percentage > 15)
 			{
-				damageable->TakeDamage((target->GetHealth(false) * (_damagePercent / 100)), GetOwner()->GetName());
+				damageable->DealDamage((target->GetHealth(false) * (_damagePercent / 100)), GetOwner()->GetName());
 				target->Respawn(false);
 			}
 			else
@@ -50,7 +50,7 @@ void UDamageOnOverlapComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	_collider->OnComponentBeginOverlap.AddDynamic(this, &UDamageOnOverlapComponent::BeginInteractOverlap);
+	_collider->OnComponentBeginOverlap.AddDynamic(this, &UDamageOnOverlapComponent::BeginOverlap);
 	
 }
 

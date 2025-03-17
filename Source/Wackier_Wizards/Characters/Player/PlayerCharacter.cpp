@@ -8,6 +8,7 @@
 #include "WWPlayerController.h"
 #include "../../Components/SpellCasterComponent.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
+#include "../../GameInstance/PlayerDataSubsystem.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : ABaseCharacter()
@@ -28,11 +29,13 @@ APlayerCharacter::APlayerCharacter() : ABaseCharacter()
 	checkf(spellCasterComponent, TEXT("Player SpellCasterComponent failed to initialise"));
 }
 
-void APlayerCharacter::SetController(AWWPlayerController* controller)
+void APlayerCharacter::BindOnHealthChanged(TFunction<void(float, float)> func)
 {
-	playerController = controller;
+	healthComponent->BindOnHealthChanged(func);
 }
 
+#pragma region "IHealth"
+//Respawns at the spawnpoint if the player is dead. Spawns at the last valid position if not.
 void APlayerCharacter::Respawn(bool isDead)
 {
 	if (isDead == true)
@@ -43,9 +46,16 @@ void APlayerCharacter::Respawn(bool isDead)
 
 	SetActorLocation(lastValidPosition);
 }
+#pragma endregion
 
+#pragma region "Spell Casting"
 void APlayerCharacter::CastSpell()
 {
+	if (canAttack == false)
+	{
+		return;
+	}
+
 	spellCasterComponent->CastSpell();
 }
 
@@ -58,16 +68,29 @@ void APlayerCharacter::CycleSpell()
 {
 	spellCasterComponent->CycleSpell();
 }
-
-const FVector APlayerCharacter::GetSeekLocation() const noexcept
+void APlayerCharacter::InitSpells()
 {
-	if (seek == false)
+	if (TObjectPtr<UPlayerDataSubsystem> playerData = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>())
 	{
-		return FVector::ZeroVector;
+		TArray<USpellData*> data = playerData->GetSpellsAsData();
+
+		if (data.Num() != 0)
+		{
+			spellCasterComponent->PopulateSpells(data);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PlayerDataSubsystem has no spell data"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player failed to find PlayerDataSubsystem"));
 	}
 
-	return GetActorLocation();
+	spellCasterComponent->InitSpells();
 }
+#pragma endregion
 
 void APlayerCharacter::BindDelegates()
 {
@@ -77,21 +100,17 @@ void APlayerCharacter::BindDelegates()
 	spellCasterComponent->BindCastStartLocation([this]() { return GetCastStartLocation(); });
 }
 
-void APlayerCharacter::ToggleSeek()
-{
-	seek = !seek;
-}
-
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	ABaseCharacter::BeginPlay();
 
 	lastValidPosition = GetActorLocation();
-	spellCasterComponent->InitSpells();
+	//spellCasterComponent->InitSpells();
 }
 
 // Called every frame
+//Updates the character's last valid location every 3 seconds. This is used for respawning if the player falls from the map.
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	ABaseCharacter::Tick(DeltaTime);
@@ -109,6 +128,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 }
 
 #pragma region "Helpers"
+void APlayerCharacter::SetController(AWWPlayerController* controller)
+{
+	playerController = controller;
+}
 UCameraComponent* APlayerCharacter::GetCamera() const noexcept
 {
 	return camera;
@@ -123,10 +146,30 @@ float APlayerCharacter::GetVerticalSensitivity() const noexcept
 }
 const FVector APlayerCharacter::GetCastStartLocation()
 {
-	return GetActorLocation() + (GetActorForwardVector()) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+	//prints to output log the cast start location
+	FVector start = GetActorLocation() + (camera->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
+	UE_LOG(LogTemp, Warning, TEXT("Start: %s"), *start.ToString());
+	return GetActorLocation() + (GetCamera()->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
 const FVector APlayerCharacter::GetCastStartForward()
 {
 	return camera->GetForwardVector();
+}
+#pragma endregion
+
+#pragma region "Test"
+void APlayerCharacter::ToggleSeek()
+{
+	seek = !seek;
+}
+//Returns the actor location if seeking is active. Returns a zero vector if not.
+const FVector APlayerCharacter::GetSeekLocation() const noexcept
+{
+	if (seek == false)
+	{
+		return FVector::ZeroVector;
+	}
+
+	return GetActorLocation();
 }
 #pragma endregion

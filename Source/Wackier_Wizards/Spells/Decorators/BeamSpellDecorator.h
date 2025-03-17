@@ -13,6 +13,8 @@ class WACKIER_WIZARDS_API UBeamSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 
+//A hitscan variation that has no cooldown. Logic is separated as decorating a Hitscan with the Beam logic would cause issues with further decorators.
+//Mana will be implemented to limit the usage of beam spells (as well as others)
 public:
 	class WACKIER_WIZARDS_API Builder
 	{

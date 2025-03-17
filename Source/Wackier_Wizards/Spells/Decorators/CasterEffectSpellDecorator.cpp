@@ -6,6 +6,7 @@
 #include "../../Interfaces/SpellCaster.h"
 #include "../SpellData.h"
 
+//Places an effect on the caster. 
 bool UCasterEffectSpellDecorator::CastSpell()
 {
 	if (spell->CastSpell() == false)

@@ -32,7 +32,7 @@ void UOverTimeEffect::Update(float deltaTime)
 
 	if (_tickTimer >= 1.0f)
 	{
-		if (ProcessEffect() == false)
+		if (ProcessEffect(owner.GetInterface()) == false)
 		{
 			EndEffect();
 		}

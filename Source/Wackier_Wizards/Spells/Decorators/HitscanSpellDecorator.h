@@ -13,6 +13,7 @@ class WACKIER_WIZARDS_API UHitscanSpellDecorator : public USpellDecorator
 {
 	GENERATED_BODY()
 
+//Hitscan spell that instantly hits a target if a hit occurs. ProcessHit is executed if an actor is hit.
 public:
 	class WACKIER_WIZARDS_API Builder
 	{
@@ -33,7 +34,7 @@ public:
 	};
 
 	virtual bool CastSpell() override;
-	virtual void ProcessHit(AActor* hit, FVector location) override;
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment = 0) override;
 
 	virtual USpellBase* GetBaseSpell() override;
 };

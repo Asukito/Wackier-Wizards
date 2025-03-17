@@ -9,21 +9,38 @@
 class AWWAIController;
 class APlayerCharacter;
 class USeekerComponent;
+class UBoxComponent;
+
+DECLARE_DELEGATE(FOnDeath);
 
 UCLASS()
 class WACKIER_WIZARDS_API ABaseEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
+//Base class for all enemies. Contains logic that interacts with the AI unique controller. Also contains a reference to the player and a SeekerComponent
 public:
 	// Sets default values for this character's properties
 	ABaseEnemy();
+
+	//---- SEEKERCOMPONENT FUNCTIONS ----
 	void SetSeekTarget(AActor* target);
 	void ClearSeekTarget();
+	void SetToRetreat(bool val);
+
+	//---- AICONTROLLER FUNCTIONS ----
 	void SetDestination(FVector destination);
 	void ClearDestination();
-
+	void SetFocus(AActor* target);
+	void ClearFocus();
 	bool HasPath();
+	const FVector GetCurrentDestination();
+	void SetIsAIPaused(bool isPaused);
+
+	//---- IDAMAGEABLE OVERRIDES ----
+	void Kill() override;
+
+	void BindOnDeathDelegate(TFunction<void()> delegate);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -40,4 +57,9 @@ private:
 	TObjectPtr<AWWAIController> _controller;
 	UPROPERTY()
 	TObjectPtr<USeekerComponent> _seeker;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UBoxComponent> _sightCollider;
+
+	FOnDeath _onDeathDelegate;
 };

@@ -14,6 +14,7 @@ class WACKIER_WIZARDS_API UOverTimeEffect : public UBaseEffect
 {
 	GENERATED_BODY()
 	
+//An effect that repeats overtime
 public:
 	void StartEffect(UEffectData* data, AActor* actor, UEffectsComponent* list) override;
 	void Update(float deltaTime) override;

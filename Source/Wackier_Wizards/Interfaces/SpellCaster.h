@@ -20,6 +20,7 @@ class WACKIER_WIZARDS_API ISpellCaster
 {
 	GENERATED_BODY()
 
+//Interface containing helper functions relevant for spell casting.
 public:
 	virtual AActor* GetSpellOwner() noexcept { return nullptr; };
 	const virtual FVector GetSpellOwnerLocation() noexcept { return FVector::Zero(); };

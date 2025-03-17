@@ -22,14 +22,14 @@ class WACKIER_WIZARDS_API ISpell
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+//Interface that contains functions needed for all spells.
 public:
 
 	virtual void Init(USpellData* data, ISpellCaster* owner) {};
 	virtual bool CastSpell() { return false; };
 
 	virtual void Update(float deltaTime) {};
-	virtual void ProcessHit(AActor* hit, FVector location) {};
+	virtual void ProcessHit(AActor* hit, FVector location, int damageAdjustment) {};
 
 	virtual void SetOwnerSpell(ISpell* owner) {};
 
@@ -41,7 +41,8 @@ public:
 	virtual USpellData* GetSpellData() { return nullptr; };
 	virtual ISpellCaster* GetSpellOwner() { return nullptr; };
 	virtual bool IsOnCooldown() { return false;};
+	virtual int GetSpellDamage() { return 0; };
 
-	virtual void HandleEffects(IEffectable* target) {};
-	virtual void HandleInterfaceFunctions(AActor* actor) {};
+	virtual void FireLineTrace(AActor* owner, FVector start, FVector end, FVector& OutEnd) {};
+	virtual void FireProjectile(FVector direction) {};
 };

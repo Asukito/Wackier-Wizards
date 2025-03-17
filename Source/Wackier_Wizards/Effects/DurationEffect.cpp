@@ -8,7 +8,7 @@ void UDurationEffect::StartEffect(UEffectData* data, AActor* actor, UEffectsComp
 {
 	UBaseEffect::StartEffect(data, actor, list);
 
-	if (ProcessEffect() == false)
+	if (ProcessEffect(owner.GetInterface()) == false)
 	{
 		ClearEffect();
 	}
@@ -28,6 +28,6 @@ void UDurationEffect::Update(float deltaTime)
 
 void UDurationEffect::EndEffect()
 {
-	ProcessEffectRemoval();
+	ProcessEffectRemoval(owner.GetInterface());
 	UBaseEffect::EndEffect();
 }

@@ -16,6 +16,7 @@ class WACKIER_WIZARDS_API ARangedEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
 	
+//Ranged Enemy class. Ranged enemies have more complex AI handled by the GOAP_Agent Component. Ranged Enemies cast spells to attack the player.
 public:
 	ARangedEnemy();
 
@@ -27,6 +28,8 @@ public:
 	virtual const FVector GetCastStartLocation();
 	virtual const FVector GetCastStartForward();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 

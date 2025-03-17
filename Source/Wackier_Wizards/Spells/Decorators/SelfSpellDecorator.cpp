@@ -16,11 +16,11 @@ bool USelfSpellDecorator::CastSpell()
 	
 	if (spellData->isAOE == true)
 	{
-		GetDecorator()->ProcessHit(nullptr, owner->GetActorLocation());
+		GetDecorator()->ProcessHit(nullptr, owner->GetActorLocation(), 0);
 	}
 	else
 	{
-		GetDecorator()->ProcessHit(owner, owner->GetActorLocation());
+		GetDecorator()->ProcessHit(owner, owner->GetActorLocation(), 0);
 	}
 
 	return true;

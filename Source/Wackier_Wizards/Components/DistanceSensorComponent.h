@@ -13,6 +13,7 @@ class WACKIER_WIZARDS_API UDistanceSensorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+//Sensor to check if a target is within a specified distance. Used for longer distances than the TargetSensor to avoid large sphere colliders.
 public:	
 	// Sets default values for this component's properties
 	UDistanceSensorComponent();
@@ -33,6 +34,6 @@ private:
 	TObjectPtr<AActor> _target;
 	TObjectPtr<UGOAP_Agent> _agent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	float _distance;
 };

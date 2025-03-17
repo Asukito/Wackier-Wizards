@@ -10,12 +10,12 @@ AMeleeEnemy::AMeleeEnemy() : ABaseEnemy()
 
 void AMeleeEnemy::Attack(IDamageable* target)
 {
-	if (_timer > 0.0f || target == nullptr)
+	if (canAttack == false || _timer > 0.0f || target == nullptr)
 	{
 		return;
 	}
 
-	target->TakeDamage(_meleeDamage, "Melee NPC");
+	target->DealDamage(_meleeDamage, "Melee NPC");
 	_timer = _meleeDelay;
 }
 
@@ -29,13 +29,15 @@ void AMeleeEnemy::BeginPlay()
 	}
 
 	SetSeekTarget(player.Get());
+
+	SetActorHiddenInGame(true);
 }
 
 void AMeleeEnemy::Tick(float DeltaTime)
 {
 	ABaseEnemy::Tick(DeltaTime);
 
-	if (player == nullptr)
+	if (player == nullptr || IsHidden() == true)
 	{
 		return;
 	}

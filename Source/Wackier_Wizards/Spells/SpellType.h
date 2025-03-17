@@ -7,10 +7,11 @@
 #include "SpellType.generated.h"
 
 UENUM(BlueprintType)
-enum class SpellType : uint8
+enum class ESpellType : uint8
 {
 	HITSCAN UMETA(DisplayName = "Hitscan"),
 	PROJECTILE UMETA(DisplayName = "Projectile"),
 	BEAM UMETA(DisplayName = "Beam"),
+	SCATTER UMETA(DisplayName = "Scatter"),
 	SELF UMETA(DisplayName = "Self")
 };

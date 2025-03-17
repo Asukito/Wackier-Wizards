@@ -1,4 +1,5 @@
 #pragma once
+//File that contains GOAP-related include paths.
 #include "GOAP_Action.h"
 #include "GOAP_Agent.h"
 #include "GOAP_Belief.h"

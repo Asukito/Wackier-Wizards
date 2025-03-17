@@ -26,7 +26,7 @@ APracticeDummy::APracticeDummy()
 	checkf(_effectComponent, TEXT("Practice Dummy EffectsComponent failed to initialise"));
 }
 
-bool APracticeDummy::TakeDamage(int amount, FString source)
+bool APracticeDummy::DealDamage(int amount, FString source)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s: Taken %i damage from %s"), *GetName(), amount, *source));
 	return false;
