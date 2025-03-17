@@ -158,3 +158,8 @@ ISpell* USpellCasterComponent::GetActiveSpell() noexcept
 	return _spell.GetInterface();
 }
 
+bool USpellCasterComponent::IsActiveSpellOnCooldown()
+{
+	return _spell->IsOnCooldown();
+}
+

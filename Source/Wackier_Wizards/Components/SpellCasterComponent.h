@@ -44,6 +44,7 @@ public:
 	const virtual FVector GetCastStartLocation() noexcept override;
 	const virtual FVector GetCastStartForward() noexcept override;
 	ISpell* GetActiveSpell() noexcept;
+	bool IsActiveSpellOnCooldown();
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
