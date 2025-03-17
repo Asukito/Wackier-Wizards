@@ -46,13 +46,7 @@ const FVector ARangedEnemy::GetCastStartLocation()
 
 const FVector ARangedEnemy::GetCastStartForward()
 {
-	if (player == nullptr)
-	{
-		return GetActorForwardVector();
-	}
-
-	FVector direction = player->GetActorLocation() - GetActorLocation();
-	return direction;
+	return GetActorForwardVector();
 }
 
 void ARangedEnemy::Tick(float DeltaTime)

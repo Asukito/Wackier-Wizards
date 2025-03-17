@@ -11,27 +11,14 @@ struct FStageData : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int stage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName levelName;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FWaveData> waveData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isComplete;
 };
 
-USTRUCT(BlueprintType)
-struct FSpellTableData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int spellID;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FName spellName;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString spellDescription;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<class USpellData> spellData;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UTexture2D> spellIcon;
-};

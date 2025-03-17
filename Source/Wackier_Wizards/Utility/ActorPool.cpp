@@ -14,7 +14,6 @@ void UActorPool::Init(UWorld* worldContext, TSubclassOf<AActor> toPool, int amou
 
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	params.bNoFail = true;
 
 	for (int i = 0; i < amount; i++)
 	{
@@ -22,7 +21,7 @@ void UActorPool::Init(UWorld* worldContext, TSubclassOf<AActor> toPool, int amou
 
 		if (newActor == nullptr)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to pool actor"));
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("FAILURE TO POOL ACTOR")));
 			continue;
 		}
 
@@ -33,7 +32,7 @@ void UActorPool::Init(UWorld* worldContext, TSubclassOf<AActor> toPool, int amou
 
 	if (_pool.Num() != amount)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Pool count does not equal requested amount"));
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("POOLED COUNT DOES NOT EQUAL REQUESTED AMOUNT")));
 	}
 }
 
@@ -46,12 +45,6 @@ void UActorPool::Populate(TArray<TObjectPtr<AActor>> pool)
 
 	for (TObjectPtr<AActor> actor : pool)
 	{
-		if (actor == nullptr)
-		{
-			UE_LOG(LogTemp, Error, TEXT("Tried to pool null enemy"));
-			continue;
-		}
-
 		actor->SetActorHiddenInGame(true);
 		actor->SetActorEnableCollision(false);
 	}
@@ -98,7 +91,7 @@ void UActorPool::ReturnPoolActor(AActor* toReturn)
 {
 	if (_pool.Contains(toReturn) == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("TRIED TO RETURN ALREADY POOLED ACTOR")));
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("TRIED TO RETURN POOLED ACTOR")));
 		return;
 	}
 
@@ -127,7 +120,6 @@ AActor* UActorPool::GetPoolActor(bool createNewIfEmpty, UWorld* worldContext = n
 
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	params.bNoFail = true;
 	toReturn = worldContext->SpawnActor<AActor>(_default, FVector::ZeroVector, FRotator::ZeroRotator, params);
 
 	return toReturn;

@@ -7,39 +7,31 @@
 //Creates a SpellBase and then applies Decorators to it. Returns the result.
 ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 {
-	if (owner == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Tried to create spell with null owner"));
-		return nullptr;
-	}
-
 	TScriptInterface<ISpell> spell = nullptr;
 	//Creates and initialises a SpellBase object.
 	TObjectPtr<USpellBase> spellBase = NewObject<USpellBase>();
-
-
 	spellBase->Init(spellData, owner);
 
 	//Applies a SpellType Decorator to the SpellBase. This is the lowest level Decorator.
 	switch (spellData->type)
 	{
-		case ESpellType::PROJECTILE:
+		case SpellType::PROJECTILE:
 			spell = UProjectileSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case ESpellType::HITSCAN:
+		case SpellType::HITSCAN:
 			spell = UHitscanSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case ESpellType::BEAM:
+		case SpellType::BEAM:
 			spell = UBeamSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case ESpellType::SELF:
+		case SpellType::SELF:
 			spell = USelfSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
-		case ESpellType::SCATTER:
+		case SpellType::SCATTER:
 			spell = UScatterSpellDecorator::Builder(spellBase).Build()->_getUObject();
 
 			break;
@@ -47,26 +39,26 @@ ISpell* USpellFactory::CreateSpell(USpellData* spellData, ISpellCaster* owner)
 
 	if (spell == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to create spell"));
+		GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Cyan, FString::Printf(TEXT("FAILED TO CREATE SPELL")));
 		return nullptr;
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Cyan, FString::Printf(TEXT("Created %s"), *spellData->name));
 
 	//Applies any additional Decorators to the spell if necessary.
 
 	//Decorators that modify the creation of a projectile
-	if (spellData->type == ESpellType::PROJECTILE && spellData->hasTrail == true)
+	if (spellData->type == SpellType::PROJECTILE && spellData->hasTrail == true)
 	{
 		spell = UTrailSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
-	if ((spellData->type == ESpellType::PROJECTILE || (spellData->type == ESpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
+	if ((spellData->type == SpellType::PROJECTILE || (spellData->type == SpellType::SCATTER && spellData->isHitscan == false)) && spellData->canPenetrate == true)
 	{
 		spell = UPenetrateSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}
 
 	//OnHit Decorators. Anything wanted to be affected by AOE decorate beforehand (such as knockback). 
-	if (spellData->type != ESpellType::SELF && spellData->applyKnockback == true)
+	if (spellData->type != SpellType::SELF && spellData->applyKnockback == true)
 	{
 		spell = UKnockbackSpellDecorator::Builder(spell.GetInterface()).Build()->_getUObject();
 	}

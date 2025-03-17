@@ -8,7 +8,6 @@
 #include "WWPlayerController.h"
 #include "../../Components/SpellCasterComponent.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
-#include "../../GameInstance/PlayerDataSubsystem.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : ABaseCharacter()
@@ -65,24 +64,6 @@ void APlayerCharacter::CycleSpell()
 }
 void APlayerCharacter::InitSpells()
 {
-	if (TObjectPtr<UPlayerDataSubsystem> playerData = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>())
-	{
-		TArray<USpellData*> data = playerData->GetSpellsAsData();
-
-		if (data.Num() != 0)
-		{
-			spellCasterComponent->PopulateSpells(data);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("PlayerDataSubsystem has no spell data"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Player failed to find PlayerDataSubsystem"));
-	}
-
 	spellCasterComponent->InitSpells();
 }
 #pragma endregion
@@ -141,9 +122,6 @@ float APlayerCharacter::GetVerticalSensitivity() const noexcept
 }
 const FVector APlayerCharacter::GetCastStartLocation()
 {
-	//prints to output log the cast start location
-	FVector start = GetActorLocation() + (camera->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
-	UE_LOG(LogTemp, Warning, TEXT("Start: %s"), *start.ToString());
 	return GetActorLocation() + (GetCamera()->GetForwardVector() * 50) + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2);
 }
 const FVector APlayerCharacter::GetCastStartForward()

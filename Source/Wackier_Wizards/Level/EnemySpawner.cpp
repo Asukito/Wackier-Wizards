@@ -8,7 +8,6 @@
 #include "../Characters/AI/MeleeEnemy.h"
 #include "../Characters/AI/RangedEnemy.h"
 #include "../Utility/ActorPool.h"
-#include "../GameInstance/UIManagerSubsystem.h"
 
 AEnemySpawner::AEnemySpawner()
 { 	
@@ -154,7 +153,6 @@ void AEnemySpawner::GetNextWave()
 
 	FActorSpawnParameters params;
 	params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	params.bNoFail = true;
 
 	TArray<TObjectPtr<AActor>> toPool;
 
@@ -162,7 +160,7 @@ void AEnemySpawner::GetNextWave()
 	{
 		for (int i = 0; i < data->meleeEnemies; i++)
 		{
-			toPool.Push(GetWorld()->SpawnActor<AMeleeEnemy>(_defaultMeleeEnemy, FVector(0, 0, 5000), FRotator::ZeroRotator, params));
+			toPool.Push(GetWorld()->SpawnActor<AMeleeEnemy>(_defaultMeleeEnemy, FVector::ZeroVector, FRotator::ZeroRotator, params));
 			_toSpawn += 1;
 		}
 	}
@@ -171,10 +169,12 @@ void AEnemySpawner::GetNextWave()
 	{
 		for (int i = 0; i < data->rangedEnemies; i++)
 		{
-			toPool.Push(GetWorld()->SpawnActor<ARangedEnemy>(_defaultRangedEnemy, FVector(0, 0, 5000), FRotator::ZeroRotator, params));
+			toPool.Push(GetWorld()->SpawnActor<ARangedEnemy>(_defaultRangedEnemy, FVector::ZeroVector, FRotator::ZeroRotator, params));
 			_toSpawn += 1;
 		}
 	}
+
+	//Do other enemies
 
 	if (_pool == nullptr)
 	{

@@ -68,7 +68,6 @@ void AProjectile::AddOwnerSpell(ISpell* spell)
 {
 	_spell = spell->_getUObject();
 	_spellData = _spell->GetSpellData();
-	_staticMesh->SetRelativeScale3D(FVector(_spellData->projectileSize));
 }
 void AProjectile::AddIgnoreActor(AActor* actor)
 {
@@ -91,6 +90,7 @@ void AProjectile::ApplyForce(bool gravity, FVector unitDirection, float speed)
 {
 	_startPos = GetActorLocation();
 
+	_staticMesh->SetRelativeScale3D(FVector(1.0f));
 	_staticMesh->SetEnableGravity(gravity);
 
 	_velocity = unitDirection * speed;

@@ -11,7 +11,6 @@ class UEnhancedInputComponent;
 class UInputAction;
 class UCharacterMovementComponent;
 class APlayerCharacter;
-class UUIManagerSubsystem;
 
 UCLASS()
 class WACKIER_WIZARDS_API AWWPlayerController : public APlayerController
@@ -35,10 +34,6 @@ protected:
 	void HandleSpellFive();
 	void HandleSpellSix();
 	void HandleChangeSpell();
-	void HandleToggleSpellSelection();
-	void HandleTogglePauseMenu();
-	void HandleMenuInteract();
-	void HandleTurn(const FInputActionValue& value);
 
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
@@ -54,20 +49,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Movement")
 	TObjectPtr<UInputAction> VR_actionMove;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Movement")
-	TObjectPtr<UInputAction> VR_actionTurn;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
 	TObjectPtr<UInputAction> VR_actionCastSpell;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
-	TObjectPtr<UInputAction> VR_actionToggleSpellSelection;
+	TObjectPtr<UInputAction> VR_actionChangeSpell;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
-	TObjectPtr<UInputAction> VR_actionTogglePauseMenu;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | VR | Character Actions")
-	TObjectPtr<UInputAction> VR_actionMenuInteract;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Mapping Context")
 	TObjectPtr<UInputMappingContext> inputMappingContext;
@@ -107,15 +94,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
 	TObjectPtr<UInputAction> actionChangeSpell;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
-	TObjectPtr<UInputAction> actionToggleSpellSelection;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Input | Keyboard/Mouse | Character Actions")
-	TObjectPtr<UInputAction> actionTogglePauseMenu;
 private:
-	UPROPERTY()
-	TObjectPtr<UUIManagerSubsystem> _uiManager;
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputComponent> _enhancedInputComponent;
 

@@ -24,9 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetStage();
 
+	void SetStageData(int i);
 	void SetHubLevel(FName name);
 
-	int GetStageLevel();
 	FStageData* GetStageData();
 	TSubclassOf<AEnemySpawner> GetSpawnerDefault();
 
