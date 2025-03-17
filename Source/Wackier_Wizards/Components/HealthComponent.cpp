@@ -17,7 +17,7 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::AdjustHealth(float amount)
 {
 	_health = FMath::Clamp(_health += amount, 0, _maxHealth);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s Health Remaining: %i"), *GetOwner()->GetName(), GetHealth()));
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("%s Health Remaining: %i"), *GetOwner()->GetName(), GetHealth()));
 }
 
 void UHealthComponent::AdjustHealthPercentage(float percentage)

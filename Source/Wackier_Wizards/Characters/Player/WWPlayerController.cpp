@@ -9,12 +9,16 @@
 #include "Camera/CameraComponent.h"
 #include "PlayerCharacter.h"
 #include "VRCharacter.h"
+#include "../../Gamemodes/HubGameMode.h"
+#include "../../GameInstance/UIManagerSubsystem.h"
+#include "Components/WidgetInteractionComponent.h"
 
 #pragma region "Input Handlers"
 void AWWPlayerController::UpdateSensitivity(float horizontal, float vertical)
 {
 	_horizontalSens = horizontal;
 	_verticalSens = vertical;
+
 }
 
 void AWWPlayerController::HandleLook(const FInputActionValue& value)
@@ -74,13 +78,69 @@ void AWWPlayerController::HandleChangeSpell()
 {
 	_playerCharacter->CycleSpell();
 }
+void AWWPlayerController::HandleToggleSpellSelection()
+{
+	if (_uiManager == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller failed to initialise uiManager"));
+		return;
+	}
+
+	if (Cast<AHubGameMode>(GetWorld()->GetAuthGameMode()) != nullptr)
+	{
+		_uiManager->ToggleWidget(EWidgetType::GRIMOIRE, this);
+		return;
+	}
+
+	_uiManager->ToggleWidget(EWidgetType::QUICK_SELECT, this);
+}
+void AWWPlayerController::HandleTogglePauseMenu()
+{
+	if (_uiManager == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Controller failed to initialise uiManager"));
+		return;
+	}
+
+	_uiManager->ToggleWidget(EWidgetType::PAUSE_MENU, this);
+}
+void AWWPlayerController::HandleMenuInteract()
+{
+	if (AVRCharacter* vr = Cast<AVRCharacter>(GetCharacter()))
+	{
+		vr->interactionComponent->PressPointerKey(EKeys::LeftMouseButton);
+		vr->interactionComponent->ReleasePointerKey(EKeys::LeftMouseButton);
+	}
+}
+void AWWPlayerController::HandleTurn(const FInputActionValue& value)
+{
+	float val = value.Get<float>();
+
+	AddYawInput(val * _horizontalSens);
+}
 #pragma endregion
 
 void AWWPlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 
-	if (AVRCharacter* vr = Cast<AVRCharacter>(aPawn))
+	AVRCharacter* vr = Cast<AVRCharacter>(aPawn);
+
+	if (TObjectPtr<UUIManagerSubsystem> uiManager = GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
+	{
+		_uiManager = uiManager;
+
+		if (vr != nullptr)
+		{
+			_uiManager->CreateWidgets(this, vr->widgetComponent);
+		}
+		else
+		{
+			_uiManager->CreateWidgets(this, nullptr);
+		}
+	}
+
+	if (vr != nullptr)
 	{
 		_playerCharacter = vr;
 		_isVR = true;
@@ -161,16 +221,31 @@ void AWWPlayerController::BindActions(UEnhancedInputComponent* inputComponent)
 
 	checkf(actionSpellSix, TEXT("Missing 'SpellSix' Action"));
 	inputComponent->BindAction(actionSpellSix, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleSpellSix);
+
+	checkf(actionToggleSpellSelection, TEXT("Missing 'ToggleSpellSelection' Action"));
+	inputComponent->BindAction(actionToggleSpellSelection, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleToggleSpellSelection);
+
+	checkf(actionTogglePauseMenu, TEXT("Missing 'TogglePauseMenu' Action"));
+	inputComponent->BindAction(actionTogglePauseMenu, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTogglePauseMenu);
 }
 
 void AWWPlayerController::BindVRActions(UEnhancedInputComponent* inputComponent)
 {
-	checkf(VR_actionMove, TEXT("Missing 'Move' Action"));
+	checkf(VR_actionMove, TEXT("Missing 'VR_actionMove' Action"));
 	inputComponent->BindAction(VR_actionMove, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleMove);
 
-	checkf(VR_actionCastSpell, TEXT("Missing 'Move' Action"));
+	checkf(VR_actionTurn, TEXT("Missing 'VR_actionTurn' Action"));
+	inputComponent->BindAction(VR_actionTurn, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTurn);
+
+	checkf(VR_actionCastSpell, TEXT("Missing 'VR_actionCastSpell' Action"));
 	inputComponent->BindAction(VR_actionCastSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleCastSpell);
 
-	checkf(VR_actionChangeSpell, TEXT("Missing 'Move' Action"));
-	inputComponent->BindAction(VR_actionChangeSpell, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleChangeSpell);
+	checkf(VR_actionToggleSpellSelection, TEXT("Missing 'VR_actionToggleSpellSelection' Action"));
+	inputComponent->BindAction(VR_actionToggleSpellSelection, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleToggleSpellSelection);
+
+	checkf(VR_actionTogglePauseMenu, TEXT("Missing 'VR_actionTogglePauseMenu' Action"));
+	inputComponent->BindAction(VR_actionTogglePauseMenu, ETriggerEvent::Triggered, this, &AWWPlayerController::HandleTogglePauseMenu);
+
+	checkf(VR_actionMenuInteract, TEXT("Missing 'VR_actionMenuInteract' Action"));
+	inputComponent->BindAction(VR_actionMenuInteract, ETriggerEvent::Completed, this, &AWWPlayerController::HandleMenuInteract);
 }

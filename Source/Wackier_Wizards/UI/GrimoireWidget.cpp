@@ -1,0 +1,188 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "GrimoireWidget.h"
+#include "SpellSlotWidget.h"
+#include "../GameInstance/SpellLoaderSubsystem.h"
+#include "../GameInstance/PlayerDataSubsystem.h"
+#include "Components/WrapBox.h"
+#include "Components/TextBlock.h"
+
+void UGrimoireWidget::UpdateDisplayedSpell(USpellSlotWidget* spellSlot, int id)
+{
+	if (_selectedSpell == id)
+	{
+		MoveSpell(spellSlot, id);
+		return;
+	}
+
+	_selectedSpell = id;
+	UpdateSelectedSpell();
+}
+
+void UGrimoireWidget::NativePreConstruct()
+{
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectionSlots)
+	{
+		spellSlot->Destruct();
+	}
+
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectedSlots)
+	{
+		spellSlot->Destruct();
+	}
+}
+
+void UGrimoireWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SortIDs();
+
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Green, FString::Printf(TEXT("% i"), _spellSlots));
+
+	for (int i = 0; i < _spellSlots; i++)
+	{
+		TObjectPtr<USpellSlotWidget> spellSlot = CreateWidget<USpellSlotWidget>(this, _spellSlotDefault);
+
+		if (i >= _selectionIDs.Num())
+		{
+			_selectionIDs.Add(0);
+		}
+		_selectionSlots.Add(spellSlot);
+		_selectionGrid->AddChildToWrapBox(spellSlot);
+
+		spellSlot->InitGrimoire(_selectionIDs[i], _spellLoader, this);
+	}
+
+	for (int i = 0; i < _selectedSlotsMax; i++)
+	{
+		TObjectPtr<USpellSlotWidget> spellSlot = CreateWidget<USpellSlotWidget>(this, _spellSlotDefault);
+
+		if (i >= _selectedIDs.Num())
+		{
+			_selectedIDs.Add(0);
+		}
+
+		_selectedSlots.Add(spellSlot);
+		_selectedGrid->AddChildToWrapBox(spellSlot);
+
+		spellSlot->InitGrimoire(_selectedIDs[i], _spellLoader, this);
+	}
+}
+
+void UGrimoireWidget::NativeDestruct()
+{
+	TArray<int> toSet;
+
+	for (TObjectPtr<USpellSlotWidget> slot : _selectedSlots)
+	{
+		toSet.Add(slot->GetID());
+	}
+
+	_playerData->SetSpells(toSet);
+	DestroySpellSlots();
+}
+
+void UGrimoireWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	if (TObjectPtr<USpellLoaderSubsystem> spellLoader = GetGameInstance()->GetSubsystem<USpellLoaderSubsystem>())
+	{
+		_spellLoader = spellLoader;
+	}
+
+	if (TObjectPtr<UPlayerDataSubsystem> playerData = GetGameInstance()->GetSubsystem<UPlayerDataSubsystem>())
+	{
+		_playerData = playerData;
+	}
+}
+
+void UGrimoireWidget::SortIDs()
+{
+	if (_spellLoader == nullptr)
+	{
+		return;
+	}
+
+	_selectionIDs = _spellLoader->GetSpellIDs();
+	_spellSlots = _selectionIDs.Num();
+
+	if (_playerData == nullptr)
+	{
+		return;
+	}
+
+	_selectedIDs = _playerData->GetSavedSpellIDs();
+
+	if (_selectedIDs.Num() > 0)
+	{
+		for (int id : _selectedIDs)
+		{
+			if (_selectionIDs.Contains(id))
+			{
+				_selectionIDs.Remove(id);
+			}
+		}
+	}
+
+	DestroySpellSlots();
+}
+
+void UGrimoireWidget::UpdateSelectedSpell()
+{
+	_selectedSpellName->SetText(FText::FromString(_spellLoader->GetSpellName(_selectedSpell)));
+	_selectedSpellDescription->SetText(FText::FromString(_spellLoader->GetSpellDescription(_selectedSpell)));
+}
+
+void UGrimoireWidget::DestroySpellSlots()
+{
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectionSlots)
+	{
+		spellSlot->RemoveFromParent();
+		spellSlot->MarkAsGarbage();
+	}
+
+	_selectionSlots.Empty();
+
+	for (TObjectPtr<USpellSlotWidget> spellSlot : _selectedSlots)
+	{
+		spellSlot->RemoveFromParent();
+		spellSlot->MarkAsGarbage();
+	}
+
+	_selectedSlots.Empty();
+}
+
+void UGrimoireWidget::MoveSpell(USpellSlotWidget* spellSlot, int id)
+{
+	if (_selectionSlots.Contains(spellSlot) == true)
+	{
+		for (int i = 0; i < _selectedSlots.Num(); i++)
+		{
+			if (_selectedSlots[i]->GetID() == 0)
+			{
+				int destinationID = _selectedSlots[i]->GetID();
+
+				_selectedSlots[i]->ChangeID(id);
+				spellSlot->ChangeID(destinationID);
+				return;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < _selectedSlots.Num(); i++)
+		{
+			if (_selectionSlots[i]->GetID() == 0)
+			{
+				int destinationID = _selectionSlots[i]->GetID();
+
+				_selectionSlots[i]->ChangeID(id);
+				spellSlot->ChangeID(destinationID);
+				return;
+			}
+		}
+	}
+}

@@ -6,6 +6,9 @@
 #include "PlayerCharacter.h"
 #include "VRCharacter.generated.h"
 
+class UWidgetComponent;
+class UWidgetInteractionComponent;
+
 UCLASS()
 class WACKIER_WIZARDS_API AVRCharacter : public APlayerCharacter
 {
@@ -16,9 +19,24 @@ public:
 	//Sets default values for this character's properties
 	AVRCharacter();
 
-	const FVector GetCastStartForward() override;
+	UFUNCTION(BlueprintCallable, Category = "VR")
+	void SetInteractionComponent(UWidgetInteractionComponent* component);
+
+	virtual const FVector GetCastStartLocation() override;
+	virtual const FVector GetCastStartForward() override;
 
 	//Location of right hand to spawn spell
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Player Spell")
 	FVector rightHandLocation;
+
+	// Right hand rotation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Spell")
+	FVector rightHandCastDirection;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UWidgetInteractionComponent> interactionComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UWidgetComponent> widgetComponent;
 };
