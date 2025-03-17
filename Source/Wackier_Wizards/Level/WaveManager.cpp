@@ -4,7 +4,7 @@
 #include "WaveManager.h"
 #include "EnemySpawner.h"
 #include "../Level/StageData.h"
-#include "../GameInstance/StageLoaderSubsystem.h"
+#include "../GameInstance/UIManagerSubsystem.h"
 
 void UWaveManager::Init(UWorld* world, FStageData* data, TSubclassOf<AEnemySpawner> spawnerDefault)
 {
@@ -25,9 +25,9 @@ void UWaveManager::Init(UWorld* world, FStageData* data, TSubclassOf<AEnemySpawn
 		return;
 	}
 
-	if (TObjectPtr<UStageLoaderSubsystem> stageLoader = world->GetGameInstance()->GetSubsystem<UStageLoaderSubsystem>())
+	if (TObjectPtr<UUIManagerSubsystem> uiManager = world->GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
 	{
-		_spawner->InitSpawner(world, [this]() { return GetNextWave(); }, [stageLoader]() { stageLoader->LoadHub(); });
+		_spawner->InitSpawner(world, [this]() { return GetNextWave(); }, [uiManager, world]() { uiManager->AddToViewport(EWidgetType::STAGE_COMPLETE, world->GetFirstPlayerController()); });
 		GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Green, FString::Printf(TEXT("WAVE INITIALISED")));
 	}
 

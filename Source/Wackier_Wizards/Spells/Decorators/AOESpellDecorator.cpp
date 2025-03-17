@@ -18,7 +18,7 @@ void UAOESpellDecorator::ProcessHit(AActor* hit, FVector location, int damageAdj
 	types.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
 	TArray<TObjectPtr<AActor>> ignore;
-	if (spellData->type == SpellType::SELF)
+	if (spellData->type == ESpellType::SELF)
 	{
 		ignore.Add(owner);
 	}
