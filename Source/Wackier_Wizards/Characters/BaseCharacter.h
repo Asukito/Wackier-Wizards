@@ -44,6 +44,8 @@ public:
 	const int GetMaxHealth() noexcept override;
 	virtual void Respawn(bool isDead) override;
 
+	virtual void BeginDestroy() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

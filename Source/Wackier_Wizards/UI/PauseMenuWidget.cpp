@@ -61,6 +61,11 @@ void UPauseMenuWidget::ReturnToHUB()
 {
 	if (TObjectPtr<UStageLoaderSubsystem> stageLoader = GetGameInstance()->GetSubsystem<UStageLoaderSubsystem>())
 	{
+		if (TObjectPtr<UUIManagerSubsystem> uiManager = GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
+		{
+			uiManager->RemoveFromViewport(EWidgetType::PAUSE_MENU, GetOwningPlayer());
+		}
+
 		stageLoader->LoadHub();
 	}
 	else
@@ -73,6 +78,11 @@ void UPauseMenuWidget::ResetStage()
 {
 	if (TObjectPtr<UStageLoaderSubsystem> stageLoader = GetGameInstance()->GetSubsystem<UStageLoaderSubsystem>())
 	{
+		if (TObjectPtr<UUIManagerSubsystem> uiManager = GetGameInstance()->GetSubsystem<UUIManagerSubsystem>())
+		{
+			uiManager->RemoveFromViewport(EWidgetType::PAUSE_MENU, GetOwningPlayer());
+		}
+
 		stageLoader->ResetStage();
 	}
 	else

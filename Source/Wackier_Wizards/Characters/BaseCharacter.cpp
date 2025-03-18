@@ -141,6 +141,18 @@ void ABaseCharacter::Respawn(bool isDead)
 		SetActorLocation(spawnLocation);
 	}
 }
+void ABaseCharacter::BeginDestroy()
+{
+	if(attackAnimTimer.IsValid() == true)
+	{
+		if (TObjectPtr<UWorld> world = GetWorld())
+		{
+			world->GetTimerManager().ClearTimer(attackAnimTimer);
+		}
+	}
+
+	Super::BeginDestroy();
+}
 #pragma endregion
 
 

@@ -40,4 +40,7 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TObjectPtr<UGOAP_Agent> _agent;
+
+
+	float _castAnimTimer;
 };

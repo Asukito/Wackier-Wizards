@@ -29,9 +29,9 @@ void ARangedEnemy::CastSpell()
 	}
 
 	isAttacking = true;
-	GetWorld()->GetTimerManager().SetTimer(attackAnimTimer, [this]() { spellCasterComponent->CastSpell(), isAttacking = false; }, 0.5f, false);
+	_castAnimTimer = 0.5f;
 
-	//spellCasterComponent->CastSpell();
+	//GetWorld()->GetTimerManager().SetTimer(attackAnimTimer, [this]() { if (this->IsValidLowLevel() && spellCasterComponent->IsValidLowLevel()) { spellCasterComponent->CastSpell(); isAttacking = false; }}, 0.5f, false);
 }
 
 ISpell* ARangedEnemy::GetSpell()
@@ -68,6 +68,17 @@ void ARangedEnemy::Tick(float DeltaTime)
 	ABaseEnemy::Tick(DeltaTime);
 
 	_agent->SetPauseAgent(IsHidden());
+
+	if (isAttacking == true)
+	{
+		_castAnimTimer -= DeltaTime;
+
+		if (_castAnimTimer <= 0)
+		{
+			spellCasterComponent->CastSpell();
+			isAttacking = false;
+		}
+	}
 }
 
 void ARangedEnemy::BeginPlay()
