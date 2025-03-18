@@ -53,6 +53,10 @@
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "CurveExpression",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
