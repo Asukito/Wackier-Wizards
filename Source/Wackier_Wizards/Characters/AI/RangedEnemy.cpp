@@ -18,12 +18,20 @@ ARangedEnemy::ARangedEnemy()
 
 void ARangedEnemy::CastSpell()
 {
-	if (canAttack == false)
+	if (canAttack == false || isAttacking == true)
 	{
 		return;
 	}
 
-	spellCasterComponent->CastSpell();
+	if (spellCasterComponent->IsActiveSpellOnCooldown() == true)
+	{
+		return;
+	}
+
+	isAttacking = true;
+	GetWorld()->GetTimerManager().SetTimer(attackAnimTimer, [this]() { spellCasterComponent->CastSpell(), isAttacking = false; }, 0.5f, false);
+
+	//spellCasterComponent->CastSpell();
 }
 
 ISpell* ARangedEnemy::GetSpell()
