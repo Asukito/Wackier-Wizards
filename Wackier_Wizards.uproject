@@ -57,6 +57,10 @@
 		{
 			"Name": "CurveExpression",
 			"Enabled": true
+		},
+		{
+			"Name": "AnimationLocomotionLibrary",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
